@@ -27,4 +27,4 @@ export default {
   Database: {
     uri: process.env.MONGODB_URI ?? '',
   },
-} as const;
+} as const

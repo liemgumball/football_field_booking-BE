@@ -1,15 +1,15 @@
-import * as e from 'express';
+import * as e from 'express'
 
-import { ISessionUserE } from '@src/models/UserExample';
+import { ISessionUserE } from '@src/models/UserExample'
 
 // **** Express **** //
 
 export interface IReq<T = void> extends e.Request {
-  body: T;
+  body: T
 }
 
 export interface IRes extends e.Response {
   locals: {
-    sessionUser?: ISessionUserE;
-  };
+    sessionUser?: ISessionUserE
+  }
 }

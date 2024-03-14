@@ -2,7 +2,7 @@
 
 const INVALID_CONSTRUCTOR_PARAM =
   'nameOrObj arg must a string or an ' +
-  'object with the appropriate userE keys.';
+  'object with the appropriate userE keys.'
 
 export enum UserERoles {
   Standard,
@@ -12,18 +12,18 @@ export enum UserERoles {
 // **** Types **** //
 
 export interface IUserE {
-  id: number;
-  name: string;
-  email: string;
-  pwdHash?: string;
-  role?: UserERoles;
+  id: number
+  name: string
+  email: string
+  pwdHash?: string
+  role?: UserERoles
 }
 
 export interface ISessionUserE {
-  id: number;
-  email: string;
-  name: string;
-  role: IUserE['role'];
+  id: number
+  email: string
+  name: string
+  role: IUserE['role']
 }
 
 // **** Functions **** //
@@ -44,7 +44,7 @@ function new_(
     email: email ?? '',
     role: role ?? UserERoles.Standard,
     pwdHash: pwdHash ?? '',
-  };
+  }
 }
 
 /**
@@ -53,11 +53,11 @@ function new_(
 function from(param: object): IUserE {
   // Check is userE
   if (!isUserE(param)) {
-    throw new Error(INVALID_CONSTRUCTOR_PARAM);
+    throw new Error(INVALID_CONSTRUCTOR_PARAM)
   }
   // Get userE instance
-  const p = param as IUserE;
-  return new_(p.name, p.email, p.role, p.pwdHash, p.id);
+  const p = param as IUserE
+  return new_(p.name, p.email, p.role, p.pwdHash, p.id)
 }
 
 /**
@@ -71,7 +71,7 @@ function isUserE(arg: unknown): boolean {
     'email' in arg &&
     'name' in arg &&
     'role' in arg
-  );
+  )
 }
 
 // **** Export default **** //
@@ -80,4 +80,4 @@ export default {
   new: new_,
   from,
   isUserE,
-} as const;
+} as const
