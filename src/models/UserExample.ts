@@ -1,70 +1,69 @@
 // **** Variables **** //
 
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an ' + 
-  'object with the appropriate user keys.';
+const INVALID_CONSTRUCTOR_PARAM =
+  'nameOrObj arg must a string or an ' +
+  'object with the appropriate userE keys.';
 
-export enum UserRoles {
+export enum UserERoles {
   Standard,
   Admin,
 }
 
-
 // **** Types **** //
 
-export interface IUser {
+export interface IUserE {
   id: number;
   name: string;
   email: string;
   pwdHash?: string;
-  role?: UserRoles;
+  role?: UserERoles;
 }
 
-export interface ISessionUser {
+export interface ISessionUserE {
   id: number;
   email: string;
   name: string;
-  role: IUser['role'];
+  role: IUserE['role'];
 }
-
 
 // **** Functions **** //
 
 /**
- * Create new User.
+ * Create new UserE.
  */
 function new_(
   name?: string,
   email?: string,
-  role?: UserRoles,
+  role?: UserERoles,
   pwdHash?: string,
   id?: number, // id last cause usually set by db
-): IUser {
+): IUserE {
   return {
-    id: (id ?? -1),
-    name: (name ?? ''),
-    email: (email ?? ''),
-    role: (role ?? UserRoles.Standard),
-    pwdHash: (pwdHash ?? ''),
+    id: id ?? -1,
+    name: name ?? '',
+    email: email ?? '',
+    role: role ?? UserERoles.Standard,
+    pwdHash: pwdHash ?? '',
   };
 }
 
 /**
- * Get user instance from object.
+ * Get userE instance from object.
  */
-function from(param: object): IUser {
-  // Check is user
-  if (!isUser(param)) {
+function from(param: object): IUserE {
+  // Check is userE
+  if (!isUserE(param)) {
     throw new Error(INVALID_CONSTRUCTOR_PARAM);
   }
-  // Get user instance
-  const p = param as IUser;
+  // Get userE instance
+  const p = param as IUserE;
   return new_(p.name, p.email, p.role, p.pwdHash, p.id);
 }
 
 /**
- * See if the param meets criteria to be a user.
+ * See if the param meets criteria to be a userE.
  */
-function isUser(arg: unknown): boolean {
+function isUserE(arg: unknown): boolean {
   return (
     !!arg &&
     typeof arg === 'object' &&
@@ -75,11 +74,10 @@ function isUser(arg: unknown): boolean {
   );
 }
 
-
 // **** Export default **** //
 
 export default {
   new: new_,
   from,
-  isUser,
+  isUserE,
 } as const;
