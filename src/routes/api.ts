@@ -1,45 +1,17 @@
 import { Router } from 'express';
-import jetValidator from 'jet-validator';
 
 import Paths from '../constants/Paths';
-import UserE from '@src/models/UserExample';
-import UserRoutes from './UserERoutes';
+import exampleRouter from './ExampleRouter';
+import pingRouter from './PingRouter';
 
-// **** Variables **** //
-
-const apiRouter = Router(),
-  validate = jetValidator();
-
-// ** Add UserRouter ** //
-
-const userRouter = Router();
-
-// Get all users
-userRouter.get(Paths.Users.Get, UserRoutes.getAll);
-
-// Add one user
-userRouter.post(
-  Paths.Users.Add,
-  validate(['user', UserE.isUserE]),
-  UserRoutes.add,
-);
-
-// Update one user
-userRouter.put(
-  Paths.Users.Update,
-  validate(['user', UserE.isUserE]),
-  UserRoutes.update,
-);
-
-// Delete one user
-userRouter.delete(
-  Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
-  UserRoutes.delete,
-);
+// **** api **** //
+const apiRouter = Router();
 
 // Add UserRouter
-apiRouter.use(Paths.Users.Base, userRouter);
+apiRouter.use(Paths.Users.Base, exampleRouter);
+
+// Add PingRouter
+apiRouter.use(Paths.Pings.Base, pingRouter);
 
 // **** Export default **** //
 
