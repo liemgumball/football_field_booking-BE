@@ -1,8 +1,8 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
-import UserService from '@src/services/UserService'
+import UserService from '@src/services/ExampleService'
 import { IUserE } from '@src/models/UserExample'
-import { IReq, IRes } from '../types/express/misc'
+import { IReq, IRes } from '../../types/express/misc'
 
 // **** Functions **** //
 

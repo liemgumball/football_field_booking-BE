@@ -1,5 +1,5 @@
 import DatabaseService from '@src/services/DatabaseService'
-import { IReq, IRes } from '../types/express/misc'
+import { IReq, IRes } from '@src/types/express/misc'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 function ping(_: IReq, res: IRes) {
