@@ -38,6 +38,7 @@
     "jet-validator": "^1.1.1",
     "jsonfile": "^6.1.0",
     "module-alias": "^2.2.3",
+    "mongoose": "^8.2.1",
     "morgan": "^1.10.0",
     "ts-command-line-args": "^2.5.1"
   },
@@ -59,6 +60,7 @@
     "fs-extra": "^11.2.0",
     "jasmine": "^5.1.0",
     "nodemon": "^3.1.0",
+    "prettier": "^3.2.5",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
