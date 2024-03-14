@@ -14,4 +14,4 @@ export default {
     Update: '/update',
     Delete: '/delete/:id',
   },
-} as const;
+} as const

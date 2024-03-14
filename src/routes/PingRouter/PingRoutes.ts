@@ -1,9 +1,9 @@
-import DatabaseService from '@src/services/DatabaseService';
-import { IReq, IRes } from '../types/express/misc';
-import HttpStatusCodes from '@src/constants/HttpStatusCodes';
+import DatabaseService from '@src/services/DatabaseService'
+import { IReq, IRes } from '../types/express/misc'
+import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 function ping(_: IReq, res: IRes) {
-  return res.status(HttpStatusCodes.OK).json({ ping: DatabaseService.ping() });
+  return res.status(HttpStatusCodes.OK).json({ ping: DatabaseService.ping() })
 }
 
-export default { ping } as const;
+export default { ping } as const

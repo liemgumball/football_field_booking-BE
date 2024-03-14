@@ -1,15 +1,15 @@
-import jsonfile from 'jsonfile';
+import jsonfile from 'jsonfile'
 
-import { IUserE } from '@src/models/UserExample';
+import { IUserE } from '@src/models/UserExample'
 
 // **** Variables **** //
 
-const DB_FILE_NAME = 'database.json';
+const DB_FILE_NAME = 'database.json'
 
 // **** Types **** //
 
 interface IDb {
-  users: IUserE[];
+  users: IUserE[]
 }
 
 // **** Functions **** //
@@ -18,14 +18,14 @@ interface IDb {
  * Fetch the json from the file.
  */
 function openDb(): Promise<IDb> {
-  return jsonfile.readFile(__dirname + '/' + DB_FILE_NAME) as Promise<IDb>;
+  return jsonfile.readFile(__dirname + '/' + DB_FILE_NAME) as Promise<IDb>
 }
 
 /**
  * Update the file.
  */
 function saveDb(db: IDb): Promise<void> {
-  return jsonfile.writeFile(__dirname + '/' + DB_FILE_NAME, db);
+  return jsonfile.writeFile(__dirname + '/' + DB_FILE_NAME, db)
 }
 
 // **** Export default **** //
@@ -33,4 +33,4 @@ function saveDb(db: IDb): Promise<void> {
 export default {
   openDb,
   saveDb,
-} as const;
+} as const
