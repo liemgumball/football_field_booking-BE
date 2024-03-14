@@ -2,16 +2,14 @@
 
 displayUsers();
 
-
 // ***** Fetch and display users **** //
 
 /**
  * Call api
  */
 function displayUsers() {
-  Http
-    .get('/api/users/all')
-    .then(resp => resp.json())
+  Http.get('/api/examples/all')
+    .then((resp) => resp.json())
     .then((resp) => {
       var allUsers = resp.users;
       // Empty the anchor
@@ -28,8 +26,7 @@ function displayUsers() {
  * Get user display element
  */
 function getUserDisplayEle(user) {
-  return (
-    `<div class="user-display-ele">
+  return `<div class="user-display-ele">
 
       <div class="normal-view">
         <div>Name: ${user.name}</div>
@@ -56,31 +53,33 @@ function getUserDisplayEle(user) {
           Cancel
         </button>
       </div>
-    </div>`
-  );
+    </div>`;
 }
-
 
 // **** Add, Edit, and Delete Users **** //
 
 // Setup event listener for button click
-document.addEventListener('click', function (event) {
-  event.preventDefault();
-  var ele = event.target;
-  if (ele.matches('#add-user-btn')) {
-    addUser();
-  } else if (ele.matches('.edit-user-btn')) {
-    showEditView(ele.parentNode.parentNode);
-  } else if (ele.matches('.cancel-edit-btn')) {
-    cancelEdit(ele.parentNode.parentNode);
-  } else if (ele.matches('.submit-edit-btn')) {
-    submitEdit(ele);
-  } else if (ele.matches('.delete-user-btn')) {
-    deleteUser(ele);
-  } else if (ele.matches('#logout-btn')) {
-    logoutUser();
-  }
-}, false);
+document.addEventListener(
+  'click',
+  function (event) {
+    event.preventDefault();
+    var ele = event.target;
+    if (ele.matches('#add-user-btn')) {
+      addUser();
+    } else if (ele.matches('.edit-user-btn')) {
+      showEditView(ele.parentNode.parentNode);
+    } else if (ele.matches('.cancel-edit-btn')) {
+      cancelEdit(ele.parentNode.parentNode);
+    } else if (ele.matches('.submit-edit-btn')) {
+      submitEdit(ele);
+    } else if (ele.matches('.delete-user-btn')) {
+      deleteUser(ele);
+    } else if (ele.matches('#logout-btn')) {
+      logoutUser();
+    }
+  },
+  false,
+);
 
 /**
  * Add a new user.
@@ -97,9 +96,7 @@ function addUser() {
     },
   };
   // Call api
-  Http
-    .post('/api/users/add', data)
-    .then(() => displayUsers());
+  Http.post('/api/examples/add', data).then(() => displayUsers());
 }
 
 /**
@@ -139,9 +136,7 @@ function submitEdit(ele) {
       role: Number(role),
     },
   };
-	Http
-    .put('/api/users/update', data)
-    .then(() => displayUsers());
+  Http.put('/api/examples/update', data).then(() => displayUsers());
 }
 
 /**
@@ -149,16 +144,11 @@ function submitEdit(ele) {
  */
 function deleteUser(ele) {
   var id = ele.getAttribute('data-user-id');
-	Http
-    .delete('/api/users/delete/' + id)
-    .then(() => displayUsers());
+  Http.delete('/api/examples/delete/' + id).then(() => displayUsers());
 }
-
 
 // **** Logout **** //
 
 function logoutUser() {
-  Http
-    .get('/api/auth/logout')
-    .then(() => window.location.href = '/');
+  Http.get('/api/auth/logout').then(() => (window.location.href = '/'));
 }

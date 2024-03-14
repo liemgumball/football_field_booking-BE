@@ -4,8 +4,11 @@
 
 export default {
   Base: '/api',
+  Pings: {
+    Base: '/pings',
+  },
   Users: {
-    Base: '/users',
+    Base: '/examples',
     Get: '/all',
     Add: '/add',
     Update: '/update',
