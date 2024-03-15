@@ -1,17 +1,17 @@
 import { Router } from 'express'
 
 import Paths from '../constants/Paths'
-import exampleRouter from './ExampleRouter'
-import pingRouter from './PingRouter'
+import pingRouter from './ping.routes'
+import userRouter from './user.routes'
 
 // **** api **** //
 const apiRouter = Router()
 
-// Add UserRouter
-apiRouter.use(Paths.Users.Base, exampleRouter)
-
 // Add PingRouter
 apiRouter.use(Paths.Pings.Base, pingRouter)
+
+// Add UserRouter
+apiRouter.use(Paths.Users.Base, userRouter)
 
 // **** Export default **** //
 

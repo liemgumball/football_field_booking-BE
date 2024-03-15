@@ -8,6 +8,13 @@ export default {
     Base: '/pings',
   },
   Users: {
+    Base: '/users',
+    Get: '/:id',
+    Add: '/add',
+    Update: '/update',
+    Delete: '/delete/:id',
+  },
+  Examples: {
     Base: '/examples',
     Get: '/all',
     Add: '/add',
