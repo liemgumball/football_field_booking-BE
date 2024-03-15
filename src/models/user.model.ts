@@ -7,21 +7,24 @@ import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 /**
  * Represents the structure of a user document in the database.
  */
-type TUser = {
-  _id?: Schema.Types.ObjectId
+export type TUser = {
   email: string
   password: string
   name?: string
   phone_number?: string
   avatar?: string
-  access_token?: string
   google_access_token?: string
-  createdAt: Date
-  updatedAt: Date
-} & Document
+}
+
+export type UserDocument = TUser &
+  Document & {
+    createdAt: Date
+    updatedAt: Date
+    comparePassword(candidatePassword: string): Promise<boolean>
+  }
 
 // Define the Mongoose schema for the user document
-const UserSchema = new Schema<TUser>(
+const UserSchema = new Schema<UserDocument>(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -33,7 +36,6 @@ const UserSchema = new Schema<TUser>(
       match: PHONE_NUMBER_REGEX,
     },
     avatar: String,
-    access_token: String,
     google_access_token: String,
   },
   {
@@ -77,6 +79,4 @@ UserSchema.methods.generateAuthToken = function (): string {
 }
 
 // Create the User model using the schema
-const UserModel = model<TUser>('User', UserSchema)
-
-export { UserModel, TUser }
+export const UserModel = model<UserDocument>('User', UserSchema)

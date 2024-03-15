@@ -8,7 +8,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { createUserSchema, updateUserSchema } from '@src/schemas/user.schema'
 
 // Controller
-import UserController from '@src/controllers/user.controller'
+import * as UserController from '@src/controllers/user.controller'
 
 // Validator
 import zValidate from '@src/middlewares/validateResource'
@@ -34,7 +34,7 @@ userRouter.post(
 userRouter.delete(
   Paths.USERS.DELETE,
   jValidate(['id', 'string', 'params']),
-  UserController.delete,
+  UserController.delete_,
 )
 
 userRouter.patch(
