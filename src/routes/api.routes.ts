@@ -8,10 +8,10 @@ import userRouter from './user.routes'
 const apiRouter = Router()
 
 // Add PingRouter
-apiRouter.use(Paths.Pings.Base, pingRouter)
+apiRouter.use(Paths.PINGS.BASE, pingRouter)
 
 // Add UserRouter
-apiRouter.use(Paths.Users.Base, userRouter)
+apiRouter.use(Paths.USERS.BASE, userRouter)
 
 // **** Export default **** //
 
