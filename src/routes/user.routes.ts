@@ -1,20 +1,47 @@
 import { Router } from 'express'
-import UserController from '@src/controllers/user.controller'
+
+// Constants
 import Paths from '@src/constants/Paths'
-import jetValidator from 'jet-validator/lib/jet-validator'
-import { isUser } from '@src/models/user.model'
+import HttpStatusCodes from '@src/constants/HttpStatusCodes'
+
+// Schemas
+import { createUserSchema, updateUserSchema } from '@src/schemas/user.schema'
+
+// Controller
+import UserController from '@src/controllers/user.controller'
+
+// Validator
+import zValidate from '@src/middlewares/validateResource'
+import jValidator from 'jet-validator'
+const jValidate = jValidator(HttpStatusCodes.BAD_GATEWAY)
 
 const userRouter = Router()
-const validate = jetValidator()
 
 userRouter.get('', UserController.getAll)
 
-userRouter.post(Paths.Users.Add, validate(['user', isUser]), UserController.add)
+userRouter.get(
+  Paths.USERS.GET,
+  jValidate(['id', 'string', 'params']),
+  UserController.getById,
+)
+
+userRouter.post(
+  Paths.USERS.ADD,
+  zValidate(createUserSchema),
+  UserController.add,
+)
 
 userRouter.delete(
-  Paths.Users.Delete,
-  validate(['id', 'string', 'params']),
+  Paths.USERS.DELETE,
+  jValidate(['id', 'string', 'params']),
   UserController.delete,
+)
+
+userRouter.patch(
+  Paths.USERS.UPDATE,
+  jValidate(['id', 'string', 'params']),
+  zValidate(updateUserSchema),
+  UserController.update,
 )
 
 export default userRouter

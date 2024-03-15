@@ -1,4 +1,4 @@
-import DatabaseService from '@src/services/DatabaseService'
+import DatabaseService from '@src/services/database.service'
 import { IReq, IRes } from '@src/types/express/misc'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 

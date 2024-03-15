@@ -11,7 +11,7 @@ import logger from 'jet-logger'
 
 import 'express-async-errors'
 
-import BaseRouter from '@src/routes/api'
+import BaseRouter from '@src/routes/api.routes'
 import Paths from '@src/constants/Paths'
 
 import EnvVars from '@src/constants/EnvVars'
@@ -42,7 +42,7 @@ if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
 }
 
 // Add APIs, must be after middleware
-app.use(Paths.Base, BaseRouter)
+app.use(Paths.BASE, BaseRouter)
 
 // Add error handler
 app.use(

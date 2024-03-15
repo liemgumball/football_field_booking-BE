@@ -3,22 +3,22 @@
  */
 
 export default {
-  Base: '/api',
-  Pings: {
-    Base: '/pings',
+  BASE: '/api',
+  PINGS: {
+    BASE: '/pings',
   },
-  Users: {
-    Base: '/users',
-    Get: '/:id',
-    Add: '/add',
-    Update: '/update',
-    Delete: '/delete/:id',
+  USERS: {
+    BASE: '/users',
+    GET: '/:id',
+    ADD: '/add',
+    UPDATE: '/update/:id',
+    DELETE: '/delete/:id',
   },
   Examples: {
-    Base: '/examples',
-    Get: '/all',
-    Add: '/add',
-    Update: '/update',
-    Delete: '/delete/:id',
+    BASE: '/examples',
+    GET: '/all',
+    ADD: '/add',
+    UPDATE: '/update',
+    DELETE: '/delete/:id',
   },
 } as const
