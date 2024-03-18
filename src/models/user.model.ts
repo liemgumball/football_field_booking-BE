@@ -1,39 +1,61 @@
 import { Schema, model, Document } from 'mongoose'
-import { sign } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import EnvVars from '@src/constants/EnvVars'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
+import { string } from 'zod'
 
 /**
  * Represents the structure of a user document in the database.
  */
-type TUser = {
-  _id?: Schema.Types.ObjectId
+export type TUser = {
   email: string
   password: string
   name?: string
   phone_number?: string
   avatar?: string
-  access_token?: string
   google_access_token?: string
-  createdAt: Date
-  updatedAt: Date
-} & Document
+}
+
+export type UserDocument = TUser &
+  Document<Schema.Types.ObjectId> & {
+    createdAt: Date
+    updatedAt: Date
+    comparePassword: (password: string) => Promise<boolean>
+    generateAuthToken: () => string
+  }
 
 // Define the Mongoose schema for the user document
-const UserSchema = new Schema<TUser>(
+const UserSchema = new Schema<UserDocument>(
   {
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: {
+        // zod email schema validation
+        validator: (email: string) =>
+          string()
+            .email()
+            .transform((val) => val.toLowerCase())
+            .safeParse(email).success,
+        message: 'Invalid email format',
+      },
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: [6, 'Minimum password length is 6 characters'],
+    },
     name: String,
     phone_number: {
       type: String,
       required: true,
       unique: true,
-      match: PHONE_NUMBER_REGEX,
+      validate: PHONE_NUMBER_REGEX,
     },
     avatar: String,
-    access_token: String,
     google_access_token: String,
   },
   {
@@ -70,13 +92,12 @@ UserSchema.methods.comparePassword = function (password: string) {
  * @returns {string} - The generated authentication token.
  */
 UserSchema.methods.generateAuthToken = function (): string {
-  const token = sign({ _id: this._id }, EnvVars.Jwt.Secret, {
-    expiresIn: '7d',
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const token = jwt.sign({ _id: this._id }, EnvVars.Jwt.Secret, {
+    expiresIn: EnvVars.Jwt.Exp,
   })
   return token
 }
 
 // Create the User model using the schema
-const UserModel = model<TUser>('User', UserSchema)
-
-export { UserModel, TUser }
+export const UserModel = model<UserDocument>('User', UserSchema)

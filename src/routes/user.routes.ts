@@ -5,17 +5,20 @@ import Paths from '@src/constants/Paths'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 // Schemas
-import { createUserSchema, updateUserSchema } from '@src/schemas/user.schema'
+import * as Schema from '@src/schemas/user.schema'
 
 // Controller
-import UserController from '@src/controllers/user.controller'
+import * as UserController from '@src/controllers/user.controller'
 
 // Validator
-import zValidate from '@src/middlewares/validateResource'
+import zValidate from '@src/middlewares/validateResource.middleware'
 import jValidator from 'jet-validator'
+import validateAuth from '@src/middlewares/auth.middleware'
 const jValidate = jValidator(HttpStatusCodes.BAD_GATEWAY)
 
 const userRouter = Router()
+
+userRouter.use(validateAuth)
 
 userRouter.get('', UserController.getAll)
 
@@ -25,22 +28,16 @@ userRouter.get(
   UserController.getById,
 )
 
-userRouter.post(
-  Paths.USERS.ADD,
-  zValidate(createUserSchema),
-  UserController.add,
-)
-
 userRouter.delete(
   Paths.USERS.DELETE,
   jValidate(['id', 'string', 'params']),
-  UserController.delete,
+  UserController.delete_,
 )
 
 userRouter.patch(
   Paths.USERS.UPDATE,
   jValidate(['id', 'string', 'params']),
-  zValidate(updateUserSchema),
+  zValidate(Schema.updateUserSchema),
   UserController.update,
 )
 

@@ -7,6 +7,11 @@ export default {
   PINGS: {
     BASE: '/pings',
   },
+  AUTH: {
+    BASE: '/auth',
+    LOGIN: '/login',
+    SIGNUP: '/signup',
+  },
   USERS: {
     BASE: '/users',
     GET: '/:id',
