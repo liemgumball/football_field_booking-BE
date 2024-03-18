@@ -2,19 +2,17 @@ import { Router } from 'express'
 
 // Constants
 import Paths from '@src/constants/Paths'
-import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 // Schemas
-import * as Schema from '@src/schemas/user.schema'
+import { validIdSchema } from '@src/schemas/common.schema'
+import { updateUserSchema } from '@src/schemas/user.schema'
 
 // Controller
 import * as UserController from '@src/controllers/user.controller'
 
 // Validator
-import zValidate from '@src/middlewares/validateResource.middleware'
-import jValidator from 'jet-validator'
+import { serialize } from '@src/middlewares/serializer.middleware'
 import validateAuth from '@src/middlewares/auth.middleware'
-const jValidate = jValidator(HttpStatusCodes.BAD_GATEWAY)
 
 const userRouter = Router()
 
@@ -24,20 +22,19 @@ userRouter.get('', UserController.getAll)
 
 userRouter.get(
   Paths.USERS.GET,
-  jValidate(['id', 'string', 'params']),
+  serialize(validIdSchema),
   UserController.getById,
 )
 
 userRouter.delete(
   Paths.USERS.DELETE,
-  jValidate(['id', 'string', 'params']),
+  serialize(validIdSchema),
   UserController.delete_,
 )
 
 userRouter.patch(
   Paths.USERS.UPDATE,
-  jValidate(['id', 'string', 'params']),
-  zValidate(Schema.updateUserSchema),
+  serialize(updateUserSchema),
   UserController.update,
 )
 

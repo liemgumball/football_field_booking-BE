@@ -1,4 +1,3 @@
-import { isValidObjectId } from 'mongoose'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { IReq, IRes } from '@src/types/express/misc'
 import * as UserService from '@src/services/user.service'
@@ -18,9 +17,6 @@ export async function getAll(_: IReq, res: IRes) {
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
 
-  if (!isValidObjectId(id))
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid Id')
-
   const user = await UserService.getById(id)
   if (user) return res.status(HttpStatusCodes.OK).json(user)
 
@@ -32,9 +28,6 @@ export async function getById(req: IReq, res: IRes) {
  */
 export async function delete_(req: IReq, res: IRes) {
   const { id } = req.params
-
-  if (!isValidObjectId(id))
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid Id')
 
   const deleted = await UserService.delete_(id)
   if (!deleted)
@@ -49,9 +42,6 @@ export async function delete_(req: IReq, res: IRes) {
 export async function update(req: IReq<TUser>, res: IRes) {
   const { id } = req.params
   const user = req.body
-
-  if (!isValidObjectId(id))
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid Id')
 
   const updated = await UserService.update(id, user)
   if (!updated)

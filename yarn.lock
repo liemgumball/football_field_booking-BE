@@ -2013,7 +2013,7 @@ express-session@^1.18.0:
     safe-buffer "5.2.1"
     uid-safe "~2.1.5"
 
-express@^4.18.2, express@^4.18.3:
+express@^4.18.3:
   version "4.18.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.3.tgz#6870746f3ff904dee1819b82e4b51509afffb0d4"
   integrity sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==
@@ -2498,13 +2498,6 @@ jet-paths@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/jet-paths/-/jet-paths-1.0.6.tgz#e4045629ed43163c35c949264ec7006beb06fa1c"
   integrity sha512-LqjN1QY4ixVaouzLt0whXPKmVQjiR0AOw0sJNEt+fO2M0b4lYI5VuMZYCS08BLEgyJIH3mBX3t8m82TwblxIhQ==
-
-jet-validator@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/jet-validator/-/jet-validator-1.1.1.tgz#83e4f4a4059cdff60c9be7d6a4e7683ffc153601"
-  integrity sha512-F/L+UtXAkd5Dm+eIRca0BgCb5/sYenHqixHOt2tWYkMFd8AUDqA6U8dD3mQzXL+SVxCVOd5Ftcf9c9HGbUIhlw==
-  dependencies:
-    express "^4.18.2"
 
 js-yaml@^4.1.0:
   version "4.1.0"

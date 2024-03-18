@@ -5,7 +5,7 @@ import { Router } from 'express'
 import * as authController from '@src/controllers/auth.controller'
 
 // Validator
-import zValidate from '@src/middlewares/validateResource.middleware'
+import { serialize } from '@src/middlewares/serializer.middleware'
 
 // Schemas
 import * as Schema from '@src/schemas/user.schema'
@@ -14,13 +14,13 @@ const authRouter = Router()
 
 authRouter.post(
   Paths.AUTH.SIGNUP,
-  zValidate(Schema.createUserSchema),
+  serialize(Schema.createUserSchema),
   authController.signup,
 )
 
 authRouter.post(
   Paths.AUTH.LOGIN,
-  zValidate(Schema.loginSchema),
+  serialize(Schema.loginSchema),
   authController.login,
 )
 

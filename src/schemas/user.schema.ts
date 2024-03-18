@@ -1,4 +1,5 @@
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
+import { isValidObjectId } from 'mongoose'
 import { object, string } from 'zod'
 
 /**
@@ -22,6 +23,11 @@ export const createUserSchema = object({
  * Schema for PATCH user requests
  */
 export const updateUserSchema = object({
+  params: object({
+    id: string().refine((value) => isValidObjectId(value), {
+      message: 'Invalid Id',
+    }),
+  }),
   body: object({
     phone_number: string().regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
     name: string(),
