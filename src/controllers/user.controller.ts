@@ -24,7 +24,7 @@ export async function getById(req: IReq, res: IRes) {
   const user = await UserService.getById(id)
   if (user) return res.status(HttpStatusCodes.OK).json(user)
 
-  return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+  return res.status(HttpStatusCodes.NO_CONTENT).send('User not found')
 }
 
 /**
@@ -36,11 +36,11 @@ export async function delete_(req: IReq, res: IRes) {
   if (!isValidObjectId(id))
     return res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid Id')
 
-  const execution = await UserService.delete_(id)
-  if (execution)
-    return res.status(HttpStatusCodes.OK).json({ deleted: execution })
+  const deleted = await UserService.delete_(id)
+  if (!deleted)
+    return res.status(HttpStatusCodes.NO_CONTENT).send('User not found')
 
-  return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+  return res.status(HttpStatusCodes.OK).end()
 }
 
 /**
@@ -54,7 +54,8 @@ export async function update(req: IReq<TUser>, res: IRes) {
     return res.status(HttpStatusCodes.BAD_REQUEST).send('Invalid Id')
 
   const updated = await UserService.update(id, user)
-  if (updated) return res.status(HttpStatusCodes.OK).end()
+  if (!updated)
+    return res.status(HttpStatusCodes.NO_CONTENT).send('User not found')
 
-  return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+  return res.status(HttpStatusCodes.OK).json(updated)
 }

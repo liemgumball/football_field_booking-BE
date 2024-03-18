@@ -6,7 +6,7 @@ import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
 
 /**
- * Represents the structure of a user document in the database.
+ * Represents the structure of a user
  */
 export type TUser = {
   email: string
@@ -15,9 +15,10 @@ export type TUser = {
   phone_number?: string
   avatar?: string
   google_access_token?: string
+  isAdmin?: boolean
 }
 
-export type UserDocument = TUser &
+type UserDocument = TUser &
   Document<Schema.Types.ObjectId> & {
     createdAt: Date
     updatedAt: Date
@@ -33,6 +34,7 @@ const UserSchema = new Schema<UserDocument>(
       required: true,
       unique: true,
       lowercase: true,
+      immutable: true,
       validate: {
         // zod email schema validation
         validator: (email: string) =>
@@ -72,7 +74,6 @@ UserSchema.pre('save', function (next) {
   }
 
   const hash = hashData(this.password)
-
   this.password = hash
 
   return next()

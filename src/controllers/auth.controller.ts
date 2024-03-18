@@ -26,7 +26,7 @@ export async function login(req: IReq<TUser>, res: IRes) {
  */
 export async function signup(req: IReq<TUser>, res: IRes) {
   const user = req.body
-  await UserService.add(user)
+  await UserService.create(user)
 
   return res.status(HttpStatusCodes.CREATED).end()
 }
