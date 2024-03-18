@@ -8,6 +8,8 @@ import path from 'path'
 import helmet from 'helmet'
 import express, { Request, Response, NextFunction } from 'express'
 import logger from 'jet-logger'
+import session from 'express-session'
+import connectMongoDBSession from 'connect-mongodb-session'
 
 import 'express-async-errors'
 
@@ -40,6 +42,23 @@ if (EnvVars.NodeEnv === NodeEnvs.Dev.valueOf()) {
 if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
   app.use(helmet())
 }
+
+// Create session data
+const MongoDBSession = connectMongoDBSession(session)
+const store = new MongoDBSession({
+  uri: EnvVars.Database.uri,
+  collection: 'sessions',
+})
+
+app.use(
+  session({
+    secret: EnvVars.Session.Secret,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: EnvVars.CookieProps.Options,
+  }),
+)
 
 // Add APIs, must be after middleware
 app.use(Paths.BASE, BaseRouter)

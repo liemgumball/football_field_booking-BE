@@ -1,14 +1,20 @@
+import { isValidObjectId } from 'mongoose'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { IReq, IRes } from '@src/types/express/misc'
 import * as UserService from '@src/services/user.service'
 import { TUser } from '@src/models/user.model'
-import { isValidObjectId } from 'mongoose'
 
+/**
+ * Handle get all users requests
+ */
 export async function getAll(_: IReq, res: IRes) {
   const users = await UserService.getAll()
   return res.status(HttpStatusCodes.OK).json(users)
 }
 
+/**
+ * Handle get user by user's Id requests
+ */
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
 
@@ -21,13 +27,9 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
 }
 
-export async function add(req: IReq<TUser>, res: IRes) {
-  const user = req.body
-  await UserService.add(user)
-
-  return res.status(HttpStatusCodes.CREATED).end()
-}
-
+/**
+ * Handle delete user request
+ */
 export async function delete_(req: IReq, res: IRes) {
   const { id } = req.params
 
@@ -41,6 +43,9 @@ export async function delete_(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
 }
 
+/**
+ * Handle update user request
+ */
 export async function update(req: IReq<TUser>, res: IRes) {
   const { id } = req.params
   const user = req.body

@@ -1,4 +1,4 @@
-import { genSaltSync, hashSync, compareSync } from 'bcrypt'
+import { genSaltSync, hashSync, compareSync } from 'bcryptjs'
 
 /**
  * Generate a salt synchronously with a given cost factor.

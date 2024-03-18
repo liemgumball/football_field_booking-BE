@@ -1,11 +1,11 @@
-/* eslint-disable max-len */
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
-import { Request, Response, NextFunction } from 'express'
+import { IReq, IRes } from '@src/types/express/misc'
+import { NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
 
 const validateResource =
-  (schema: AnyZodObject) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  <T>(schema: AnyZodObject) =>
+  (req: IReq<T>, res: IRes, next: NextFunction) => {
     try {
       schema.parse({
         body: req.body,
