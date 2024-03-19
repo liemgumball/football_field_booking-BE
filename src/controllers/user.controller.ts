@@ -1,7 +1,7 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { IReq, IRes } from '@src/types/express/misc'
 import * as UserService from '@src/services/user.service'
-import { TUser } from '@src/models/user.model'
+import { TUser } from '@src/types'
 
 /**
  * Handle get all users requests

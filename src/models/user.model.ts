@@ -4,19 +4,7 @@ import EnvVars from '@src/constants/EnvVars'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
-
-/**
- * Represents the structure of a user
- */
-export type TUser = {
-  email: string
-  password: string
-  name?: string
-  phone_number?: string
-  avatar?: string
-  google_access_token?: string
-  isAdmin?: boolean
-}
+import { TUser } from '@src/types'
 
 type UserDocument = TUser &
   Document<Schema.Types.ObjectId> & {

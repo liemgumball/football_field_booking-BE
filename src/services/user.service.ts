@@ -1,4 +1,5 @@
-import { UserModel, TUser } from '@src/models/user.model'
+import { UserModel } from '@src/models/user.model'
+import { TUser } from '@src/types'
 
 export const USER_NOT_FOUND_ERR = 'User not found'
 

@@ -1,9 +1,9 @@
-import { TUser } from '@src/models/user.model'
 import { IReq, IRes } from '@src/types/express/misc'
 
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
+import { TUser } from '@src/types'
 
 export async function login(req: IReq<TUser>, res: IRes) {
   const { email, password } = req.body
