@@ -4,18 +4,22 @@ import Paths from '../constants/Paths'
 import pingRouter from './ping.routes'
 import userRouter from './user.routes'
 import authRouter from './auth.routes'
+import footballFieldRouter from './football-field.routes'
 
 // **** api **** //
 const apiRouter = Router()
 
-// Add PingRouter
+// Use PingRouter
 apiRouter.use(Paths.PINGS.BASE, pingRouter)
 
-// Add PingRouter
+// Use PingRouter
 apiRouter.use(Paths.AUTH.BASE, authRouter)
 
-// Add UserRouter
+// Use UserRouter
 apiRouter.use(Paths.USERS.BASE, userRouter)
+
+// Use FootballField Router
+apiRouter.use(Paths.FOOTBALL_FIELD.BASE, footballFieldRouter)
 
 // **** Export default **** //
 
