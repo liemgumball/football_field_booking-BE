@@ -3,7 +3,7 @@ import { IReq, IRes } from '@src/types/express/misc'
 import { NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
 
-const validateResource =
+export const serialize =
   <T>(schema: AnyZodObject) =>
   (req: IReq<T>, res: IRes, next: NextFunction) => {
     try {
@@ -26,5 +26,3 @@ const validateResource =
       }
     }
   }
-
-export default validateResource

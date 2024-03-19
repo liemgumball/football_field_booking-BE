@@ -1,4 +1,5 @@
-import { UserModel, TUser } from '@src/models/user.model'
+import { UserModel } from '@src/models/user.model'
+import { TUser } from '@src/types'
 
 export const USER_NOT_FOUND_ERR = 'User not found'
 
@@ -21,8 +22,8 @@ export function getById(id: string) {
  * Create a new user in database
  * @param user data
  */
-export function add(user: TUser) {
-  return new UserModel(user).save()
+export function create(user: TUser) {
+  return UserModel.create(user)
 }
 
 /**
@@ -31,7 +32,9 @@ export function add(user: TUser) {
  * @returns
  */
 export function delete_(id: string) {
-  return UserModel.findByIdAndDelete(id)
+  return UserModel.findByIdAndDelete(id, {
+    projection: { password: 0 },
+  })
 }
 
 /**
@@ -40,7 +43,9 @@ export function delete_(id: string) {
  * @param user new data
  */
 export function update(id: string, user: TUser) {
-  return UserModel.findByIdAndUpdate(id, user)
+  return UserModel.findByIdAndUpdate(id, user, {
+    projection: { password: 0 },
+  })
 }
 
 /**

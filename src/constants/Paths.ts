@@ -15,7 +15,13 @@ export default {
   USERS: {
     BASE: '/users',
     GET: '/:id',
-    ADD: '/add',
+    UPDATE: '/update/:id',
+    DELETE: '/delete/:id',
+  },
+  FOOTBALL_FIELD: {
+    BASE: '/fields',
+    GET: '/:id',
+    CREATE: '/create',
     UPDATE: '/update/:id',
     DELETE: '/delete/:id',
   },

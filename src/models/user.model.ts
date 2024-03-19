@@ -4,20 +4,9 @@ import EnvVars from '@src/constants/EnvVars'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
+import { TUser } from '@src/types'
 
-/**
- * Represents the structure of a user document in the database.
- */
-export type TUser = {
-  email: string
-  password: string
-  name?: string
-  phone_number?: string
-  avatar?: string
-  google_access_token?: string
-}
-
-export type UserDocument = TUser &
+type UserDocument = TUser &
   Document<Schema.Types.ObjectId> & {
     createdAt: Date
     updatedAt: Date
@@ -33,6 +22,7 @@ const UserSchema = new Schema<UserDocument>(
       required: true,
       unique: true,
       lowercase: true,
+      immutable: true,
       validate: {
         // zod email schema validation
         validator: (email: string) =>
@@ -72,7 +62,6 @@ UserSchema.pre('save', function (next) {
   }
 
   const hash = hashData(this.password)
-
   this.password = hash
 
   return next()
