@@ -10,7 +10,7 @@ export interface IUserSession {
 
 // **** Express **** //
 
-export interface IReq<T = undefined> extends e.Request {
+export interface IReq<T = unknown> extends e.Request {
   body: T
   signedCookies: {
     access_token?: string
