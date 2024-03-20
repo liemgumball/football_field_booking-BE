@@ -1,5 +1,5 @@
 import { UserModel } from '@src/models/user.model'
-import { TUser } from '@src/types'
+import { TUser, UserRole } from '@src/types'
 
 export const USER_NOT_FOUND_ERR = 'User not found'
 
@@ -7,7 +7,7 @@ export const USER_NOT_FOUND_ERR = 'User not found'
  * Get all users
  */
 export function getAll() {
-  return UserModel.find({}, { name: 1, email: 1 })
+  return UserModel.find({}, { name: 1, email: 1, role: 1 })
 }
 
 /**
@@ -26,6 +26,12 @@ export function create(user: TUser) {
   return UserModel.create(user)
 }
 
+export function createAdminUser(user: TUser) {
+  // Set role to admin
+  user.role = UserRole.ADMIN
+
+  return UserModel.create(user)
+}
 /**
  * Delete a user by id
  * @param id of user

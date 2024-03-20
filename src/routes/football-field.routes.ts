@@ -15,16 +15,21 @@ import {
   createFootballFieldSchema,
   updateFieldSchema,
 } from '@src/schemas/football-field.schema'
+import { deserializeUser } from '@src/middlewares/auth.middleware'
 
 const footballFieldRouter = Router()
 
 footballFieldRouter.get('', FootballFieldController.getAll)
+
+footballFieldRouter.use(deserializeUser)
 
 footballFieldRouter.get(
   Paths.FOOTBALL_FIELD.GET,
   serialize(validIdSchema),
   FootballFieldController.getById,
 )
+
+footballFieldRouter.use(deserializeUser)
 
 footballFieldRouter.post(
   Paths.FOOTBALL_FIELD.CREATE,

@@ -1,30 +1,38 @@
-import { ObjectId } from 'mongoose'
+import { Types } from 'mongoose'
+
+export enum UserRole {
+  CUSTOMER = '2001',
+  ADMIN = '17601',
+  SUPER_USER = '19383',
+}
 
 export type TLocation = {
-  _id: ObjectId
+  _id: Types.ObjectId
   name: string
   type: 'Point'
   coordinates: [number, number]
 }
+
 /**
  * Represents the structure of a user
  */
 export type TUser = {
-  _id: ObjectId
+  _id: Types.ObjectId
   email: string
   password: string
   name?: string
   phone_number?: string
   avatar?: string
   google_access_token?: string
-  isAdmin?: boolean
+  role?: UserRole
 }
 
 /**
  * Represents the structure of a user
  */
 export type TFootballField = {
-  _id: ObjectId
+  _id: Types.ObjectId
+  admin: Types.ObjectId
   name: string
   location: TLocation
   subfields: {

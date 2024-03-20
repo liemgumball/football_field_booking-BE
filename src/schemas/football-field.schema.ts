@@ -1,3 +1,4 @@
+import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { LocationSchema } from '@src/schemas/location.schema'
 import { isValidObjectId } from 'mongoose'
 import { object, string, number, array, boolean } from 'zod'
@@ -63,7 +64,18 @@ const FootballFieldSchema = object({
 })
 
 export const createFootballFieldSchema = object({
-  body: FootballFieldSchema,
+  body: object({
+    football_field: FootballFieldSchema,
+    admin: object({
+      email: string().email(),
+      password: string({
+        required_error: 'Password is required',
+      }).min(6, 'Password too short - should be 6 chars minimum'),
+      phone_number: string({
+        required_error: 'Phone number is required',
+      }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number format'),
+    }),
+  }),
 })
 
 export const updateFieldSchema = object({

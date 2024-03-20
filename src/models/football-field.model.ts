@@ -1,5 +1,5 @@
 import { TFootballField } from '@src/types'
-import { Schema, Document, model } from 'mongoose'
+import { Schema, Document, model, Types } from 'mongoose'
 
 /**
  * Define the Mongoose schema for time in a day with a step of 30 minutes
@@ -51,7 +51,7 @@ const SubFieldSchema = new Schema({
 })
 
 type FootballFieldDocument = TFootballField &
-  Document<Schema.Types.ObjectId> & {
+  Document<Types.ObjectId> & {
     created_at: Date
     updated_at: Date
   }
@@ -61,6 +61,11 @@ type FootballFieldDocument = TFootballField &
  */
 const FootballFieldSchema = new Schema<FootballFieldDocument>(
   {
+    admin: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     name: {
       type: String,
       required: true,

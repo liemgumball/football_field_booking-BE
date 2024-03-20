@@ -12,29 +12,35 @@ import * as UserController from '@src/controllers/user.controller'
 
 // Validator
 import { serialize } from '@src/middlewares/serializer.middleware'
-import validateAuth from '@src/middlewares/auth.middleware'
+import {
+  deserializeUser,
+  canAccessUserDetails,
+} from '@src/middlewares/auth.middleware'
 
 const userRouter = Router()
 
-userRouter.use(validateAuth)
-
 userRouter.get('', UserController.getAll)
+
+userRouter.use(deserializeUser)
 
 userRouter.get(
   Paths.USERS.GET,
   serialize(validIdSchema),
+  canAccessUserDetails,
   UserController.getById,
 )
 
 userRouter.delete(
   Paths.USERS.DELETE,
   serialize(validIdSchema),
+  canAccessUserDetails,
   UserController.delete_,
 )
 
 userRouter.patch(
   Paths.USERS.UPDATE,
   serialize(updateUserSchema),
+  canAccessUserDetails,
   UserController.update,
 )
 
