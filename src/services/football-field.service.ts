@@ -3,10 +3,15 @@ import * as LocationService from '@src/services/location.service'
 import { TFootballField } from '@src/types'
 
 export function getAll() {
-  return FootballFieldModel.find(
-    {},
-    { _id: 1, name: 1, location: 1, location_text: 1, rating: 1, images: 1 },
-  )
+  return FootballFieldModel.find({}).populate('admin', { email: 1 }).select({
+    _id: 1,
+    name: 1,
+    location: 1,
+    location_text: 1,
+    rating: 1,
+    images: 1,
+    admin: 1,
+  })
 }
 
 export function getById(id: string) {

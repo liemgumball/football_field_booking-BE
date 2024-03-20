@@ -1,10 +1,13 @@
-import EnvVars from '@src/constants/EnvVars'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
-import { IReq, IRes } from '@src/types/express/misc'
+import { TUser } from '@src/types'
+import { IReq, IRes, IUserSession } from '@src/types/express/misc'
+import { verifyJWT } from '@src/util/jwt'
 import { NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
 
-function validateAuth(req: IReq, res: IRes, next: NextFunction) {
+/**
+ * Check and verify the JWT access token to `req.user`
+ */
+export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
   const token = req.signedCookies.access_token
 
   if (!token) {
@@ -13,16 +16,30 @@ function validateAuth(req: IReq, res: IRes, next: NextFunction) {
       .send('No authentication token provided')
   }
 
-  jwt.verify(token, EnvVars.Jwt.Secret, (err: jwt.VerifyErrors | null) => {
-    if (err) {
-      return res
-        .status(HttpStatusCodes.UNAUTHORIZED)
-        .send('Token is unauthenticated')
-    }
+  try {
+    const decoded = verifyJWT(token)
 
-    // If the token is successfully verified, call the next middleware
+    req.user = decoded as IUserSession
     next()
-  })
+  } catch (error) {
+    return res.status(HttpStatusCodes.FORBIDDEN).send(error)
+  }
 }
 
-export default validateAuth
+/**
+ * Middleware to authenticate if the request `UserSession` is matched the `UserId` in request parameters `/:id`
+ */
+export function canAccessUserDetails(
+  req: IReq<TUser>,
+  res: IRes,
+  next: NextFunction,
+) {
+  const { id } = req.params
+  const user = req.user
+
+  if (user?._id !== id) {
+    return res.status(HttpStatusCodes.FORBIDDEN).end()
+  }
+
+  next()
+}

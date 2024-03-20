@@ -1,13 +1,13 @@
-import { Schema, model, Document } from 'mongoose'
-import jwt from 'jsonwebtoken'
-import EnvVars from '@src/constants/EnvVars'
+import { Schema, model, Document, Types } from 'mongoose'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
-import { TUser } from '@src/types'
+import { TUser, UserRole } from '@src/types'
+import { signJWT } from '@src/util/jwt'
+import EnvVars from '@src/constants/EnvVars'
 
 type UserDocument = TUser &
-  Document<Schema.Types.ObjectId> & {
+  Document<Types.ObjectId> & {
     createdAt: Date
     updatedAt: Date
     comparePassword: (password: string) => Promise<boolean>
@@ -47,6 +47,11 @@ const UserSchema = new Schema<UserDocument>(
     },
     avatar: String,
     google_access_token: String,
+    role: {
+      type: String,
+      enum: UserRole,
+      default: UserRole.CUSTOMER,
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields automatically
@@ -73,7 +78,8 @@ UserSchema.pre('save', function (next) {
  * @returns if matches
  */
 UserSchema.methods.comparePassword = function (password: string) {
-  return compareHash(password, this.password as string)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return compareHash(password, this.password)
 }
 
 /**
@@ -81,12 +87,29 @@ UserSchema.methods.comparePassword = function (password: string) {
  * @returns {string} - The generated authentication token.
  */
 UserSchema.methods.generateAuthToken = function (): string {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const token = jwt.sign({ _id: this._id }, EnvVars.Jwt.Secret, {
-    expiresIn: EnvVars.Jwt.Exp,
-  })
+  const token = signJWT(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    { _id: this._id, role: this.role },
+  )
   return token
 }
 
 // Create the User model using the schema
 export const UserModel = model<UserDocument>('User', UserSchema)
+
+export async function createSuperUser() {
+  const existingSuperUser = await UserModel.findOne({
+    role: UserRole.SUPER_USER,
+  })
+
+  if (!existingSuperUser) {
+    const superuser = new UserModel({
+      email: EnvVars.SuperUser.email,
+      password: EnvVars.SuperUser.password,
+      name: 'Super Idol',
+      phone_number: EnvVars.SuperUser.phoneNumber,
+      role: UserRole.SUPER_USER,
+    })
+    await superuser.save()
+  }
+}

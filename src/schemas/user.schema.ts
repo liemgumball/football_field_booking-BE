@@ -16,7 +16,7 @@ export const createUserSchema = object({
     phone_number: string({
       required_error: 'Phone number is required',
     }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
-  }),
+  }).strict(),
 })
 
 /**

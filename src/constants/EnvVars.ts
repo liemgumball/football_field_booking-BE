@@ -31,4 +31,9 @@ export default {
   Database: {
     uri: process.env.MONGODB_URI ?? '',
   },
+  SuperUser: {
+    email: process.env.SUPER_USER_EMAIL ?? '',
+    password: process.env.SUPER_USER_PASSWORD ?? '',
+    phoneNumber: process.env.SUPER_USER_PHONE_NUMBER ?? '',
+  },
 } as const

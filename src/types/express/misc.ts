@@ -1,14 +1,21 @@
 import * as e from 'express'
+import { UserRole } from '..'
 
-// import { ISessionUserE } from '@src/models/UserExample'
+export interface IUserSession {
+  _id: string
+  role: UserRole
+  iat: number
+  exp: number
+}
 
 // **** Express **** //
 
-export interface IReq<T = void> extends e.Request {
+export interface IReq<T = undefined> extends e.Request {
   body: T
   signedCookies: {
     access_token?: string
   }
+  user?: IUserSession
 }
 
 export interface IRes extends e.Response {

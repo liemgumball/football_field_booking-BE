@@ -1,11 +1,11 @@
 import { TLocation } from '@src/types'
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 
 /**
  * Represents a point location in GeoJSON documents
  */
 export const LocationSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, ref: 'FootballField', required: true },
+  _id: { type: Types.ObjectId, ref: 'FootballField', required: true },
   name: { type: String, required: true },
   type: {
     type: String,
