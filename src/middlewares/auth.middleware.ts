@@ -1,5 +1,4 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
-import { TUser } from '@src/types'
 import { IReq, IRes, IUserSession } from '@src/types/express/misc'
 import { verifyJWT } from '@src/util/jwt'
 import { NextFunction } from 'express'
@@ -29,16 +28,12 @@ export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
 /**
  * Middleware to authenticate if the request `UserSession` is matched the `UserId` in request parameters `/:id`
  */
-export function canAccessUserDetails(
-  req: IReq<TUser>,
-  res: IRes,
-  next: NextFunction,
-) {
+export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
   const { id } = req.params
   const user = req.user
 
   if (user?._id !== id) {
-    return res.status(HttpStatusCodes.FORBIDDEN).end()
+    return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
   }
 
   next()

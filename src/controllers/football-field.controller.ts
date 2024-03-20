@@ -71,9 +71,9 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
   const updated = await FootballFieldService.update(id, data)
 
   if (!updated)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Update failed')
+    return res.status(HttpStatusCodes.CONFLICT).send('Update failed')
 
-  return res.status(HttpStatusCodes.OK).end()
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
 
 /**
@@ -90,7 +90,7 @@ export async function delete_(req: IReq, res: IRes) {
   const deleted = await FootballFieldService.delete_(id)
 
   if (!deleted)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Delete failed')
+    return res.status(HttpStatusCodes.CONFLICT).send('Failed to delete')
 
-  return res.status(HttpStatusCodes.OK).end()
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

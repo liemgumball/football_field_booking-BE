@@ -31,9 +31,9 @@ export async function delete_(req: IReq<TUser>, res: IRes) {
 
   const deleted = await UserService.delete_(id)
   if (!deleted)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+    return res.status(HttpStatusCodes.CONFLICT).send('Failed to delete')
 
-  return res.status(HttpStatusCodes.OK).end()
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
 
 /**
@@ -45,7 +45,31 @@ export async function update(req: IReq<TUser>, res: IRes) {
 
   const updated = await UserService.update(id, user)
   if (!updated)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+    return res.status(HttpStatusCodes.CONFLICT).send('Failed to update user')
 
-  return res.status(HttpStatusCodes.OK).end()
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
+}
+
+/**
+ * Handle add user request for change password
+ */
+export async function change_password(
+  req: IReq<{ email: string; old_password: string; new_password: string }>,
+  res: IRes,
+) {
+  const { id } = req.params
+
+  const { email, old_password, new_password } = req.body
+
+  const auth = await UserService.validateLogin(email, old_password)
+
+  if (!auth) {
+    return res.status(HttpStatusCodes.UNAUTHORIZED).end()
+  }
+
+  const updated = await UserService.change_password(id, new_password)
+
+  if (!updated) return res.status(HttpStatusCodes.CONFLICT).end()
+
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

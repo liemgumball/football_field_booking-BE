@@ -54,6 +54,18 @@ export function update(id: string, user: TUser) {
   })
 }
 
+export async function change_password(id: string, new_password: string) {
+  const user = await UserModel.findById(id)
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  user.password = new_password
+
+  return await user.save()
+}
+
 /**
  * Validate the user authentication
  * @param email of the user

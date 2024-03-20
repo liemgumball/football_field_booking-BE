@@ -17,6 +17,7 @@ export default {
     GET: '/:id',
     UPDATE: '/update/:id',
     DELETE: '/delete/:id',
+    CHANGE_PASSWORD: '/password/:id',
   },
   FOOTBALL_FIELD: {
     BASE: '/fields',

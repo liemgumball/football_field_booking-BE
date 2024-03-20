@@ -5,7 +5,10 @@ import Paths from '@src/constants/Paths'
 
 // Schemas
 import { validIdSchema } from '@src/schemas/common.schema'
-import { updateUserSchema } from '@src/schemas/user.schema'
+import {
+  changePasswordSchema,
+  updateUserSchema,
+} from '@src/schemas/user.schema'
 
 // Controller
 import * as UserController from '@src/controllers/user.controller'
@@ -42,6 +45,13 @@ userRouter.patch(
   serialize(updateUserSchema),
   canAccessUserDetails,
   UserController.update,
+)
+
+userRouter.patch(
+  Paths.USERS.CHANGE_PASSWORD,
+  canAccessUserDetails,
+  serialize(changePasswordSchema),
+  UserController.change_password,
 )
 
 export default userRouter

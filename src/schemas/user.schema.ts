@@ -46,3 +46,17 @@ export const loginSchema = object({
     ),
   }),
 })
+
+export const changePasswordSchema = object({
+  body: object({
+    email: string().email(),
+    old_password: string({ required_error: 'OLD Password is required' }).min(
+      6,
+      'Password too short - should be 6 chars minimum',
+    ),
+    new_password: string({ required_error: 'NEW Password is required' }).min(
+      6,
+      'Password too short - should be 6 chars minimum',
+    ),
+  }),
+})
