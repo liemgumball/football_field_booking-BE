@@ -2,7 +2,7 @@ import Paths from '@src/constants/Paths'
 import { Router } from 'express'
 
 // Controller
-import * as authController from '@src/controllers/auth.controller'
+import * as AuthController from '@src/controllers/auth.controller'
 
 // Validator
 import { serialize } from '@src/middlewares/serializer.middleware'
@@ -15,13 +15,13 @@ const authRouter = Router()
 authRouter.post(
   Paths.AUTH.SIGNUP,
   serialize(Schema.createUserSchema),
-  authController.signup,
+  AuthController.signup,
 )
 
 authRouter.post(
   Paths.AUTH.LOGIN,
   serialize(Schema.loginSchema),
-  authController.login,
+  AuthController.login,
 )
 
 export default authRouter
