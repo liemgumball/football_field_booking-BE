@@ -25,6 +25,7 @@ const userRouter = Router()
 
 userRouter.get('', UserController.getAll)
 
+// Authentication
 userRouter.use(deserializeUser)
 
 // Only exact User can access

@@ -22,6 +22,7 @@ const UserSchema = new Schema<UserDocument>(
       unique: true,
       lowercase: true,
       immutable: true,
+      trim: true,
       validate: {
         // zod email schema validation
         validator: (email: string) =>
@@ -36,6 +37,7 @@ const UserSchema = new Schema<UserDocument>(
       type: String,
       required: true,
       minlength: [6, 'Minimum password length is 6 characters'],
+      trim: true,
     },
     name: String,
     phone_number: {
@@ -43,6 +45,7 @@ const UserSchema = new Schema<UserDocument>(
       required: true,
       unique: true,
       validate: PHONE_NUMBER_REGEX,
+      trim: true,
     },
     avatar: String,
     google_access_token: String,

@@ -6,11 +6,15 @@ export enum UserRole {
   SUPER_USER = '19383',
 }
 
+export type TPoint = {
+  type: 'Point'
+  coordinates: [number, number]
+}
+
 export type TLocation = {
   _id: Types.ObjectId
   name: string
-  type: 'Point'
-  coordinates: [number, number]
+  geo: TPoint
 }
 
 /**

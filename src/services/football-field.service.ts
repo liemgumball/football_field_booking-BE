@@ -2,16 +2,14 @@ import { FootballFieldModel } from '@src/models/football-field.model'
 import * as LocationService from '@src/services/location.service'
 import { TFootballField } from '@src/types'
 
-export function getAll() {
-  return FootballFieldModel.find({}).populate('admin', { email: 1 }).select({
-    _id: 1,
-    name: 1,
-    location: 1,
-    location_text: 1,
-    rating: 1,
-    images: 1,
-    admin: 1,
-  })
+export function getAll(options: { name?: string } = {}) {
+  const { name } = options
+
+  const query = name ? { name: new RegExp(name, 'gi') } : {}
+
+  return FootballFieldModel.find(query).select(
+    '_id name availability rating images opened_at closed_at',
+  )
 }
 
 export function getById(id: string) {

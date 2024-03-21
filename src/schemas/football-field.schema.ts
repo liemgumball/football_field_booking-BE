@@ -1,5 +1,9 @@
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
-import { LocationSchema } from '@src/schemas/location.schema'
+import {
+  LatitudeSchema,
+  LocationSchema,
+  LongitudeSchema,
+} from '@src/schemas/location.schema'
 import { isValidObjectId } from 'mongoose'
 import { object, string, number, array, boolean } from 'zod'
 
@@ -85,4 +89,12 @@ export const updateFieldSchema = object({
     }),
   }),
   body: FootballFieldSchema.partial(),
+})
+
+export const getManyFieldsSchema = object({
+  query: object({
+    longitude: LongitudeSchema,
+    latitude: LatitudeSchema,
+    distance: number().optional(),
+  }).optional(),
 })

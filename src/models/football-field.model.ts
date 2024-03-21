@@ -1,5 +1,5 @@
 import { TFootballField } from '@src/types'
-import { Schema, Document, model, Types } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 /**
  * Define the Mongoose schema for time in a day with a step of 30 minutes
@@ -50,11 +50,10 @@ const SubFieldSchema = new Schema({
   },
 })
 
-type FootballFieldDocument = TFootballField &
-  Document<Types.ObjectId> & {
-    created_at: Date
-    updated_at: Date
-  }
+type FootballFieldDocument = TFootballField & {
+  created_at: Date
+  updated_at: Date
+}
 
 /**
  * Represents the structure of a football field
@@ -69,6 +68,8 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
     name: {
       type: String,
       required: true,
+      index: 'text',
+      trim: true,
     },
     subfields: {
       type: [SubFieldSchema],
