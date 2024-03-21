@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from 'mongoose'
+import { Schema, model } from 'mongoose'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
@@ -6,13 +6,12 @@ import { TUser, UserRole } from '@src/types'
 import { signJWT } from '@src/util/jwt'
 import EnvVars from '@src/constants/EnvVars'
 
-type UserDocument = TUser &
-  Document<Types.ObjectId> & {
-    createdAt: Date
-    updatedAt: Date
-    comparePassword: (password: string) => Promise<boolean>
-    generateAuthToken: () => string
-  }
+type UserDocument = TUser & {
+  createdAt: Date
+  updatedAt: Date
+  comparePassword: (password: string) => Promise<boolean>
+  generateAuthToken: () => string
+}
 
 // Define the Mongoose schema for the user document
 const UserSchema = new Schema<UserDocument>(
@@ -23,6 +22,7 @@ const UserSchema = new Schema<UserDocument>(
       unique: true,
       lowercase: true,
       immutable: true,
+      trim: true,
       validate: {
         // zod email schema validation
         validator: (email: string) =>
@@ -37,13 +37,15 @@ const UserSchema = new Schema<UserDocument>(
       type: String,
       required: true,
       minlength: [6, 'Minimum password length is 6 characters'],
+      trim: true,
     },
     name: String,
-    phone_number: {
+    phoneNumber: {
       type: String,
       required: true,
       unique: true,
       validate: PHONE_NUMBER_REGEX,
+      trim: true,
     },
     avatar: String,
     google_access_token: String,
@@ -107,7 +109,7 @@ export async function createSuperUser() {
       email: EnvVars.SuperUser.email,
       password: EnvVars.SuperUser.password,
       name: 'Super Idol',
-      phone_number: EnvVars.SuperUser.phoneNumber,
+      phoneNumber: EnvVars.SuperUser.phoneNumber,
       role: UserRole.SUPER_USER,
     })
     await superuser.save()

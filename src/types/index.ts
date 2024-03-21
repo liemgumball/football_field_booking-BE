@@ -6,11 +6,15 @@ export enum UserRole {
   SUPER_USER = '19383',
 }
 
+export type TPoint = {
+  type: 'Point'
+  coordinates: [number, number]
+}
+
 export type TLocation = {
   _id: Types.ObjectId
   name: string
-  type: 'Point'
-  coordinates: [number, number]
+  geo: TPoint
 }
 
 /**
@@ -21,7 +25,7 @@ export type TUser = {
   email: string
   password: string
   name?: string
-  phone_number?: string
+  phoneNumber?: string
   avatar?: string
   google_access_token?: string
   role?: UserRole
@@ -34,6 +38,7 @@ export type TFootballField = {
   _id: Types.ObjectId
   admin: Types.ObjectId
   name: string
+  isActive: boolean
   location: TLocation
   subfields: {
     name: string
@@ -41,8 +46,8 @@ export type TFootballField = {
     availability: boolean
     defaultPrice: number
   }[]
-  opened_at: { hour: number; minute: number }
-  closed_at: { hour: number; minute: number }
+  openedAt: string
+  closedAt: string
   rating: number
   images: string[]
 }

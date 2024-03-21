@@ -25,6 +25,7 @@ export default {
     CREATE: '/create',
     UPDATE: '/update/:id',
     DELETE: '/delete/:id',
+    LOCATION: '/location',
   },
   Examples: {
     BASE: '/examples',

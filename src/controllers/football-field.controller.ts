@@ -1,15 +1,38 @@
+// Constants & Types
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
-import * as FootballFieldService from '@src/services/football-field.service'
-import { TFootballField, TUser } from '@src/types'
 import { IReq, IRes } from '@src/types/express/misc'
+import { TFootballField, TUser } from '@src/types'
+
+// Services
+import * as FootballFieldService from '@src/services/football-field.service'
 import * as UserService from '@src/services/user.service'
+import * as LocationService from '@src/services/location.service'
+
+// Utils
 import { checkAdmin, checkSuperUser } from '@src/util/authorize'
 
-/**
- * Handle get all football fields requests
- */
-export async function getAll(_: IReq, res: IRes) {
-  const fields = await FootballFieldService.getAll()
+export async function getAll(req: IReq, res: IRes) {
+  const { name } = req.query
+
+  const options = { name: typeof name === 'string' ? name : undefined }
+
+  const fields = await FootballFieldService.getAll(options)
+
+  return res.status(HttpStatusCodes.OK).json(fields)
+}
+
+export async function getFromLocation(req: IReq, res: IRes) {
+  const { longitude, latitude, distance } = req.query
+
+  if (typeof longitude !== 'string' || typeof latitude !== 'string')
+    return res.status(HttpStatusCodes.BAD_REQUEST).end()
+
+  const fields = await LocationService.getFieldNearFromLocation(
+    [+longitude, +latitude],
+    typeof distance === 'string' ? +distance : undefined,
+  )
+
+  if (!fields) return res.status(HttpStatusCodes.NO_CONTENT).end()
 
   return res.status(HttpStatusCodes.OK).json(fields)
 }

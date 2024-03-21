@@ -1,4 +1,5 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
+import { UserRole } from '@src/types'
 import { IReq, IRes, IUserSession } from '@src/types/express/misc'
 import { verifyJWT } from '@src/util/jwt'
 import { NextFunction } from 'express'
@@ -34,6 +35,17 @@ export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
 
   if (user?._id !== id) {
     return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
+  }
+
+  next()
+}
+
+export function isSuperUser(req: IReq, res: IRes, next: NextFunction) {
+  const user = req.user
+  if (user?.role !== UserRole.SUPER_USER) {
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Only super users are allowed')
   }
 
   next()
