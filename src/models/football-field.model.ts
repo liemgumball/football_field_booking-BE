@@ -2,32 +2,6 @@ import { TFootballField } from '@src/types'
 import { Schema, model } from 'mongoose'
 
 /**
- * Define the Mongoose schema for time in a day with a step of 30 minutes
- */
-const TimeSchema = new Schema(
-  {
-    hour: {
-      type: Number,
-      required: true,
-      validate: {
-        validator: Number.isInteger,
-        message: 'Hour must be an integer',
-      },
-      min: 0,
-      max: 23,
-    },
-    minute: {
-      type: Number,
-      required: true,
-      enum: { values: [0, 30], message: 'Minute must be 0 or 30' },
-    },
-  },
-  {
-    _id: false, // not generated _id in database
-  },
-)
-
-/**
  * Represents subfields of football fields
  */
 const SubFieldSchema = new Schema({
@@ -65,6 +39,10 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
       ref: 'User',
       required: true,
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     name: {
       type: String,
       required: true,
@@ -75,13 +53,15 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
       type: [SubFieldSchema],
       default: [],
     },
-    opened_at: {
-      type: TimeSchema,
+    openedAt: {
+      type: String,
       required: true,
+      validate: /^\d{2}:\d{2}$/, // Validate format HH:MM
     },
-    closed_at: {
-      type: TimeSchema,
+    closedAt: {
+      type: String,
       required: true,
+      validate: /^\d{2}:\d{2}$/, // Validate format HH:MM
     },
     rating: { type: Number, default: null },
     images: { type: [String], default: [] },

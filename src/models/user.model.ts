@@ -40,7 +40,7 @@ const UserSchema = new Schema<UserDocument>(
       trim: true,
     },
     name: String,
-    phone_number: {
+    phoneNumber: {
       type: String,
       required: true,
       unique: true,
@@ -109,7 +109,7 @@ export async function createSuperUser() {
       email: EnvVars.SuperUser.email,
       password: EnvVars.SuperUser.password,
       name: 'Super Idol',
-      phone_number: EnvVars.SuperUser.phoneNumber,
+      phoneNumber: EnvVars.SuperUser.phoneNumber,
       role: UserRole.SUPER_USER,
     })
     await superuser.save()

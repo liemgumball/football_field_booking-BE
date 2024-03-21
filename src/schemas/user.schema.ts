@@ -2,21 +2,25 @@ import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { isValidObjectId } from 'mongoose'
 import { object, string } from 'zod'
 
+export const userSchema = object({
+  password: string({
+    required_error: 'Password is required',
+  }).min(6, 'Password too short - should be 6 chars minimum'),
+  email: string({
+    required_error: 'Email is required',
+  }).email('Not a valid email'),
+  phoneNumber: string({
+    required_error: 'Phone number is required',
+  }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
+  name: string().optional(),
+  avatar: string().url('Invalid url').optional(),
+}).strict()
+
 /**
  * Schema for POST user requests
  */
 export const createUserSchema = object({
-  body: object({
-    password: string({
-      required_error: 'Password is required',
-    }).min(6, 'Password too short - should be 6 chars minimum'),
-    email: string({
-      required_error: 'Email is required',
-    }).email('Not a valid email'),
-    phone_number: string({
-      required_error: 'Phone number is required',
-    }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
-  }).strict(),
+  body: userSchema,
 })
 
 /**
@@ -28,11 +32,7 @@ export const updateUserSchema = object({
       message: 'Invalid Id',
     }),
   }),
-  body: object({
-    phone_number: string().regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
-    name: string(),
-    avatar: string().url('Invalid url').optional(),
-  }),
+  body: userSchema.partial(),
 })
 
 export const loginSchema = object({

@@ -8,7 +8,7 @@ export function getAll(options: { name?: string } = {}) {
   const query = name ? { name: new RegExp(name, 'gi') } : {}
 
   return FootballFieldModel.find(query).select(
-    '_id name availability rating images opened_at closed_at',
+    '_id name is_active availability rating images opened_at closed_at',
   )
 }
 

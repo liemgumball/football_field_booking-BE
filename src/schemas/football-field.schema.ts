@@ -1,4 +1,3 @@
-import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import {
   LatitudeSchema,
   LocationSchema,
@@ -6,6 +5,7 @@ import {
 } from '@src/schemas/location.schema'
 import { isValidObjectId } from 'mongoose'
 import { object, string, number, array, boolean } from 'zod'
+import { userSchema } from './user.schema'
 
 const SubFieldSchema = object({
   name: string(),
@@ -14,10 +14,22 @@ const SubFieldSchema = object({
   defaultPrice: number(),
 })
 
-const TimeSchema = object({
-  hour: number().int().min(0).max(23),
-  minute: number().int().min(0).max(59),
-})
+const TimeSchema = string()
+  .regex(/^\d{2}:\d{2}$/)
+  .min(5) // Ensure minimum length is 5 characters (HH:MM)
+  .max(5) // Ensure maximum length is 5 characters (HH:MM)
+  .refine(
+    (value) => {
+      const [hour, minute] = value.split(':')
+      return (
+        parseInt(hour, 10) >= 0 &&
+        parseInt(hour, 10) <= 23 &&
+        parseInt(minute, 10) >= 0 &&
+        parseInt(minute, 10) <= 59
+      )
+    },
+    { message: 'Invalid time format, must be in HH:MM format' },
+  )
 
 /**
  * Represents the schema for a football field.
@@ -61,8 +73,8 @@ const FootballFieldSchema = object({
   name: string(),
   location: LocationSchema,
   subfields: array(SubFieldSchema),
-  opened_at: TimeSchema,
-  closed_at: TimeSchema,
+  openedAt: TimeSchema,
+  closedAt: TimeSchema,
   rating: number().min(0).max(5).optional(),
   images: array(string()).optional(),
 })
@@ -70,15 +82,7 @@ const FootballFieldSchema = object({
 export const createFootballFieldSchema = object({
   body: object({
     football_field: FootballFieldSchema,
-    admin: object({
-      email: string().email(),
-      password: string({
-        required_error: 'Password is required',
-      }).min(6, 'Password too short - should be 6 chars minimum'),
-      phone_number: string({
-        required_error: 'Phone number is required',
-      }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number format'),
-    }),
+    admin: userSchema,
   }),
 })
 
