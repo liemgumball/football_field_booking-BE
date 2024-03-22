@@ -1,6 +1,6 @@
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
-import { isValidObjectId } from 'mongoose'
 import { object, string } from 'zod'
+import { ValidIdSchema } from './common.schema'
 
 export const userSchema = object({
   password: string({
@@ -28,9 +28,7 @@ export const createUserSchema = object({
  */
 export const updateUserSchema = object({
   params: object({
-    id: string().refine((value) => isValidObjectId(value), {
-      message: 'Invalid Id',
-    }),
+    id: ValidIdSchema,
   }),
   body: userSchema.partial(),
 })

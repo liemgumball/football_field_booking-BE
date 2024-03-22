@@ -5,17 +5,19 @@ import Paths from '@src/constants/Paths'
 
 // Controller
 import * as FootballFieldController from '@src/controllers/football-field.controller'
+import * as ReservationController from '@src/controllers/reservation.controller'
 
 // Middleware
 import { serialize } from '@src/middlewares/serializer.middleware'
 import { deserializeUser, isSuperUser } from '@src/middlewares/auth.middleware'
 
 // Schemas
-import { validIdSchema } from '@src/schemas/common.schema'
 import {
   createFootballFieldSchema,
   updateFieldSchema,
 } from '@src/schemas/football-field.schema'
+import { withValidIdSchema } from '@src/schemas/common.schema'
+import { createManyReservationSchema } from '@src/schemas/reservation.schema'
 
 const footballFieldRouter = Router()
 
@@ -32,7 +34,7 @@ footballFieldRouter.use(deserializeUser)
 // Admin can access
 footballFieldRouter.get(
   Paths.FOOTBALL_FIELD.GET,
-  serialize(validIdSchema),
+  serialize(withValidIdSchema),
   FootballFieldController.getById,
 )
 
@@ -40,6 +42,12 @@ footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.UPDATE,
   serialize(updateFieldSchema),
   FootballFieldController.update,
+)
+
+footballFieldRouter.post(
+  Paths.FOOTBALL_FIELD.RESERVATION,
+  serialize(createManyReservationSchema),
+  ReservationController.createManyReservation,
 )
 
 // Only Super Users can access
@@ -52,7 +60,7 @@ footballFieldRouter.post(
 
 footballFieldRouter.delete(
   Paths.FOOTBALL_FIELD.DELETE,
-  serialize(validIdSchema),
+  serialize(withValidIdSchema),
   isSuperUser,
   FootballFieldController.delete_,
 )

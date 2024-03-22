@@ -23,7 +23,7 @@ export function getFieldNearFromLocation(
     },
     {
       $lookup: {
-        from: 'footballfields', // Assuming the collection name is "footballfields"
+        from: 'footballfields',
         localField: '_id',
         foreignField: '_id',
         as: 'field',
@@ -39,10 +39,10 @@ export function getFieldNearFromLocation(
     },
     {
       $project: {
-        _id: 0, // Exclude _id field
-        field: { name: 1, rating: 1 }, // Rename _id field to field
-        geo: 1, // Include other fields if needed
-        distance: 1, // Include distance field if needed
+        _id: 0,
+        field: { name: 1, rating: 1 },
+        geo: 1,
+        distance: 1,
       },
     },
   ])

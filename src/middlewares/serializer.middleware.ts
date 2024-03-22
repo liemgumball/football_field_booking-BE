@@ -12,7 +12,7 @@ export const serialize =
         query: req.query,
         params: req.params,
       })
-      next()
+      return next()
       // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     } catch (e: unknown | ZodError) {
       if (e instanceof ZodError) {

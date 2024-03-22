@@ -16,6 +16,7 @@ export function getById(id: string) {
   return FootballFieldModel.findById(id)
 }
 
+// TODO fix with transition include create Admin
 export async function create(data: TFootballField) {
   const { location, ...field } = data
   const newField = await FootballFieldModel.create(field)
