@@ -20,7 +20,7 @@ export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
     const decoded = verifyJWT(token)
 
     req.user = decoded as IUserSession
-    next()
+    return next()
   } catch (error) {
     return res.status(HttpStatusCodes.FORBIDDEN).send(error)
   }
@@ -33,11 +33,13 @@ export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
   const { id } = req.params
   const user = req.user
 
+  if (user?.role === UserRole.SUPER_USER) return next()
+
   if (user?._id !== id) {
     return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
   }
 
-  next()
+  return next()
 }
 
 export function isSuperUser(req: IReq, res: IRes, next: NextFunction) {

@@ -1,2 +1,7 @@
 export const PHONE_NUMBER_REGEX = /^\+(?:[0-9] ?){6,14}[0-9]$/
-export const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/
+
+/**
+ * Validate format `HH:MM`.
+ * Where `MM` is either 00 or 30
+ */
+export const HH_MM_REGEX = /^\d{2}:(?:00|30)$/

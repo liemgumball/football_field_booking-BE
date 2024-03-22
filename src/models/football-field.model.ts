@@ -1,5 +1,12 @@
+import { HH_MM_REGEX } from '@src/constants/Regex'
 import { TFootballField } from '@src/types'
 import { Schema, model } from 'mongoose'
+
+type FootballFieldDocument = TFootballField &
+  Document & {
+    created_at: Date
+    updated_at: Date
+  }
 
 /**
  * Represents subfields of football fields
@@ -24,17 +31,12 @@ const SubFieldSchema = new Schema({
   },
 })
 
-type FootballFieldDocument = TFootballField & {
-  created_at: Date
-  updated_at: Date
-}
-
 /**
  * Represents the structure of a football field
  */
 const FootballFieldSchema = new Schema<FootballFieldDocument>(
   {
-    admin: {
+    adminId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -56,13 +58,14 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
     openedAt: {
       type: String,
       required: true,
-      validate: /^\d{2}:\d{2}$/, // Validate format HH:MM
+      validate: HH_MM_REGEX,
     },
     closedAt: {
       type: String,
       required: true,
-      validate: /^\d{2}:\d{2}$/, // Validate format HH:MM
+      validate: HH_MM_REGEX,
     },
+
     rating: { type: Number, default: null },
     images: { type: [String], default: [] },
   },

@@ -3,33 +3,16 @@ import {
   LocationSchema,
   LongitudeSchema,
 } from '@src/schemas/location.schema'
-import { isValidObjectId } from 'mongoose'
 import { object, string, number, array, boolean } from 'zod'
 import { userSchema } from './user.schema'
+import { TimeStepSchema, ValidIdSchema } from './common.schema'
 
 const SubFieldSchema = object({
   name: string(),
-  size: number().min(5).max(11),
+  size: number().int().min(5).max(11),
   availability: boolean(),
-  defaultPrice: number(),
+  defaultPrice: number().int().min(0),
 })
-
-const TimeSchema = string()
-  .regex(/^\d{2}:\d{2}$/)
-  .min(5) // Ensure minimum length is 5 characters (HH:MM)
-  .max(5) // Ensure maximum length is 5 characters (HH:MM)
-  .refine(
-    (value) => {
-      const [hour, minute] = value.split(':')
-      return (
-        parseInt(hour, 10) >= 0 &&
-        parseInt(hour, 10) <= 23 &&
-        parseInt(minute, 10) >= 0 &&
-        parseInt(minute, 10) <= 59
-      )
-    },
-    { message: 'Invalid time format, must be in HH:MM format' },
-  )
 
 /**
  * Represents the schema for a football field.
@@ -73,8 +56,8 @@ const FootballFieldSchema = object({
   name: string(),
   location: LocationSchema,
   subfields: array(SubFieldSchema),
-  openedAt: TimeSchema,
-  closedAt: TimeSchema,
+  openedAt: TimeStepSchema,
+  closedAt: TimeStepSchema,
   rating: number().min(0).max(5).optional(),
   images: array(string()).optional(),
 })
@@ -88,9 +71,7 @@ export const createFootballFieldSchema = object({
 
 export const updateFieldSchema = object({
   params: object({
-    id: string().refine((value) => isValidObjectId(value), {
-      message: 'Invalid Id',
-    }),
+    id: ValidIdSchema,
   }),
   body: FootballFieldSchema.partial(),
 })

@@ -1,5 +1,7 @@
 import { TLocation } from '@src/types'
-import { Schema, model, Types } from 'mongoose'
+import { Schema, model, Types, Document } from 'mongoose'
+
+type LocationDocument = TLocation & Document
 
 const PointSchema = new Schema(
   {
@@ -19,7 +21,7 @@ const PointSchema = new Schema(
 /**
  * Represents a point location in GeoJSON documents
  */
-export const LocationSchema = new Schema({
+export const LocationSchema = new Schema<LocationDocument>({
   _id: { type: Types.ObjectId, ref: 'FootballField', required: true },
   name: { type: String, required: true, index: 'text' },
   geo: {
@@ -29,4 +31,4 @@ export const LocationSchema = new Schema({
   },
 })
 
-export const LocationModel = model<TLocation>('Location', LocationSchema)
+export const LocationModel = model<LocationDocument>('Location', LocationSchema)

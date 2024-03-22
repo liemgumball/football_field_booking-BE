@@ -4,11 +4,11 @@ import { Router } from 'express'
 import Paths from '@src/constants/Paths'
 
 // Schemas
-import { validIdSchema } from '@src/schemas/common.schema'
 import {
   changePasswordSchema,
   updateUserSchema,
 } from '@src/schemas/user.schema'
+import { withValidIdSchema } from '@src/schemas/common.schema'
 
 // Controller
 import * as UserController from '@src/controllers/user.controller'
@@ -31,7 +31,7 @@ userRouter.use(deserializeUser)
 // Only exact User can access
 userRouter.get(
   Paths.USERS.GET,
-  serialize(validIdSchema),
+  serialize(withValidIdSchema),
   canAccessUserDetails,
   UserController.getById,
 )
@@ -53,7 +53,7 @@ userRouter.patch(
 // Only Super User can access
 userRouter.delete(
   Paths.USERS.DELETE,
-  serialize(validIdSchema),
+  serialize(withValidIdSchema),
   isSuperUser,
   UserController.delete_,
 )

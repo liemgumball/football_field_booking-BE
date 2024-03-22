@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
@@ -6,12 +6,13 @@ import { TUser, UserRole } from '@src/types'
 import { signJWT } from '@src/util/jwt'
 import EnvVars from '@src/constants/EnvVars'
 
-type UserDocument = TUser & {
-  createdAt: Date
-  updatedAt: Date
-  comparePassword: (password: string) => Promise<boolean>
-  generateAuthToken: () => string
-}
+type UserDocument = TUser &
+  Document & {
+    createdAt: Date
+    updatedAt: Date
+    comparePassword: (password: string) => Promise<boolean>
+    generateAuthToken: () => string
+  }
 
 // Define the Mongoose schema for the user document
 const UserSchema = new Schema<UserDocument>(

@@ -1,4 +1,10 @@
-import { Types } from 'mongoose'
+import { Types as mongooseTypes } from 'mongoose'
+
+/**
+ * Represents the structure of time formatted `HH:MM`.
+ * Where `MM` is either 00 or 30
+ */
+export type TimeStep = string
 
 export enum UserRole {
   CUSTOMER = '2001',
@@ -12,7 +18,7 @@ export type TPoint = {
 }
 
 export type TLocation = {
-  _id: Types.ObjectId
+  _id: mongooseTypes.ObjectId
   name: string
   geo: TPoint
 }
@@ -21,33 +27,50 @@ export type TLocation = {
  * Represents the structure of a user
  */
 export type TUser = {
-  _id: Types.ObjectId
+  _id: mongooseTypes.ObjectId
   email: string
   password: string
-  name?: string
-  phoneNumber?: string
-  avatar?: string
+  name: string
+  phoneNumber: string
+  avatar: string
   google_access_token?: string
   role?: UserRole
+}
+
+export type TSubField = {
+  _id: mongooseTypes.ObjectId
+  name: string
+  size: number
+  availability: boolean
+  defaultPrice: number
 }
 
 /**
  * Represents the structure of a user
  */
 export type TFootballField = {
-  _id: Types.ObjectId
-  admin: Types.ObjectId
+  _id: mongooseTypes.ObjectId
+  adminId: mongooseTypes.ObjectId
   name: string
   isActive: boolean
   location: TLocation
-  subfields: {
-    name: string
-    size: number
-    availability: boolean
-    defaultPrice: number
-  }[]
-  openedAt: string
-  closedAt: string
+  subfields: TSubField[]
+  openedAt: TimeStep
+  closedAt: TimeStep
   rating: number
   images: string[]
+}
+
+export type TTurnOfService = {
+  at: TimeStep
+  price: number
+  user: mongooseTypes.ObjectId
+}
+
+export type TReservation = {
+  _id: mongooseTypes.ObjectId
+  subfieldId: mongooseTypes.ObjectId
+  date: Date
+  availability: boolean
+  allocations: TTurnOfService[]
 }

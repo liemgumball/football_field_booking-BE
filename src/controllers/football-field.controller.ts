@@ -49,14 +49,14 @@ export async function getById(req: IReq, res: IRes) {
     return res.status(HttpStatusCodes.BAD_REQUEST).send('Data not found')
 
   // check if is admin
-  if (!checkAdmin(field.admin, req.user))
+  if (!checkAdmin(field.adminId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
 
   return res.status(HttpStatusCodes.OK).json(field)
 }
 
 /**
- * Create new football field by super user
+ * Create new football field by super user // TODO Fix with transaction
  */
 export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,
@@ -71,7 +71,13 @@ export async function create(
 
   const newAdmin = await UserService.createAdminUser(admin)
 
-  await FootballFieldService.create({ ...football_field, admin: newAdmin._id })
+  if (newAdmin) {
+    await FootballFieldService.create({
+      ...football_field,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      adminId: newAdmin._id,
+    })
+  }
 
   return res.status(HttpStatusCodes.CREATED).end()
 }
@@ -88,7 +94,7 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
   if (!field)
     return res.status(HttpStatusCodes.BAD_REQUEST).send('Data not found')
 
-  if (!checkAdmin(field.admin, req.user))
+  if (!checkAdmin(field.adminId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
 
   const updated = await FootballFieldService.update(id, data)
