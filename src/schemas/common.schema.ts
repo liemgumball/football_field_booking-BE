@@ -15,7 +15,7 @@ export const withValidIdSchema = object({
 })
 
 export const TimeStepSchema = string()
-  .regex(/^\d{2}:\d{2}$/)
+  .regex(/^\d{2}:\d{2}$/, 'Invalid time format, must be in HH:MM format')
   .min(5) // Ensure minimum length is 5 characters (HH:MM)
   .max(5) // Ensure maximum length is 5 characters (HH:MM)
   .refine(
@@ -24,9 +24,8 @@ export const TimeStepSchema = string()
       return (
         parseInt(hour, 10) >= 0 &&
         parseInt(hour, 10) <= 23 &&
-        parseInt(minute, 10) >= 0 &&
-        parseInt(minute, 10) <= 59
+        (parseInt(minute, 10) === 0 || parseInt(minute, 10) === 30)
       )
     },
-    { message: 'Invalid time format, must be in HH:MM format' },
+    { message: 'HH must from 00 to 23 & MM must either 00 or 30' },
   )

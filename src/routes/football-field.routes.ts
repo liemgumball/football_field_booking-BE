@@ -6,6 +6,7 @@ import Paths from '@src/constants/Paths'
 // Controller
 import * as FootballFieldController from '@src/controllers/football-field.controller'
 import * as SubFieldController from '@src/controllers/subfield.controller'
+import * as DayOfServiceController from '@src/controllers/day-of-service.controller'
 
 // Middleware
 import { serialize } from '@src/middlewares/serializer.middleware'
@@ -21,6 +22,10 @@ import {
   createSubFieldSchema,
   updateSubFieldSchema,
 } from '@src/schemas/subfield.schema'
+import {
+  getDayOfServiceByFieldIdSchema,
+  updateDayOfServiceSchema,
+} from '@src/schemas/day-of-service.schema'
 
 const footballFieldRouter = Router()
 
@@ -43,7 +48,7 @@ footballFieldRouter.get(
 // Authentication
 footballFieldRouter.use(deserializeUser)
 
-// Only Admin can access
+// -------------------- Only Admin can access ------------------------------ //
 
 // Update Field (not included SubFields)
 footballFieldRouter.patch(
@@ -58,14 +63,29 @@ footballFieldRouter.post(
   serialize(createSubFieldSchema),
   SubFieldController.createSubField,
 )
-
+// Update SubField
 footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.SUBFIELD.DETAIL,
   serialize(updateSubFieldSchema),
   SubFieldController.updateSubfield,
 )
 
-// Only Super Users can access
+// Get day of services
+footballFieldRouter.get(
+  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE.BASE,
+  serialize(getDayOfServiceByFieldIdSchema),
+  DayOfServiceController.getByFieldId,
+)
+
+// Update day of services
+footballFieldRouter.patch(
+  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE.DETAIL,
+  serialize(updateDayOfServiceSchema),
+  DayOfServiceController.updateOne,
+)
+
+// ---------------- Only Super Users can access ------------------------- //
+
 // Create new Football field
 footballFieldRouter.post(
   Paths.FOOTBALL_FIELD.CREATE,

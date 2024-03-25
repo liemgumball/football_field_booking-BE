@@ -26,6 +26,7 @@ export async function create(data: TSubField) {
     await newSubField.save()
 
     await DayOfServiceService.generate30({
+      fieldId: field._id as unknown as string,
       subfieldId: newSubField._id as string,
       defaultPrice: newSubField.defaultPrice,
       fieldOpenTime: field.openedAt,

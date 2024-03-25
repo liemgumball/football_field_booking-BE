@@ -22,7 +22,7 @@ apiRouter.use(Paths.USERS.BASE, userRouter)
 // Use FootballField Router
 apiRouter.use(Paths.FOOTBALL_FIELD.BASE, footballFieldRouter)
 
-// Use Reservation Router
+// Use Day Of Service Router
 apiRouter.use(Paths.DAY_OF_SERVICE.BASE, dayOfServiceRouter)
 
 // **** Export default **** //

@@ -1,5 +1,3 @@
-import { TTurnOfService } from '@src/types'
-
 /**
  * Get index time step in day
  * @example
@@ -51,27 +49,4 @@ export function getTimeStepLength(start: string, end: string): number {
   if (endIndex <= startIndex) return -1
 
   return endIndex - startIndex
-}
-
-export function getListTurnOfServices(
-  from: string,
-  to: string,
-  price: number,
-): TTurnOfService[] | null {
-  let start = getIndexOfTimeStep(from)
-  const end = getIndexOfTimeStep(to)
-
-  if (end <= start) return null
-  const result: TTurnOfService[] = []
-
-  while (start <= end) {
-    result.push({
-      at: getTimeStepFromIndex(start),
-      price: price,
-    })
-
-    start = start + 1
-  }
-
-  return result
 }
