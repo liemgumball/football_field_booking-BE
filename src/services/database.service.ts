@@ -11,6 +11,6 @@ export function ping() {
 }
 
 export default {
-  connect: () => connect(EnvVars.Database.uri),
+  connect: () => connect(EnvVars.Database.uri, EnvVars.Database.options),
   ping,
 }

@@ -3,16 +3,9 @@ import {
   LocationSchema,
   LongitudeSchema,
 } from '@src/schemas/location.schema'
-import { object, string, number, array, boolean } from 'zod'
-import { userSchema } from './user.schema'
+import { object, string, number, array } from 'zod'
+import { UserSchema } from './user.schema'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
-
-const SubFieldSchema = object({
-  name: string(),
-  size: number().int().min(5).max(11),
-  availability: boolean(),
-  defaultPrice: number().int().min(0),
-})
 
 /**
  * Represents the schema for a football field.
@@ -55,7 +48,6 @@ const SubFieldSchema = object({
 const FootballFieldSchema = object({
   name: string(),
   location: LocationSchema,
-  subfields: array(SubFieldSchema),
   openedAt: TimeStepSchema,
   closedAt: TimeStepSchema,
   rating: number().min(0).max(5).optional(),
@@ -65,7 +57,7 @@ const FootballFieldSchema = object({
 export const createFootballFieldSchema = object({
   body: object({
     football_field: FootballFieldSchema,
-    admin: userSchema,
+    admin: UserSchema,
   }),
 })
 

@@ -5,6 +5,30 @@ export function create(data: TLocation) {
   return LocationModel.create(data)
 }
 
+export function getFieldIdNearFromLocation(
+  point: TPoint['coordinates'],
+  max: number = 1000,
+) {
+  return LocationModel.find(
+    {
+      geo: {
+        $nearSphere: {
+          $geometry: {
+            type: 'Point',
+            coordinates: point,
+          },
+          $maxDistance: max,
+        },
+      },
+    },
+    {
+      _id: 1,
+    },
+  )
+    .lean()
+    .then((val) => val.map((item) => item._id as string))
+}
+
 export function getFieldNearFromLocation(
   point: TPoint['coordinates'],
   max: number = 1000,
@@ -39,8 +63,8 @@ export function getFieldNearFromLocation(
     },
     {
       $project: {
-        _id: 0,
-        field: { name: 1, rating: 1 },
+        _id: 1,
+        field: { name: 1, rating: 1, availability: 1, subfields: 1 },
         geo: 1,
         distance: 1,
       },

@@ -5,6 +5,7 @@ import pingRouter from './ping.routes'
 import userRouter from './user.routes'
 import authRouter from './auth.routes'
 import footballFieldRouter from './football-field.routes'
+import dayOfServiceRouter from './day-of-service.routes'
 
 // **** api **** //
 const apiRouter = Router()
@@ -20,6 +21,9 @@ apiRouter.use(Paths.USERS.BASE, userRouter)
 
 // Use FootballField Router
 apiRouter.use(Paths.FOOTBALL_FIELD.BASE, footballFieldRouter)
+
+// Use Reservation Router
+apiRouter.use(Paths.DAY_OF_SERVICE.BASE, dayOfServiceRouter)
 
 // **** Export default **** //
 

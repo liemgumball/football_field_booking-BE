@@ -9,29 +9,6 @@ type FootballFieldDocument = TFootballField &
   }
 
 /**
- * Represents subfields of football fields
- */
-const SubFieldSchema = new Schema({
-  name: { type: String, required: true },
-  size: {
-    type: Number,
-    required: true,
-    enum: {
-      values: [5, 6, 7, 11],
-      message: 'Subfield size must be 5 or 6 or 7 or 11',
-    },
-  },
-  availability: {
-    type: Boolean,
-    required: true,
-  },
-  defaultPrice: {
-    type: Number,
-    required: true,
-  },
-})
-
-/**
  * Represents the structure of a football field
  */
 const FootballFieldSchema = new Schema<FootballFieldDocument>(
@@ -41,6 +18,9 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
       ref: 'User',
       required: true,
     },
+    subfieldIds: [
+      { type: Schema.Types.ObjectId, ref: 'SubField', default: [] },
+    ],
     isActive: {
       type: Boolean,
       default: true,
@@ -50,10 +30,6 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
       required: true,
       index: 'text',
       trim: true,
-    },
-    subfields: {
-      type: [SubFieldSchema],
-      default: [],
     },
     openedAt: {
       type: String,
@@ -73,6 +49,16 @@ const FootballFieldSchema = new Schema<FootballFieldDocument>(
     timestamps: true,
   },
 )
+
+FootballFieldSchema.virtual('subfields', {
+  ref: 'SubField',
+  localField: 'subfieldIds',
+  foreignField: '_id',
+})
+
+// Apply the virtual to the schema
+FootballFieldSchema.set('toObject', { virtuals: true })
+FootballFieldSchema.set('toJSON', { virtuals: true })
 
 export const FootballFieldModel = model<FootballFieldDocument>(
   'FootballField',
