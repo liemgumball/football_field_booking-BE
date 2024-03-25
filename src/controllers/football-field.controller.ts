@@ -48,15 +48,11 @@ export async function getById(req: IReq, res: IRes) {
   if (!field)
     return res.status(HttpStatusCodes.BAD_REQUEST).send('Data not found')
 
-  // check if is admin
-  if (!checkAdmin(field.adminId, req.user))
-    return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
-
   return res.status(HttpStatusCodes.OK).json(field)
 }
 
 /**
- * Create new football field by super user // TODO Fix with transaction
+ * Create new football field by super user // FIXME with transaction
  */
 export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,

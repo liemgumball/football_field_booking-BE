@@ -39,6 +39,7 @@ export type TUser = {
 
 export type TSubField = {
   _id: mongooseTypes.ObjectId
+  fieldId: mongooseTypes.ObjectId
   name: string
   size: number
   availability: boolean
@@ -51,10 +52,10 @@ export type TSubField = {
 export type TFootballField = {
   _id: mongooseTypes.ObjectId
   adminId: mongooseTypes.ObjectId
+  subfieldIds: mongooseTypes.ObjectId[]
   name: string
   isActive: boolean
   location: TLocation
-  subfields: TSubField[]
   openedAt: TimeStep
   closedAt: TimeStep
   rating: number
@@ -64,10 +65,10 @@ export type TFootballField = {
 export type TTurnOfService = {
   at: TimeStep
   price: number
-  user: mongooseTypes.ObjectId
+  user?: mongooseTypes.ObjectId
 }
 
-export type TReservation = {
+export type TDayOfService = {
   _id: mongooseTypes.ObjectId
   subfieldId: mongooseTypes.ObjectId
   date: Date

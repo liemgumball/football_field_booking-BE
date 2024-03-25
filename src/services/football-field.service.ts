@@ -13,10 +13,11 @@ export function getAll(options: { name?: string } = {}) {
 }
 
 export function getById(id: string) {
-  return FootballFieldModel.findById(id)
+  return FootballFieldModel.findById(id).populate('subfields')
+  // .select({ id: 0, subfieldIds: 0 })
 }
 
-// TODO fix with transition include create Admin
+// FIXME transition include create Admin
 export async function create(data: TFootballField) {
   const { location, ...field } = data
   const newField = await FootballFieldModel.create(field)
@@ -32,6 +33,6 @@ export function delete_(id: string) {
   return FootballFieldModel.findByIdAndDelete(id)
 }
 
-export function update(id: string, data: TFootballField) {
+export function update(id: string, data: Partial<TFootballField>) {
   return FootballFieldModel.findByIdAndUpdate(id, data)
 }

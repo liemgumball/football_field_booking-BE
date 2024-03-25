@@ -2,7 +2,7 @@ import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { object, string } from 'zod'
 import { ValidIdSchema } from './common.schema'
 
-export const userSchema = object({
+export const UserSchema = object({
   password: string({
     required_error: 'Password is required',
   }).min(6, 'Password too short - should be 6 chars minimum'),
@@ -20,7 +20,7 @@ export const userSchema = object({
  * Schema for POST user requests
  */
 export const createUserSchema = object({
-  body: userSchema,
+  body: UserSchema,
 })
 
 /**
@@ -30,7 +30,7 @@ export const updateUserSchema = object({
   params: object({
     id: ValidIdSchema,
   }),
-  body: userSchema.partial(),
+  body: UserSchema.partial(),
 })
 
 export const loginSchema = object({
