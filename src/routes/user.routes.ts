@@ -29,23 +29,22 @@ userRouter.get('', UserController.getAll)
 userRouter.use(deserializeUser)
 
 // Only exact User can access
+userRouter.use(canAccessUserDetails)
+
 userRouter.get(
   Paths.USERS.GET,
   serialize(withValidIdSchema),
-  canAccessUserDetails,
   UserController.getById,
 )
 
 userRouter.patch(
   Paths.USERS.UPDATE,
   serialize(updateUserSchema),
-  canAccessUserDetails,
   UserController.update,
 )
 
 userRouter.patch(
   Paths.USERS.CHANGE_PASSWORD,
-  canAccessUserDetails,
   serialize(changePasswordSchema),
   UserController.change_password,
 )

@@ -65,7 +65,7 @@ export type TFootballField = {
 export type TTurnOfService = {
   at: TimeStep
   price?: number
-  isUsed?: boolean
+  availability?: boolean
   userId?: mongooseTypes.ObjectId
 }
 

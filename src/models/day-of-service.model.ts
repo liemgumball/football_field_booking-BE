@@ -14,7 +14,7 @@ const TurnOfServiceSchema = new Schema<TurnOfServiceDocument>(
       immutable: true,
     },
     price: { type: Number },
-    isUsed: { type: Boolean, default: false },
+    availability: { type: Boolean, default: false },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',

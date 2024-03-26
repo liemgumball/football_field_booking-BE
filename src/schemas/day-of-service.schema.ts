@@ -5,7 +5,7 @@ import { getNextMonth, getTomorrow } from '@src/util/timestep'
 const TurnOfServiceSchema = object({
   at: TimeStepSchema,
   price: number().int().min(0).optional(),
-  isUsed: boolean().optional(),
+  availability: boolean().optional(),
   user: ValidIdSchema.optional(),
 })
 
