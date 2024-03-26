@@ -26,7 +26,7 @@ export default {
     UPDATE: '/update/:id',
     DELETE: '/delete/:id',
     LOCATION: '/locations',
-    RESERVATION: '/:fieldId/reservations',
+    DAY_OF_SERVICE: '/:fieldId/day-of-services/:id',
     SUBFIELD: {
       ALL: '/:fieldId/subfields',
       DETAIL: '/:fieldId/subfields/:id',
@@ -34,7 +34,9 @@ export default {
   },
   DAY_OF_SERVICE: {
     BASE: '/day-of-services',
-    GET: '/:id',
+    DETAIL: '/:id',
+    BY_FIELD: '/fields/:id',
+    BY_SUBFIELD: '/subfields/:id',
   },
   Examples: {
     BASE: '/examples',

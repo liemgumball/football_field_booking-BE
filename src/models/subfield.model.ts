@@ -13,7 +13,11 @@ type SubFieldDocument = TSubField &
 const SubFieldSchema = new Schema<SubFieldDocument>(
   {
     name: { type: String, required: true },
-    fieldId: { type: Schema.Types.ObjectId, ref: 'FootballField' },
+    fieldId: {
+      type: Schema.Types.ObjectId,
+      ref: 'FootballField',
+      immutable: true,
+    },
     size: {
       type: Number,
       required: true,
@@ -35,17 +39,5 @@ const SubFieldSchema = new Schema<SubFieldDocument>(
     timestamps: true,
   },
 )
-
-// Define a virtual field to resolve the subfield from the FootballField model
-// SubFieldSchema.virtual('field', {
-//   ref: 'FootballField',
-//   localField: 'fieldId',
-//   foreignField: 'subfields',
-//   justOne: true,
-// })
-
-// // Apply the virtual to the schema
-// ReservationSchema.set('toObject', { virtuals: true })
-// ReservationSchema.set('toJSON', { virtuals: true })
 
 export const SubFieldModel = model<SubFieldDocument>('SubField', SubFieldSchema)

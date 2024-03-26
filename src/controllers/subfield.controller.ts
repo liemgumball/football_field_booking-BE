@@ -32,6 +32,12 @@ export async function createSubField(req: IReq<TSubField>, res: IRes) {
   return res.status(HttpStatusCodes.CREATED).end()
 }
 
+/**
+ * Update Subfield (not included Days of service)
+ * @param req
+ * @param res
+ * @returns
+ */
 export async function updateSubfield(req: IReq<Partial<TSubField>>, res: IRes) {
   const { fieldId, id } = req.params
 

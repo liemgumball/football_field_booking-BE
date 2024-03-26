@@ -22,7 +22,12 @@ const PointSchema = new Schema(
  * Represents a point location in GeoJSON documents
  */
 export const LocationSchema = new Schema<LocationDocument>({
-  _id: { type: Types.ObjectId, ref: 'FootballField', required: true },
+  _id: {
+    type: Types.ObjectId,
+    ref: 'FootballField',
+    required: true,
+    immutable: true,
+  },
   name: { type: String, required: true, index: 'text' },
   geo: {
     type: PointSchema,

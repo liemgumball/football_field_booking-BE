@@ -64,14 +64,16 @@ export type TFootballField = {
 
 export type TTurnOfService = {
   at: TimeStep
-  price: number
-  user?: mongooseTypes.ObjectId
+  price?: number
+  isUsed?: boolean
+  userId?: mongooseTypes.ObjectId
 }
 
 export type TDayOfService = {
   _id: mongooseTypes.ObjectId
+  fieldId: mongooseTypes.ObjectId
   subfieldId: mongooseTypes.ObjectId
   date: Date
   availability: boolean
-  allocations: TTurnOfService[]
+  turnOfServices: TTurnOfService[]
 }
