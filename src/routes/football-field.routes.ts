@@ -55,6 +55,7 @@ footballFieldRouter.patch(
 )
 
 // Create SubField
+// TODO this should be background task
 footballFieldRouter.post(
   Paths.FOOTBALL_FIELD.SUBFIELD.ALL,
   serialize(createSubFieldSchema),
@@ -70,7 +71,7 @@ footballFieldRouter.patch(
 
 // Update day of services
 footballFieldRouter.patch(
-  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE.DETAIL,
+  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE,
   serialize(updateDayOfServiceSchema),
   DayOfServiceController.updateOne,
 )

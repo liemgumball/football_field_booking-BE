@@ -26,19 +26,16 @@ export default {
     UPDATE: '/update/:id',
     DELETE: '/delete/:id',
     LOCATION: '/locations',
-    DAY_OF_SERVICE: {
-      BASE: '/:fieldId/day-of-services',
-      DETAIL: '/:fieldId/day-of-services/:id',
-    },
+    DAY_OF_SERVICE: '/:fieldId/day-of-services/:id',
     SUBFIELD: {
       ALL: '/:fieldId/subfields',
       DETAIL: '/:fieldId/subfields/:id',
-      DAY_OF_SERVICE: ':fieldId/subfields/:id/day-of-services',
     },
   },
   DAY_OF_SERVICE: {
     BASE: '/day-of-services',
     DETAIL: '/:id',
+    BY_FIELD: '/fields/:id',
     BY_SUBFIELD: '/subfields/:id',
   },
   Examples: {

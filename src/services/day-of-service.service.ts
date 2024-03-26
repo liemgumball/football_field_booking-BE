@@ -1,11 +1,12 @@
 import { DayOfServiceModel } from '@src/models/day-of-service.model'
 import { TDayOfService } from '@src/types'
+import { getNextWeek } from '@src/util/timestep'
 
 // Service
 // import * as LocationService from '@src/services/location.service'
 import { getListTurnOfServices } from '@src/util/turn-of-service'
 import { updateTurnOfServices } from '@src/util/turn-of-service'
-import { ClientSession, Types } from 'mongoose'
+import { Types } from 'mongoose'
 
 export function getById(id: string) {
   return DayOfServiceModel.findById(id)
@@ -27,16 +28,13 @@ export function getBySubFieldId(id: Types.ObjectId) {
   )
 }
 
-export function generate30(
-  requires: {
-    fieldId: string
-    subfieldId: string
-    defaultPrice: number
-    fieldOpenTime: string
-    fieldCloseTime: string
-  },
-  session: ClientSession | null = null,
-) {
+export function generate30(requires: {
+  fieldId: Types.ObjectId
+  subfieldId: Types.ObjectId
+  defaultPrice: number
+  fieldOpenTime: string
+  fieldCloseTime: string
+}) {
   const { fieldId, subfieldId, defaultPrice, fieldOpenTime, fieldCloseTime } =
     requires
 
@@ -56,13 +54,12 @@ export function generate30(
     return {
       fieldId: fieldId,
       subfieldId: subfieldId,
-      price: defaultPrice,
       date: date,
       turnOfServices: turnOfServices,
     }
   })
 
-  return DayOfServiceModel.insertMany(dates, { session: session })
+  return DayOfServiceModel.insertMany(dates)
 }
 
 /**
@@ -87,8 +84,31 @@ export async function updateOne(id: string, data: Partial<TDayOfService>) {
   return DayOfServiceModel.findByIdAndUpdate(id, data)
 }
 
-export function getByTimeRange(from: string, to: string) {
-  return DayOfServiceModel.find({
-    startedAt: { $gte: from, $lte: to },
-  })
+/**
+ * Query list of `day of service`
+ * @description by default will query from `current time` to `next week`
+ * @param from start of time range
+ * @param to end of time range
+ * @param fieldIds list of field to search from
+ * @returns list of `day of service`
+ */
+export function getMany(
+  from: Date = new Date(),
+  to: Date = getNextWeek(from),
+  fieldIds?: string[],
+) {
+  /**
+   * If fieldIds provided then query `$in` the fieldIds list
+   */
+  const query = fieldIds
+    ? {
+        fieldId: { $in: fieldIds },
+        date: { $gte: from, $lte: to },
+        availability: true,
+      }
+    : {
+        date: { $gte: from, $lte: to },
+        availability: true,
+      }
+  return DayOfServiceModel.find(query, {}, { limit: 50 })
 }

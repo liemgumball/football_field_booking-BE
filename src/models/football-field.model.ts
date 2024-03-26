@@ -56,6 +56,13 @@ FootballFieldSchema.virtual('subfields', {
   foreignField: '_id',
 })
 
+FootballFieldSchema.virtual('location', {
+  ref: 'Location',
+  localField: '_id',
+  foreignField: '_id',
+  justOne: true,
+})
+
 // Apply the virtual to the schema
 FootballFieldSchema.set('toObject', { virtuals: true })
 FootballFieldSchema.set('toJSON', { virtuals: true })

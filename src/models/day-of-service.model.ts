@@ -41,31 +41,31 @@ const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
       },
       message: 'Date must in range from today to maximum of two Months Later',
     },
-    fieldId: {
-      type: Schema.Types.ObjectId,
-      ref: 'FootballField',
-      required: true,
-      immutable: true,
-      index: true,
-    },
-    subfieldId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Subfield',
-      required: true,
-      immutable: true,
-      index: true,
-    },
-    availability: {
-      type: Boolean,
-      default: true,
-    },
-    turnOfServices: [
-      {
-        type: TurnOfServiceSchema,
-        required: true,
-      },
-    ],
   },
+  fieldId: {
+    type: Schema.Types.ObjectId,
+    ref: 'FootballField',
+    required: true,
+    immutable: true,
+    index: true,
+  },
+  subfieldId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Subfield',
+    required: true,
+    immutable: true,
+    index: true,
+  },
+  availability: {
+    type: Boolean,
+    default: true,
+  },
+  turnOfServices: [
+    {
+      type: TurnOfServiceSchema,
+      required: true,
+    },
+  ],
 })
 
 // Define a virtual field to resolve the subfield from the FootballField model

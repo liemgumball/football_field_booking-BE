@@ -2,6 +2,7 @@ import { SubFieldModel } from '@src/models/subfield.model'
 import { TSubField } from '@src/types'
 import * as FootballFieldService from '@src/services/football-field.service'
 import * as DayOfServiceService from '@src/services/day-of-service.service'
+import { Types } from 'mongoose'
 
 export function getById(id: string) {
   return SubFieldModel.findById(id)
@@ -26,8 +27,8 @@ export async function create(data: TSubField) {
     await newSubField.save()
 
     await DayOfServiceService.generate30({
-      fieldId: field._id as unknown as string,
-      subfieldId: newSubField._id as string,
+      fieldId: field._id,
+      subfieldId: newSubField._id as Types.ObjectId,
       defaultPrice: newSubField.defaultPrice,
       fieldOpenTime: field.openedAt,
       fieldCloseTime: field.closedAt,

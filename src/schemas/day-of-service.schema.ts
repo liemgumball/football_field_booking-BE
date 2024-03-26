@@ -1,13 +1,6 @@
 import { array, boolean, number, object, string } from 'zod'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
-
-// Tomorrow
-const Tomorrow = new Date()
-Tomorrow.setDate(Tomorrow.getDate() + 1)
-
-// Next Month
-const NextMonth = new Date()
-NextMonth.setMonth(NextMonth.getMonth() + 1)
+import { getNextMonth, getTomorrow } from '@src/util/timestep'
 
 const TurnOfServiceSchema = object({
   at: TimeStepSchema,
@@ -21,10 +14,7 @@ const DayOfServiceSchema = object({
   subfieldId: ValidIdSchema,
   date: string()
     .transform((value) => new Date(value))
-    .refine((val) => {
-      const dateValue = val instanceof Date ? val : new Date(val)
-      return dateValue >= Tomorrow && dateValue <= NextMonth
-    }),
+    .refine((val) => val >= getTomorrow() && val <= getNextMonth()),
   availability: boolean().optional(),
   turnOfServices: array(TurnOfServiceSchema)
     .max(48)
@@ -40,13 +30,6 @@ const DayOfServiceSchema = object({
     }),
 })
 
-export const getDayOfServiceByFieldIdSchema = object({
-  params: object({
-    fieldId: ValidIdSchema,
-    subfieldId: ValidIdSchema.optional(),
-  }),
-})
-
 export const updateDayOfServiceSchema = object({
   params: object({
     fieldId: ValidIdSchema,
@@ -55,4 +38,23 @@ export const updateDayOfServiceSchema = object({
   body: DayOfServiceSchema.pick({ turnOfServices: true })
     .strict()
     .or(DayOfServiceSchema.omit({ turnOfServices: true }).partial().strict()),
+})
+
+export const searchDayOfServiceSchema = object({
+  query: object({
+    longitude: string()
+      .transform((val) => +val)
+      .refine(
+        (val) => val >= -180 && val <= 180,
+        'Longitude must be between 1-80 and 180',
+      )
+      .optional(),
+    latitude: string()
+      .transform((val) => +val)
+      .refine(
+        (val) => val >= -90 && val <= 90,
+        'Latitude must be between -90 and 90',
+      )
+      .optional(),
+  }).passthrough(),
 })

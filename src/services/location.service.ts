@@ -5,11 +5,17 @@ export function create(data: TLocation) {
   return LocationModel.create(data)
 }
 
-export function getFieldIdNearFromLocation(
+/**
+ * Search 2dSphere field from a location
+ * @param point `[longitude, latitude]` as `[number, number]` coordinates
+ * @param max the maximum distance to search from the point
+ * @returns list of field Ids
+ */
+export async function getFieldIdNearFromLocation(
   point: TPoint['coordinates'],
   max: number = 1000,
 ) {
-  return LocationModel.find(
+  const val = await LocationModel.find(
     {
       geo: {
         $nearSphere: {
@@ -24,9 +30,8 @@ export function getFieldIdNearFromLocation(
     {
       _id: 1,
     },
-  )
-    .lean()
-    .then((val) => val.map((item) => item._id as string))
+  ).lean()
+  return val.map((item) => item._id as string)
 }
 
 export function getFieldNearFromLocation(
