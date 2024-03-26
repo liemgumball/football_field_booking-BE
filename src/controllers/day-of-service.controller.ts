@@ -10,7 +10,6 @@ import * as SubFieldService from '@src/services/subfield.service'
 import * as LocationService from '@src/services/location.service'
 
 // Utilities
-import { checkAdmin } from '@src/util/authorize'
 
 /**
  * Get by Id
@@ -65,15 +64,7 @@ export async function getBySubFieldId(req: IReq, res: IRes) {
  * Update a DayOfService
  */
 export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
-  const { fieldId, id } = req.params
-
-  const field = await FootballFieldService.getById(fieldId)
-
-  if (!field)
-    return res.status(HttpStatusCodes.NOT_FOUND).send('Field Id not found')
-
-  if (!checkAdmin(field.adminId, req.user))
-    return res.status(HttpStatusCodes.FORBIDDEN).end()
+  const { id } = req.params
 
   const dayOfService = await DayOfServiceService.getById(id)
 

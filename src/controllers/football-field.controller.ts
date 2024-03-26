@@ -9,7 +9,7 @@ import * as UserService from '@src/services/user.service'
 import * as LocationService from '@src/services/location.service'
 
 // Utils
-import { checkAdmin, checkSuperUser } from '@src/util/authorize'
+import { checkSuperUser } from '@src/util/authorize'
 
 export async function getAll(req: IReq, res: IRes) {
   const { name } = req.query
@@ -84,14 +84,6 @@ export async function create(
 export async function update(req: IReq<TFootballField>, res: IRes) {
   const { id } = req.params
   const data = req.body
-
-  const field = await FootballFieldService.getById(id)
-
-  if (!field)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Data not found')
-
-  if (!checkAdmin(field.adminId, req.user))
-    return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
 
   const updated = await FootballFieldService.update(id, data)
 

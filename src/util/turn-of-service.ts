@@ -18,7 +18,7 @@ export function updateTurnOfServices(
       return {
         at: ele.at,
         price: new_[foundIndex].price || ele.price,
-        isUsed: new_[foundIndex].isUsed || ele.isUsed,
+        availability: new_[foundIndex].availability || ele.availability,
         userId: new_[foundIndex].userId || ele.userId,
       }
     } else {

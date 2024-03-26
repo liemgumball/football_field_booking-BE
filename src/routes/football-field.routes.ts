@@ -10,7 +10,11 @@ import * as DayOfServiceController from '@src/controllers/day-of-service.control
 
 // Middleware
 import { serialize } from '@src/middlewares/serializer.middleware'
-import { deserializeUser, isSuperUser } from '@src/middlewares/auth.middleware'
+import {
+  deserializeUser,
+  isAdmin,
+  isSuperUser,
+} from '@src/middlewares/auth.middleware'
 
 // Schemas
 import {
@@ -50,14 +54,15 @@ footballFieldRouter.use(deserializeUser)
 // Update Field (not included SubFields)
 footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.UPDATE,
+  isAdmin,
   serialize(updateFieldSchema),
   FootballFieldController.update,
 )
 
 // Create SubField
-// TODO this should be background task
 footballFieldRouter.post(
   Paths.FOOTBALL_FIELD.SUBFIELD.ALL,
+  isAdmin,
   serialize(createSubFieldSchema),
   SubFieldController.createSubField,
 )
@@ -65,6 +70,7 @@ footballFieldRouter.post(
 // Update SubField
 footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.SUBFIELD.DETAIL,
+  isAdmin,
   serialize(updateSubFieldSchema),
   SubFieldController.updateSubfield,
 )
@@ -72,6 +78,7 @@ footballFieldRouter.patch(
 // Update day of services
 footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.DAY_OF_SERVICE,
+  isAdmin,
   serialize(updateDayOfServiceSchema),
   DayOfServiceController.updateOne,
 )
@@ -81,16 +88,16 @@ footballFieldRouter.patch(
 // Create new Football field
 footballFieldRouter.post(
   Paths.FOOTBALL_FIELD.CREATE,
-  serialize(createFootballFieldSchema),
   isSuperUser,
+  serialize(createFootballFieldSchema),
   FootballFieldController.create,
 )
 
 // Delete Football field
 footballFieldRouter.delete(
   Paths.FOOTBALL_FIELD.DELETE,
-  serialize(withValidIdSchema),
   isSuperUser,
+  serialize(withValidIdSchema),
   FootballFieldController.delete_,
 )
 
