@@ -33,11 +33,13 @@ export default {
     SUBFIELD: {
       ALL: '/:fieldId/subfields',
       DETAIL: '/:fieldId/subfields/:id',
+      DAY_OF_SERVICE: ':fieldId/subfields/:id/day-of-services',
     },
   },
   DAY_OF_SERVICE: {
     BASE: '/day-of-services',
-    GET: '/:id',
+    DETAIL: '/:id',
+    BY_SUBFIELD: '/subfields/:id',
   },
   Examples: {
     BASE: '/examples',

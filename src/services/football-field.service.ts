@@ -14,7 +14,6 @@ export function getAll(options: { name?: string } = {}) {
 
 export function getById(id: string) {
   return FootballFieldModel.findById(id).populate('subfields')
-  // .select({ id: 0, subfieldIds: 0 })
 }
 
 // FIXME transition include create Admin

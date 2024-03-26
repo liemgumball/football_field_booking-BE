@@ -22,10 +22,7 @@ import {
   createSubFieldSchema,
   updateSubFieldSchema,
 } from '@src/schemas/subfield.schema'
-import {
-  getDayOfServiceByFieldIdSchema,
-  updateDayOfServiceSchema,
-} from '@src/schemas/day-of-service.schema'
+import { updateDayOfServiceSchema } from '@src/schemas/day-of-service.schema'
 
 const footballFieldRouter = Router()
 
@@ -63,18 +60,12 @@ footballFieldRouter.post(
   serialize(createSubFieldSchema),
   SubFieldController.createSubField,
 )
+
 // Update SubField
 footballFieldRouter.patch(
   Paths.FOOTBALL_FIELD.SUBFIELD.DETAIL,
   serialize(updateSubFieldSchema),
   SubFieldController.updateSubfield,
-)
-
-// Get day of services
-footballFieldRouter.get(
-  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE.BASE,
-  serialize(getDayOfServiceByFieldIdSchema),
-  DayOfServiceController.getByFieldId,
 )
 
 // Update day of services

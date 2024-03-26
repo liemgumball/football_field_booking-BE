@@ -43,6 +43,7 @@ const DayOfServiceSchema = object({
 export const getDayOfServiceByFieldIdSchema = object({
   params: object({
     fieldId: ValidIdSchema,
+    subfieldId: ValidIdSchema.optional(),
   }),
 })
 

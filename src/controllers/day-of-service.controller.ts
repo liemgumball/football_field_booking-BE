@@ -5,6 +5,7 @@ import { IReq, IRes } from '@src/types/express/misc'
 // Services
 import * as DayOfServiceService from '@src/services/day-of-service.service'
 import * as FootballFieldService from '@src/services/football-field.service'
+import * as SubFieldService from '@src/services/subfield.service'
 import { checkAdmin } from '@src/util/authorize'
 import { TDayOfService } from '@src/types'
 
@@ -20,16 +21,31 @@ export async function getById(req: IReq, res: IRes) {
 
 export async function getByFieldId(req: IReq, res: IRes) {
   const { fieldId } = req.params
-
   const field = await FootballFieldService.getById(fieldId)
 
   if (!field)
-    return res.status(HttpStatusCodes.NOT_FOUND).send('Field Id not found')
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Field not found')
 
   if (!checkAdmin(field.adminId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).end()
 
   const found = await DayOfServiceService.getByFieldId(field._id)
+
+  if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
+
+  return res.status(HttpStatusCodes.OK).json(found)
+}
+
+export async function getBySubFieldId(req: IReq, res: IRes) {
+  const { id } = req.params
+
+  const subfield = await SubFieldService.getById(id)
+
+  if (!subfield)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const found = await DayOfServiceService.getBySubFieldId(subfield._id)
 
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 

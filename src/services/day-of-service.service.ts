@@ -12,11 +12,19 @@ export function getById(id: string) {
 }
 
 export function getByFieldId(id: Types.ObjectId) {
-  return DayOfServiceModel.find({ fieldId: id })
+  return DayOfServiceModel.find(
+    { fieldId: id, availability: true },
+    {},
+    { limit: 30 },
+  )
 }
 
 export function getBySubFieldId(id: Types.ObjectId) {
-  return DayOfServiceModel.find({ subfieldId: id })
+  return DayOfServiceModel.find(
+    { subfieldId: id, availability: true },
+    {},
+    { limit: 30 },
+  )
 }
 
 export function generate30(
@@ -84,33 +92,3 @@ export function getByTimeRange(from: string, to: string) {
     startedAt: { $gte: from, $lte: to },
   })
 }
-
-// TODO
-// export async function getMany(options: {
-//   latitude?: number
-//   longitude?: number
-//   distance?: number
-//   from?: Date
-//   to?: Date
-// }) {
-//   const { latitude, longitude, distance, from, to } = options
-//   let fields: unknown
-
-//   if (longitude && latitude) {
-//     fields = await LocationService.getFieldIdNearFromLocation(
-//       [longitude, latitude],
-//       distance,
-//     )
-
-//     if (!fields) return fields
-//   } else {
-//     // fields = await FootballFieldService.getAll
-//   }
-
-//   const subfields = await DayOfServiceModel.find()
-//     .populate('subfield')
-//     .select({ _id: 0 })
-
-//   // fields = await LocationModel.
-//   return subfields
-// }
