@@ -97,9 +97,6 @@ UserSchema.methods.generateAuthToken = function (): string {
   return token
 }
 
-// Create the User model using the schema
-export const UserModel = model<UserDocument>('User', UserSchema)
-
 export async function createSuperUser() {
   const existingSuperUser = await UserModel.findOne({
     role: UserRole.SUPER_USER,
@@ -116,3 +113,8 @@ export async function createSuperUser() {
     await superuser.save()
   }
 }
+
+// Create the User model using the schema
+const UserModel = model<UserDocument>('User', UserSchema)
+
+export default UserModel

@@ -1,4 +1,4 @@
-import { DayOfServiceModel } from '@src/models/day-of-service.model'
+import DayOfServiceModel from '@src/models/day-of-service.model'
 import { TDayOfService } from '@src/types'
 import { getNextWeek } from '@src/util/timestep'
 

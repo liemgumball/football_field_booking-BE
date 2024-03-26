@@ -80,7 +80,9 @@ DayOfServiceSchema.virtual('subfield', {
 DayOfServiceSchema.set('toObject', { virtuals: true })
 DayOfServiceSchema.set('toJSON', { virtuals: true })
 
-export const DayOfServiceModel = model<DayOfServiceDocument>(
+const DayOfServiceModel = model<DayOfServiceDocument>(
   'DayOfService',
   DayOfServiceSchema,
 )
+
+export default DayOfServiceModel
