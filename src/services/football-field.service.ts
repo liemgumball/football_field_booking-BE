@@ -1,4 +1,4 @@
-import { FootballFieldModel } from '@src/models/football-field.model'
+import FootballFieldModel from '@src/models/football-field.model'
 import * as LocationService from '@src/services/location.service'
 import { TFootballField } from '@src/types'
 

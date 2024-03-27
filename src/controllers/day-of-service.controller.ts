@@ -9,8 +9,6 @@ import * as FootballFieldService from '@src/services/football-field.service'
 import * as SubFieldService from '@src/services/subfield.service'
 import * as LocationService from '@src/services/location.service'
 
-// Utilities
-
 /**
  * Get by Id
  */

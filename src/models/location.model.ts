@@ -36,4 +36,6 @@ export const LocationSchema = new Schema<LocationDocument>({
   },
 })
 
-export const LocationModel = model<LocationDocument>('Location', LocationSchema)
+const LocationModel = model<LocationDocument>('Location', LocationSchema)
+
+export default LocationModel

@@ -77,3 +77,16 @@ export type TDayOfService = {
   availability: boolean
   turnOfServices: TTurnOfService[]
 }
+
+export type TBooking = {
+  _id: mongooseTypes.ObjectId
+  userId: mongooseTypes.ObjectId
+  subfieldId: mongooseTypes.ObjectId
+  date: Date
+  from: TimeStep
+  to: TimeStep
+  price: number
+  confirmed: boolean
+  canceled: boolean
+  paid?: boolean
+}

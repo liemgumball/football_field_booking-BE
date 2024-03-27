@@ -40,4 +40,6 @@ const SubFieldSchema = new Schema<SubFieldDocument>(
   },
 )
 
-export const SubFieldModel = model<SubFieldDocument>('SubField', SubFieldSchema)
+const SubFieldModel = model<SubFieldDocument>('SubField', SubFieldSchema)
+
+export default SubFieldModel

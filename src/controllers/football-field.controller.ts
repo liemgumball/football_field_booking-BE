@@ -8,9 +8,6 @@ import * as FootballFieldService from '@src/services/football-field.service'
 import * as UserService from '@src/services/user.service'
 import * as LocationService from '@src/services/location.service'
 
-// Utils
-import { checkSuperUser } from '@src/util/authorize'
-
 export async function getAll(req: IReq, res: IRes) {
   const { name } = req.query
 
@@ -58,24 +55,27 @@ export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,
   res: IRes,
 ) {
-  if (!checkSuperUser(req.user))
-    return res
-      .status(HttpStatusCodes.FORBIDDEN)
-      .send('Only superuser can create new football field')
-
   const { football_field, admin } = req.body
 
   const newAdmin = await UserService.createAdminUser(admin)
 
-  if (newAdmin) {
-    await FootballFieldService.create({
-      ...football_field,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      adminId: newAdmin._id,
-    })
-  }
+  if (!newAdmin)
+    return res
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send('Failure creating Admin')
 
-  return res.status(HttpStatusCodes.CREATED).end()
+  const created = await FootballFieldService.create({
+    ...football_field,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    adminId: newAdmin._id,
+  })
+
+  if (!created)
+    return res
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send('Failure creating new Football Field')
+
+  return res.status(HttpStatusCodes.CREATED).json(created)
 }
 
 /**
@@ -97,11 +97,6 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
  * Delete football field by super user
  */
 export async function delete_(req: IReq, res: IRes) {
-  if (!checkSuperUser(req.user))
-    return res
-      .status(HttpStatusCodes.FORBIDDEN)
-      .send('Only super users can delete football field')
-
   const { id } = req.params
 
   const deleted = await FootballFieldService.delete_(id)

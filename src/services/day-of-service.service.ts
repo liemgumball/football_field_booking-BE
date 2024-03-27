@@ -1,12 +1,14 @@
-import { DayOfServiceModel } from '@src/models/day-of-service.model'
+import DayOfServiceModel from '@src/models/day-of-service.model'
 import { TDayOfService } from '@src/types'
 import { getNextWeek } from '@src/util/timestep'
 
 // Service
 // import * as LocationService from '@src/services/location.service'
-import { getListTurnOfServices } from '@src/util/turn-of-service'
-import { updateTurnOfServices } from '@src/util/turn-of-service'
-import { Types } from 'mongoose'
+import {
+  getListTurnOfServices,
+  updateTurnOfServices,
+} from '@src/util/turn-of-service'
+import { Types } from 'mongoose' // FIXME too large import
 
 export function getById(id: string) {
   return DayOfServiceModel.findById(id)
@@ -48,6 +50,7 @@ export function generate30(requires: {
 
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
+  tomorrow.setTime(0)
 
   const dates = Array.from({ length: 30 }, (_, i) => i).map((value) => {
     const date = new Date(tomorrow.getTime() + value * 24 * 60 * 60 * 1000)
@@ -111,4 +114,22 @@ export function getMany(
         availability: true,
       }
   return DayOfServiceModel.find(query, {}, { limit: 50 })
+}
+
+export function addUserId(
+  subfieldId: string,
+  date: Date,
+  userId: string,
+  from: string,
+  to: string,
+) {
+  return DayOfServiceModel.updateOne(
+    { subfieldId: subfieldId, date: date },
+    {
+      $set: { 'turnOfServices.$[ele].userId': userId },
+    },
+    {
+      arrayFilters: [{ 'ele.at': { $gte: from, $lte: to } }],
+    },
+  )
 }

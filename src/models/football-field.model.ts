@@ -4,8 +4,8 @@ import { Schema, model } from 'mongoose'
 
 type FootballFieldDocument = TFootballField &
   Document & {
-    created_at: Date
-    updated_at: Date
+    createdAt: Date
+    updatedAt: Date
   }
 
 /**
@@ -67,7 +67,9 @@ FootballFieldSchema.virtual('location', {
 FootballFieldSchema.set('toObject', { virtuals: true })
 FootballFieldSchema.set('toJSON', { virtuals: true })
 
-export const FootballFieldModel = model<FootballFieldDocument>(
+const FootballFieldModel = model<FootballFieldDocument>(
   'FootballField',
   FootballFieldSchema,
 )
+
+export default FootballFieldModel

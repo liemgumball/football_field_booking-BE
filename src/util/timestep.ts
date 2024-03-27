@@ -5,6 +5,12 @@ export function getToday(from = new Date()) {
   return today
 }
 
+export function getNextHour(from = new Date()) {
+  const nextHour = new Date(from)
+  nextHour.setHours(nextHour.getHours() + 1)
+  return nextHour
+}
+
 // Tomorrow
 export function getTomorrow(from = new Date()) {
   const tomorrow = new Date(from)

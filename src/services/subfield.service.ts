@@ -1,4 +1,4 @@
-import { SubFieldModel } from '@src/models/subfield.model'
+import SubFieldModel from '@src/models/subfield.model'
 import { TSubField } from '@src/types'
 import * as FootballFieldService from '@src/services/football-field.service'
 import * as DayOfServiceService from '@src/services/day-of-service.service'

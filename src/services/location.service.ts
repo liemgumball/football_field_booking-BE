@@ -1,4 +1,4 @@
-import { LocationModel } from '@src/models/location.model'
+import LocationModel from '@src/models/location.model'
 import { TLocation, TPoint } from '@src/types'
 
 export function create(data: TLocation) {
