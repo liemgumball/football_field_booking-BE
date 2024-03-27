@@ -7,6 +7,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 // Services
 import * as BookingService from '@src/services/booking.service'
+import * as SubFieldService from '@src/services/subfield.service'
 
 // Utilities
 import { checkExactUser } from '@src/util/authorize'
@@ -27,12 +28,18 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(found)
 }
 
+// TODO cancel booking after 30 minutes not confirmed
 export async function create(req: IReq<TBooking>, res: IRes) {
   const booking = req.body
 
   // only correct user can create booking with their UserId
   if (!checkExactUser(booking.userId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).end()
+
+  const subfield = await SubFieldService.getById(booking.subfieldId.toString())
+
+  if (!subfield)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
 
   const created = await BookingService.create(booking)
 

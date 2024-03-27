@@ -18,8 +18,8 @@ export function updateTurnOfServices(
       return {
         at: ele.at,
         price: new_[foundIndex].price || ele.price,
-        availability: new_[foundIndex].availability || ele.availability,
-        userId: new_[foundIndex].userId || ele.userId,
+        status: new_[foundIndex].status || ele.status,
+        bookingId: new_[foundIndex].bookingId || ele.bookingId,
       }
     } else {
       return ele
@@ -30,13 +30,13 @@ export function updateTurnOfServices(
 export function getListTurnOfServices(
   from: string,
   to: string,
-  price?: number,
-): TTurnOfService[] | null {
+  price: number,
+): Pick<TTurnOfService, 'at' | 'price'>[] | null {
   let start = getIndexOfTimeStep(from)
   const end = getIndexOfTimeStep(to)
 
   if (end <= start) return null
-  const result: TTurnOfService[] = []
+  const result = []
 
   while (start <= end) {
     result.push({

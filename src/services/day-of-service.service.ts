@@ -1,5 +1,5 @@
 import DayOfServiceModel from '@src/models/day-of-service.model'
-import { TDayOfService } from '@src/types'
+import { TDayOfService, TurnOfServiceStatus } from '@src/types'
 import { getNextWeek } from '@src/util/timestep'
 
 // Service
@@ -8,7 +8,7 @@ import {
   getListTurnOfServices,
   updateTurnOfServices,
 } from '@src/util/turn-of-service'
-import { Types } from 'mongoose' // FIXME too large import
+import { Types } from 'mongoose' // XXX too large import
 
 export function getById(id: string) {
   return DayOfServiceModel.findById(id)
@@ -116,20 +116,24 @@ export function getMany(
   return DayOfServiceModel.find(query, {}, { limit: 50 })
 }
 
-export function addUserId(
+export function addBookingId(
+  bookingId: string | null,
   subfieldId: string,
   date: Date,
-  userId: string,
   from: string,
   to: string,
+  status: TurnOfServiceStatus,
 ) {
   return DayOfServiceModel.updateOne(
     { subfieldId: subfieldId, date: date },
     {
-      $set: { 'turnOfServices.$[ele].userId': userId },
+      $set: {
+        'turnOfServices.$[ele].status': status,
+        'turnOfServices.$[ele].bookingId': bookingId,
+      },
     },
     {
-      arrayFilters: [{ 'ele.at': { $gte: from, $lte: to } }],
+      arrayFilters: [{ 'ele.at': { $gte: from, $lt: to } }],
     },
   )
 }

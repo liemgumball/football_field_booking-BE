@@ -12,6 +12,12 @@ export enum UserRole {
   SUPER_USER = '19383',
 }
 
+export enum TurnOfServiceStatus {
+  AVAILABLE = 'available',
+  IN_PROGRESS = 'progressing',
+  BEING_USED = 'used',
+}
+
 export type TPoint = {
   type: 'Point'
   coordinates: [number, number]
@@ -64,9 +70,9 @@ export type TFootballField = {
 
 export type TTurnOfService = {
   at: TimeStep
-  price?: number
-  availability?: boolean
-  userId?: mongooseTypes.ObjectId
+  price: number
+  status: TurnOfServiceStatus
+  bookingId: mongooseTypes.ObjectId | null
 }
 
 export type TDayOfService = {
