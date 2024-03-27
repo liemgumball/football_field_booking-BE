@@ -20,6 +20,7 @@ export default {
     CHANGE_PASSWORD: '/password/:id',
   },
   FOOTBALL_FIELD: {
+    // REFACTOR
     BASE: '/fields',
     GET: '/:id',
     CREATE: '/create',
@@ -31,12 +32,20 @@ export default {
       ALL: '/:fieldId/subfields',
       DETAIL: '/:fieldId/subfields/:id',
     },
+    BOOKING: {
+      ALL: '/:fieldId/bookings',
+      DETAIL: '/:fieldId/bookings/:id',
+    },
   },
   DAY_OF_SERVICE: {
     BASE: '/day-of-services',
     DETAIL: '/:id',
     BY_FIELD: '/fields/:id',
     BY_SUBFIELD: '/subfields/:id',
+  },
+  BOOKING: {
+    BASE: '/bookings',
+    DETAIL: '/:id',
   },
   Examples: {
     BASE: '/examples',

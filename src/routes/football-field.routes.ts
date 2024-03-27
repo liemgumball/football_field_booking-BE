@@ -7,6 +7,7 @@ import Paths from '@src/constants/Paths'
 import * as FootballFieldController from '@src/controllers/football-field.controller'
 import * as SubFieldController from '@src/controllers/subfield.controller'
 import * as DayOfServiceController from '@src/controllers/day-of-service.controller'
+import * as BookingController from '@src/controllers/booking.controller'
 
 // Middleware
 import { serialize } from '@src/middlewares/serializer.middleware'
@@ -27,6 +28,7 @@ import {
   updateSubFieldSchema,
 } from '@src/schemas/subfield.schema'
 import { updateDayOfServiceSchema } from '@src/schemas/day-of-service.schema'
+import { confirmBookingSchema } from '@src/schemas/booking.schema'
 
 const footballFieldRouter = Router()
 
@@ -81,6 +83,14 @@ footballFieldRouter.patch(
   isAdmin,
   serialize(updateDayOfServiceSchema),
   DayOfServiceController.updateOne,
+)
+
+// Confirm Booking
+footballFieldRouter.patch(
+  Paths.FOOTBALL_FIELD.BOOKING.DETAIL,
+  isAdmin,
+  serialize(confirmBookingSchema),
+  BookingController.confirm,
 )
 
 // ---------------- Only Super Users can access ------------------------- //
