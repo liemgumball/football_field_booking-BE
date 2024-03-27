@@ -49,7 +49,7 @@ export async function getById(req: IReq, res: IRes) {
 }
 
 /**
- * Create new football field by super user // FIXME with transaction
+ * Create new football field by super user // [ ] should be transaction
  */
 export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,

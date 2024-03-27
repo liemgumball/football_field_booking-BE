@@ -11,7 +11,8 @@ export function getById(id: string) {
   return BookingModel.findById(id)
 }
 
-export function create(data: TBooking) {
+export async function create(data: TBooking) {
+  // FIXME should check in DayOfService before creating Booking
   return BookingModel.create(data)
 }
 

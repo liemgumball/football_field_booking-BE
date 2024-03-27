@@ -9,7 +9,9 @@ const BookingSchema = object({
   subfieldId: ValidIdSchema,
   date: string()
     .transform((val) => new Date(val))
-    .refine((val) => val.getTime() === 0),
+    .refine((val) => {
+      return val.getUTCHours() === 0 && val.getUTCMinutes() === 0
+    }, 'Date must be at midnight'),
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),

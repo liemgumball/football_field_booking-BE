@@ -49,8 +49,8 @@ export function generate30(requires: {
   if (!turnOfServices) return null
 
   const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setTime(0)
+  tomorrow.setDate(tomorrow.getUTCDate() + 1)
+  tomorrow.setUTCHours(0, 0, 0, 0)
 
   const dates = Array.from({ length: 30 }, (_, i) => i).map((value) => {
     const date = new Date(tomorrow.getTime() + value * 24 * 60 * 60 * 1000)

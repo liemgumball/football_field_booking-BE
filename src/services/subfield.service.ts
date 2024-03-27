@@ -10,7 +10,7 @@ export function getById(id: string) {
 
 /**
  * Create a new `SubField` including generating `Days of service`
- * // FIXME should be transaction
+ * // [ ] should be transaction
  * @param data Data of subfield
  */
 export async function create(data: TSubField) {
