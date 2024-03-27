@@ -51,6 +51,20 @@ const BookingSchema = new Schema<BookingDocument>(
   },
 )
 
+BookingSchema.virtual('user', {
+  ref: 'User',
+  localField: 'userId',
+  foreignField: '_id',
+  justOne: true,
+  options: {
+    projection: { password: 0, createdAt: 0, updatedAt: 0, role: 0, __v: 0 },
+  },
+})
+
+// Apply the virtual to the schema
+BookingSchema.set('toObject', { virtuals: true })
+BookingSchema.set('toJSON', { virtuals: true })
+
 const BookingModel = model<BookingDocument>('Booking', BookingSchema)
 
 export default BookingModel

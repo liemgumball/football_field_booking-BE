@@ -30,7 +30,7 @@ export function updateTurnOfServices(
 export function getListTurnOfServices(
   from: string,
   to: string,
-  price: number,
+  price?: number,
 ): TTurnOfService[] | null {
   let start = getIndexOfTimeStep(from)
   const end = getIndexOfTimeStep(to)

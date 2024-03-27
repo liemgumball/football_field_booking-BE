@@ -17,7 +17,7 @@ import { checkExactUser } from '@src/util/authorize'
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
 
-  const found = await BookingService.getById(id)
+  const found = await BookingService.getDetailById(id)
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
   // Check if correct user
@@ -53,7 +53,7 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   if (!checkExactUser(found.userId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).end()
 
-  const updated = await BookingService.update(id, canceling)
+  const updated = await BookingService.cancel(id, canceling)
 
   if (!updated)
     return res
@@ -81,7 +81,7 @@ export async function confirm(
       .send('Booking has been canceled')
 
   // Admin confirm booking
-  const updated = await BookingService.update(id, confirming)
+  const updated = await BookingService.confirm(id, confirming)
 
   if (!updated) return res.status(HttpStatusCodes.EXPECTATION_FAILED).end()
 

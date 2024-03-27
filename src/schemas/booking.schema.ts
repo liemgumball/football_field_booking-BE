@@ -1,6 +1,6 @@
 import { boolean, number, object, string } from 'zod'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
-import { getIndexOfTimeStep, getNextHour } from '@src/util/timestep'
+import { getIndexOfTimeStep } from '@src/util/timestep'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
@@ -9,7 +9,7 @@ const BookingSchema = object({
   subfieldId: ValidIdSchema,
   date: string()
     .transform((val) => new Date(val))
-    .refine((val) => val >= getNextHour()),
+    .refine((val) => val.getTime() === 0),
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),
@@ -32,5 +32,7 @@ export const confirmBookingSchema = object({
   params: object({
     id: ValidIdSchema,
   }),
-  body: object({ confirmed: boolean() }),
+  body: object({
+    confirmed: boolean().refine((val) => val, 'Only accept true'),
+  }),
 })
