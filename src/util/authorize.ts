@@ -9,8 +9,6 @@ import { Types } from 'mongoose'
  * @param user User session
  */
 export function checkAdmin(fieldAdminId?: Types.ObjectId, user?: IUserSession) {
-  // eslint-disable-next-line no-unsafe-optional-chaining
-
   if (user?.role === UserRole.CUSTOMER) return false
 
   if (user?.role === UserRole.ADMIN && !fieldAdminId?.equals(user?._id))
@@ -23,9 +21,17 @@ export function checkAdmin(fieldAdminId?: Types.ObjectId, user?: IUserSession) {
  * Check if the user requested is superuser or not
  */
 export function checkSuperUser(user?: IUserSession) {
-  // eslint-disable-next-line no-unsafe-optional-chaining
-
   if (user?.role === UserRole.SUPER_USER) return true
 
   return false
+}
+
+export function checkExactUser(
+  dataId: Types.ObjectId | string,
+  user?: IUserSession,
+) {
+  // for dataId in `req.body`
+  if (typeof dataId === 'string') return dataId === user?._id
+
+  return dataId.equals(user?._id)
 }
