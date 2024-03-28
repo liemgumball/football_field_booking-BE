@@ -37,6 +37,13 @@ export function getNextMonth(from = new Date()) {
   return nextMonth
 }
 
+export function getExpireDate(from = new Date()) {
+  const date = new Date(from)
+  date.setMonth(date.getMonth() + 1)
+  date.setHours(0, 0) // expires at midnight of local time
+  return date
+}
+
 /**
  * Get index time step in day
  * @example

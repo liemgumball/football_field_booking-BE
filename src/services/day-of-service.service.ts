@@ -1,9 +1,8 @@
 import DayOfServiceModel from '@src/models/day-of-service.model'
-import { TDayOfService, TurnOfServiceStatus } from '@src/types'
-import { getNextWeek } from '@src/util/timestep'
+import { TDayOfService, TTurnOfService, TurnOfServiceStatus } from '@src/types'
+import { getExpireDate, getNextWeek } from '@src/util/timestep'
 
 // Service
-// import * as LocationService from '@src/services/location.service'
 import {
   checkTurnOfServiceStatus,
   getListTurnOfServices,
@@ -53,12 +52,17 @@ export function generate30(requires: {
   tomorrow.setDate(tomorrow.getUTCDate() + 1)
   tomorrow.setUTCHours(0, 0, 0, 0)
 
-  const dates = Array.from({ length: 30 }, (_, i) => i).map((value) => {
+  const dates: Array<
+    Omit<TDayOfService, '_id' | 'availability' | 'turnOfServices'> & {
+      turnOfServices: Partial<TTurnOfService>[]
+    }
+  > = Array.from({ length: 30 }, (_, i) => i).map((value) => {
     const date = new Date(tomorrow.getTime() + value * 24 * 60 * 60 * 1000)
     return {
       fieldId: fieldId,
       subfieldId: subfieldId,
       date: date,
+      expireAt: getExpireDate(date),
       turnOfServices: turnOfServices,
     }
   })

@@ -80,6 +80,7 @@ export type TDayOfService = {
   fieldId: mongooseTypes.ObjectId
   subfieldId: mongooseTypes.ObjectId
   date: Date
+  expireAt: Date
   availability: boolean
   turnOfServices: TTurnOfService[]
 }
