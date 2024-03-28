@@ -28,8 +28,10 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(found)
 }
 
-// TODO check if available to book
-// TODO cancel booking after 30 minutes not confirmed
+/**
+ * Handle validation and create a new booking.
+ * Also create a TimeOut to `cancel` the booking after `10` minutes `not being confirmed`.
+ */
 export async function create(req: IReq<TBooking>, res: IRes) {
   const booking = req.body
 
@@ -49,9 +51,22 @@ export async function create(req: IReq<TBooking>, res: IRes) {
       .status(HttpStatusCodes.PRECONDITION_FAILED)
       .send('Can not create booking')
 
+  // Cancel after creating 10 minutes not being Confirmed
+  setTimeout(
+    () => {
+      BookingService.cancel(created._id as unknown as string, {
+        canceled: true,
+      })
+    },
+    10 * 60 * 1000,
+  )
+
   return res.status(HttpStatusCodes.CREATED).json(created)
 }
 
+/**
+ * Handle booking request by User
+ */
 export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   const canceling = req.body
   const { id } = req.params
@@ -74,6 +89,9 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
 
+/**
+ * Handle confirm booking by Admin
+ */
 export async function confirm(
   req: IReq<Pick<TBooking, 'confirmed'>>,
   res: IRes,
