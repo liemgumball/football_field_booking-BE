@@ -50,6 +50,7 @@ export type TSubField = {
   size: number
   availability: boolean
   defaultPrice: number
+  field?: TFootballField
 }
 
 /**
@@ -66,6 +67,7 @@ export type TFootballField = {
   closedAt: TimeStep
   rating: number
   images: string[]
+  subfields: TSubField[]
 }
 
 export type TTurnOfService = {

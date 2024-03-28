@@ -17,6 +17,7 @@ const SubFieldSchema = new Schema<SubFieldDocument>(
       type: Schema.Types.ObjectId,
       ref: 'FootballField',
       immutable: true,
+      index: true,
     },
     size: {
       type: Number,
@@ -39,6 +40,13 @@ const SubFieldSchema = new Schema<SubFieldDocument>(
     timestamps: true,
   },
 )
+
+SubFieldSchema.virtual('field', {
+  ref: 'FootballField',
+  localField: 'fieldId',
+  foreignField: '_id',
+  justOne: true,
+})
 
 const SubFieldModel = model<SubFieldDocument>('SubField', SubFieldSchema)
 

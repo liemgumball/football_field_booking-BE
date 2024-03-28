@@ -2,8 +2,6 @@
  * Environments variables declared here.
  */
 
-import { ConnectOptions } from 'mongoose'
-
 /* eslint-disable node/no-process-env */
 
 export default {
@@ -34,11 +32,17 @@ export default {
     uri: process.env.MONGODB_URI ?? '',
     options: {
       dbName: process.env.MONGODB_BD_NAME ?? '',
-    } as ConnectOptions,
+    },
   },
   SuperUser: {
     email: process.env.SUPER_USER_EMAIL ?? '',
     password: process.env.SUPER_USER_PASSWORD ?? '',
     phoneNumber: process.env.SUPER_USER_PHONE_NUMBER ?? '',
+  },
+  Rules: {
+    DayOfService: {
+      rangeDays: Number(process.env.DAY_OF_SERVICE_RANGE) ?? 30,
+      expireDays: Number(process.env.DAY_OF_SERVICE_EXPIRE) ?? 30,
+    },
   },
 } as const
