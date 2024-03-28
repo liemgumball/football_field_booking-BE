@@ -20,7 +20,7 @@ export async function getById(req: IReq<TUser>, res: IRes) {
   const user = await UserService.getById(id)
   if (user) return res.status(HttpStatusCodes.OK).json(user)
 
-  return res.status(HttpStatusCodes.BAD_REQUEST).send('User not found')
+  return res.status(HttpStatusCodes.NOT_FOUND).send('User not found')
 }
 
 /**
@@ -31,7 +31,7 @@ export async function delete_(req: IReq<TUser>, res: IRes) {
 
   const deleted = await UserService.delete_(id)
   if (!deleted)
-    return res.status(HttpStatusCodes.CONFLICT).send('Failed to delete')
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Failed to delete')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -45,7 +45,9 @@ export async function update(req: IReq<TUser>, res: IRes) {
 
   const updated = await UserService.update(id, user)
   if (!updated)
-    return res.status(HttpStatusCodes.CONFLICT).send('Failed to update user')
+    return res
+      .status(HttpStatusCodes.NOT_MODIFIED)
+      .send('Failed to update user')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -69,7 +71,7 @@ export async function change_password(
 
   const updated = await UserService.change_password(id, new_password)
 
-  if (!updated) return res.status(HttpStatusCodes.CONFLICT).end()
+  if (!updated) return res.status(HttpStatusCodes.NOT_MODIFIED).end()
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

@@ -29,7 +29,7 @@ export async function getFromLocation(req: IReq, res: IRes) {
     typeof distance === 'string' ? +distance : undefined,
   )
 
-  if (!fields) return res.status(HttpStatusCodes.NO_CONTENT).end()
+  if (!fields) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
   return res.status(HttpStatusCodes.OK).json(fields)
 }
@@ -43,7 +43,7 @@ export async function getById(req: IReq, res: IRes) {
   const field = await FootballFieldService.getById(id)
 
   if (!field)
-    return res.status(HttpStatusCodes.BAD_REQUEST).send('Data not found')
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Data not found')
 
   return res.status(HttpStatusCodes.OK).json(field)
 }
@@ -88,7 +88,7 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
   const updated = await FootballFieldService.update(id, data)
 
   if (!updated)
-    return res.status(HttpStatusCodes.CONFLICT).send('Update failed')
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Update failed')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -102,7 +102,7 @@ export async function delete_(req: IReq, res: IRes) {
   const deleted = await FootballFieldService.delete_(id)
 
   if (!deleted)
-    return res.status(HttpStatusCodes.CONFLICT).send('Failed to delete')
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Failed to delete')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
