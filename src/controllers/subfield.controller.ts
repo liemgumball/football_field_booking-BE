@@ -4,7 +4,7 @@ import * as SubFieldService from '@src/services/subfield.service'
 import { TSubField } from '@src/types'
 import { IReq, IRes } from '@src/types/express/misc'
 
-// FIXME with transaction
+// [ ] should be transaction
 export async function createSubField(req: IReq<TSubField>, res: IRes) {
   const { fieldId } = req.params
 

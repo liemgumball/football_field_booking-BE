@@ -1,7 +1,9 @@
+import { TimeStep } from '@src/types'
+
 // Today
 export function getToday(from = new Date()) {
   const today = new Date(from)
-  today.setHours(23, 59, 0, 0)
+  today.setUTCHours(23, 59, 0, 0)
   return today
 }
 
@@ -15,7 +17,7 @@ export function getNextHour(from = new Date()) {
 export function getTomorrow(from = new Date()) {
   const tomorrow = new Date(from)
   tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setHours(23, 59, 59, 0)
+  tomorrow.setUTCHours(23, 59, 59, 0)
   return tomorrow
 }
 
@@ -23,7 +25,7 @@ export function getTomorrow(from = new Date()) {
 export function getNextWeek(from = new Date()) {
   const nextWeek = new Date(from)
   nextWeek.setDate(nextWeek.getDate() + 7)
-  nextWeek.setHours(23, 59, 59, 0)
+  nextWeek.setUTCHours(23, 59, 59, 0)
   return nextWeek
 }
 
@@ -31,8 +33,7 @@ export function getNextWeek(from = new Date()) {
 export function getNextMonth(from = new Date()) {
   const nextMonth = new Date(from)
   nextMonth.setMonth(nextMonth.getMonth() + 1)
-  nextMonth.setDate(1) // Set the date to the first day of the next month
-  nextMonth.setHours(23, 59, 59, 0)
+  nextMonth.setUTCHours(23, 59, 59, 0)
   return nextMonth
 }
 
@@ -87,4 +88,16 @@ export function getTimeStepLength(start: string, end: string): number {
   if (endIndex <= startIndex) return -1
 
   return endIndex - startIndex
+}
+
+export function getDateFromTimeStep(date: Date, time: TimeStep): Date {
+  const list = time.split(':')
+  const hour = parseInt(list[0])
+  const minute = parseInt(list[1])
+
+  const now = new Date(date)
+  now.setHours(hour)
+  now.setMinutes(minute)
+
+  return now
 }

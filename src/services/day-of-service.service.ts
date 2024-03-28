@@ -1,14 +1,15 @@
 import DayOfServiceModel from '@src/models/day-of-service.model'
-import { TDayOfService } from '@src/types'
+import { TDayOfService, TurnOfServiceStatus } from '@src/types'
 import { getNextWeek } from '@src/util/timestep'
 
 // Service
 // import * as LocationService from '@src/services/location.service'
 import {
+  checkTurnOfServiceStatus,
   getListTurnOfServices,
   updateTurnOfServices,
 } from '@src/util/turn-of-service'
-import { Types } from 'mongoose' // FIXME too large import
+import { Types } from 'mongoose' // XXX too large import
 
 export function getById(id: string) {
   return DayOfServiceModel.findById(id)
@@ -49,8 +50,8 @@ export function generate30(requires: {
   if (!turnOfServices) return null
 
   const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setTime(0)
+  tomorrow.setDate(tomorrow.getUTCDate() + 1)
+  tomorrow.setUTCHours(0, 0, 0, 0)
 
   const dates = Array.from({ length: 30 }, (_, i) => i).map((value) => {
     const date = new Date(tomorrow.getTime() + value * 24 * 60 * 60 * 1000)
@@ -116,20 +117,41 @@ export function getMany(
   return DayOfServiceModel.find(query, {}, { limit: 50 })
 }
 
-export function addUserId(
-  subfieldId: string,
+export async function checkValidUpdate(
   date: Date,
-  userId: string,
+  subfieldId: string,
   from: string,
   to: string,
+  status: TurnOfServiceStatus,
+) {
+  const found = await DayOfServiceModel.findOne({
+    date: date,
+    subfieldId: subfieldId,
+  }).exec()
+
+  if (!found) return false
+
+  return checkTurnOfServiceStatus(found.turnOfServices, from, to, status)
+}
+
+export function addBookingId(
+  bookingId: string | null,
+  subfieldId: string,
+  date: Date,
+  from: string,
+  to: string,
+  status: TurnOfServiceStatus,
 ) {
   return DayOfServiceModel.updateOne(
     { subfieldId: subfieldId, date: date },
     {
-      $set: { 'turnOfServices.$[ele].userId': userId },
+      $set: {
+        'turnOfServices.$[ele].status': status,
+        'turnOfServices.$[ele].bookingId': bookingId,
+      },
     },
     {
-      arrayFilters: [{ 'ele.at': { $gte: from, $lte: to } }],
+      arrayFilters: [{ 'ele.at': { $gte: from, $lt: to } }],
     },
   )
 }

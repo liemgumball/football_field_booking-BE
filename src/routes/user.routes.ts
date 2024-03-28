@@ -28,32 +28,33 @@ userRouter.get('', UserController.getAll)
 // Authentication
 userRouter.use(deserializeUser)
 
-// Only exact User can access
-userRouter.use(canAccessUserDetails)
-
+//------------------------- Only exact User can access -------------------------
 userRouter.get(
   Paths.USERS.GET,
+  canAccessUserDetails,
   serialize(withValidIdSchema),
   UserController.getById,
 )
 
 userRouter.patch(
   Paths.USERS.UPDATE,
+  canAccessUserDetails,
   serialize(updateUserSchema),
   UserController.update,
 )
 
 userRouter.patch(
   Paths.USERS.CHANGE_PASSWORD,
+  canAccessUserDetails,
   serialize(changePasswordSchema),
   UserController.change_password,
 )
 
-// Only Super User can access
+// ------------------------- Only Super User can access ------------------------
 userRouter.delete(
   Paths.USERS.DELETE,
-  serialize(withValidIdSchema),
   isSuperUser,
+  serialize(withValidIdSchema),
   UserController.delete_,
 )
 

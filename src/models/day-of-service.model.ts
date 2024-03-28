@@ -1,5 +1,5 @@
 import { HH_MM_REGEX } from '@src/constants/Regex'
-import { TDayOfService, TTurnOfService } from '@src/types'
+import { TDayOfService, TTurnOfService, TurnOfServiceStatus } from '@src/types'
 import { Schema, model, Document } from 'mongoose'
 
 type DayOfServiceDocument = TDayOfService & Document
@@ -14,10 +14,15 @@ const TurnOfServiceSchema = new Schema<TurnOfServiceDocument>(
       immutable: true,
     },
     price: { type: Number },
-    availability: { type: Boolean, default: false },
-    userId: {
+    status: {
+      type: String,
+      enum: TurnOfServiceStatus,
+      default: TurnOfServiceStatus.AVAILABLE,
+    },
+    bookingId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Booking',
+      default: null,
       index: true,
     },
   },

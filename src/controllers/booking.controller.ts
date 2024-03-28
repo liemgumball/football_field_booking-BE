@@ -7,6 +7,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 // Services
 import * as BookingService from '@src/services/booking.service'
+import * as SubFieldService from '@src/services/subfield.service'
 
 // Utilities
 import { checkExactUser } from '@src/util/authorize'
@@ -27,6 +28,10 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(found)
 }
 
+/**
+ * Handle validation and create a new booking.
+ * Also create a TimeOut to `cancel` the booking after `10` minutes `not being confirmed`.
+ */
 export async function create(req: IReq<TBooking>, res: IRes) {
   const booking = req.body
 
@@ -34,13 +39,34 @@ export async function create(req: IReq<TBooking>, res: IRes) {
   if (!checkExactUser(booking.userId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).end()
 
+  const subfield = await SubFieldService.getById(booking.subfieldId.toString())
+
+  if (!subfield)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
+
   const created = await BookingService.create(booking)
 
-  if (!created) return res.status(HttpStatusCodes.PRECONDITION_FAILED).end()
+  if (!created)
+    return res
+      .status(HttpStatusCodes.PRECONDITION_FAILED)
+      .send('Can not create booking')
+
+  // Cancel after creating 10 minutes not being Confirmed
+  setTimeout(
+    () => {
+      BookingService.cancel(created._id as unknown as string, {
+        canceled: true,
+      })
+    },
+    10 * 60 * 1000,
+  )
 
   return res.status(HttpStatusCodes.CREATED).json(created)
 }
 
+/**
+ * Handle booking request by User
+ */
 export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   const canceling = req.body
   const { id } = req.params
@@ -63,6 +89,9 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
 
+/**
+ * Handle confirm booking by Admin
+ */
 export async function confirm(
   req: IReq<Pick<TBooking, 'confirmed'>>,
   res: IRes,
