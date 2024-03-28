@@ -1,3 +1,5 @@
+import { TimeStep } from '@src/types'
+
 // Today
 export function getToday(from = new Date()) {
   const today = new Date(from)
@@ -7,7 +9,7 @@ export function getToday(from = new Date()) {
 
 export function getNextHour(from = new Date()) {
   const nextHour = new Date(from)
-  nextHour.setUTCHours(nextHour.getHours() + 1)
+  nextHour.setHours(nextHour.getHours() + 1)
   return nextHour
 }
 
@@ -31,7 +33,6 @@ export function getNextWeek(from = new Date()) {
 export function getNextMonth(from = new Date()) {
   const nextMonth = new Date(from)
   nextMonth.setMonth(nextMonth.getMonth() + 1)
-  nextMonth.setDate(1) // Set the date to the first day of the next month
   nextMonth.setUTCHours(23, 59, 59, 0)
   return nextMonth
 }
@@ -87,4 +88,16 @@ export function getTimeStepLength(start: string, end: string): number {
   if (endIndex <= startIndex) return -1
 
   return endIndex - startIndex
+}
+
+export function getDateFromTimeStep(date: Date, time: TimeStep): Date {
+  const list = time.split(':')
+  const hour = parseInt(list[0])
+  const minute = parseInt(list[1])
+
+  const now = new Date(date)
+  now.setHours(hour)
+  now.setMinutes(minute)
+
+  return now
 }
