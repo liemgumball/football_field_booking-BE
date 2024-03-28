@@ -5,6 +5,7 @@ import { getNextWeek } from '@src/util/timestep'
 // Service
 // import * as LocationService from '@src/services/location.service'
 import {
+  checkTurnOfServiceStatus,
   getListTurnOfServices,
   updateTurnOfServices,
 } from '@src/util/turn-of-service'
@@ -114,6 +115,23 @@ export function getMany(
         availability: true,
       }
   return DayOfServiceModel.find(query, {}, { limit: 50 })
+}
+
+export async function checkValidUpdate(
+  date: Date,
+  subfieldId: string,
+  from: string,
+  to: string,
+  status: TurnOfServiceStatus,
+) {
+  const found = await DayOfServiceModel.findOne({
+    date: date,
+    subfieldId: subfieldId,
+  }).exec()
+
+  if (!found) return false
+
+  return checkTurnOfServiceStatus(found.turnOfServices, from, to, status)
 }
 
 export function addBookingId(

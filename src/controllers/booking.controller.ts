@@ -28,6 +28,7 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(found)
 }
 
+// TODO check if available to book
 // TODO cancel booking after 30 minutes not confirmed
 export async function create(req: IReq<TBooking>, res: IRes) {
   const booking = req.body
@@ -43,7 +44,10 @@ export async function create(req: IReq<TBooking>, res: IRes) {
 
   const created = await BookingService.create(booking)
 
-  if (!created) return res.status(HttpStatusCodes.PRECONDITION_FAILED).end()
+  if (!created)
+    return res
+      .status(HttpStatusCodes.PRECONDITION_FAILED)
+      .send('Can not create booking')
 
   return res.status(HttpStatusCodes.CREATED).json(created)
 }

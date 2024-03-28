@@ -12,6 +12,17 @@ export function getById(id: string) {
 }
 
 export async function create(data: TBooking) {
+  // If status is `available` then valid to `book`
+  const check = await DayOfServiceService.checkValidUpdate(
+    data.date,
+    data.subfieldId as unknown as string,
+    data.from,
+    data.to,
+    TurnOfServiceStatus.AVAILABLE,
+  )
+
+  if (!check) return null
+
   const booking = await BookingModel.create(data)
 
   const dayOfService = await DayOfServiceService.addBookingId(
@@ -30,6 +41,17 @@ export async function cancel(id: string, data: Pick<TBooking, 'canceled'>) {
   const booking = await BookingModel.findById(id)
 
   if (!booking) return null
+
+  // If status is `in progress` then valid to `cancel`
+  const check = await DayOfServiceService.checkValidUpdate(
+    booking.date,
+    booking.subfieldId as unknown as string,
+    booking.from,
+    booking.to,
+    TurnOfServiceStatus.IN_PROGRESS,
+  )
+
+  if (!check) return null
 
   const dayOfService = await DayOfServiceService.addBookingId(
     null,
@@ -50,6 +72,17 @@ export async function confirm(
   const booking = await BookingModel.findById(id)
 
   if (!booking) return null
+
+  // If status is `in progress` then valid to `confirm`
+  const check = await DayOfServiceService.checkValidUpdate(
+    booking.date,
+    booking.subfieldId as unknown as string,
+    booking.from,
+    booking.to,
+    TurnOfServiceStatus.IN_PROGRESS,
+  )
+
+  if (!check) return null
 
   const dayOfService = await DayOfServiceService.addBookingId(
     id,

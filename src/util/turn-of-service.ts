@@ -1,4 +1,4 @@
-import { TTurnOfService } from '@src/types'
+import { TTurnOfService, TurnOfServiceStatus } from '@src/types'
 import { getIndexOfTimeStep, getTimeStepFromIndex } from './timestep'
 
 /**
@@ -48,4 +48,16 @@ export function getListTurnOfServices(
   }
 
   return result
+}
+
+export function checkTurnOfServiceStatus(
+  list: TTurnOfService[],
+  from: string,
+  to: string,
+  status: TurnOfServiceStatus,
+) {
+  const start = list.findIndex((val) => val.at === from)
+  const end = list.findIndex((val) => val.at === to)
+
+  return list.slice(start, end).every((val) => val.status === status)
 }
