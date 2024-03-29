@@ -2,11 +2,13 @@ import cron from 'node-cron'
 
 // Service
 import * as DayOfServiceService from '@src/services/day-of-service.service'
+import EnvVars from '@src/constants/EnvVars'
 
-// FIXME environment variables for Cron Expression
 function scheduleGenerateDayOfService() {
   // Every day at 01:00 AM
-  cron.schedule('0 1 * * *', () => DayOfServiceService.autoGenerate())
+  cron.schedule(EnvVars.Rules.DayOfService.generateSchedule, () =>
+    DayOfServiceService.autoGenerate(),
+  )
 }
 
 export default scheduleGenerateDayOfService

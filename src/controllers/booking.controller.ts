@@ -8,9 +8,10 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 // Services
 import * as BookingService from '@src/services/booking.service'
 import * as SubFieldService from '@src/services/subfield.service'
+import * as FootballFieldService from '@src/services/football-field.service'
 
 // Utilities
-import { checkExactUser } from '@src/util/authorize'
+import { checkAdmin, checkExactUser } from '@src/util/authorize'
 
 /**
  * Get booking details
@@ -21,8 +22,16 @@ export async function getById(req: IReq, res: IRes) {
   const found = await BookingService.getDetailById(id)
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
+  const field = await FootballFieldService.getBySubfieldId(
+    found.subfieldId.toString(),
+  )
+  if (!field) return res.status(HttpStatusCodes.EXPECTATION_FAILED).end()
+
   // Check if correct user
-  if (!checkExactUser(found.userId, req.user))
+  if (
+    !checkExactUser(found.userId, req.user) &&
+    !checkAdmin(field?.adminId, req.user)
+  )
     return res.status(HttpStatusCodes.FORBIDDEN).end()
 
   return res.status(HttpStatusCodes.OK).json(found)
@@ -87,7 +96,7 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   const updated = await BookingService.cancel(id, canceling)
 
   if (!updated)
-    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Failed to cancel')
+    return res.status(HttpStatusCodes.CONFLICT).send('Failed to cancel booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -115,7 +124,10 @@ export async function confirm(
   // Admin confirm booking
   const updated = await BookingService.confirm(id, confirming)
 
-  if (!updated) return res.status(HttpStatusCodes.NOT_MODIFIED).end()
+  if (!updated)
+    return res
+      .status(HttpStatusCodes.CONFLICT)
+      .send('Failed to confirm booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

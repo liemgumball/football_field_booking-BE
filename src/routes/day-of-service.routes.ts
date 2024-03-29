@@ -31,7 +31,7 @@ dayOfServiceRouter.get(
 
 // get by fieldId
 dayOfServiceRouter.get(
-  Paths.DAY_OF_SERVICE.BY_SUBFIELD,
+  Paths.DAY_OF_SERVICE.BY_FIELD,
   serialize(withValidIdSchema),
   DayOfServiceController.getByFieldId,
 )
