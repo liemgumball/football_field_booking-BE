@@ -50,6 +50,7 @@ export type TSubField = {
   size: number
   availability: boolean
   defaultPrice: number
+  field?: TFootballField
 }
 
 /**
@@ -66,6 +67,7 @@ export type TFootballField = {
   closedAt: TimeStep
   rating: number
   images: string[]
+  subfields: TSubField[]
 }
 
 export type TTurnOfService = {
@@ -80,6 +82,7 @@ export type TDayOfService = {
   fieldId: mongooseTypes.ObjectId
   subfieldId: mongooseTypes.ObjectId
   date: Date
+  expireAt: Date
   availability: boolean
   turnOfServices: TTurnOfService[]
 }

@@ -31,7 +31,7 @@ export function getListTurnOfServices(
   from: string,
   to: string,
   price: number,
-): Pick<TTurnOfService, 'at' | 'price'>[] | null {
+): Partial<TTurnOfService>[] | null {
   let start = getIndexOfTimeStep(from)
   const end = getIndexOfTimeStep(to)
 

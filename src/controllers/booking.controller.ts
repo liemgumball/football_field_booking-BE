@@ -79,12 +79,15 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   if (!checkExactUser(found.userId, req.user))
     return res.status(HttpStatusCodes.FORBIDDEN).end()
 
+  if (found.canceled)
+    return res
+      .status(HttpStatusCodes.METHOD_NOT_ALLOWED)
+      .send('Already canceled')
+
   const updated = await BookingService.cancel(id, canceling)
 
   if (!updated)
-    return res
-      .status(HttpStatusCodes.EXPECTATION_FAILED)
-      .send('Failed to cancel')
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Failed to cancel')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -112,7 +115,7 @@ export async function confirm(
   // Admin confirm booking
   const updated = await BookingService.confirm(id, confirming)
 
-  if (!updated) return res.status(HttpStatusCodes.EXPECTATION_FAILED).end()
+  if (!updated) return res.status(HttpStatusCodes.NOT_MODIFIED).end()
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

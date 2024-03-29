@@ -4,6 +4,10 @@ import * as FootballFieldService from '@src/services/football-field.service'
 import * as DayOfServiceService from '@src/services/day-of-service.service'
 import { Types } from 'mongoose'
 
+export function getAll() {
+  return SubFieldModel.find()
+}
+
 export function getById(id: string) {
   return SubFieldModel.findById(id)
 }
@@ -26,13 +30,13 @@ export async function create(data: TSubField) {
     const newSubField = new SubFieldModel(data)
     await newSubField.save()
 
-    await DayOfServiceService.generate30({
-      fieldId: field._id,
-      subfieldId: newSubField._id as Types.ObjectId,
-      defaultPrice: newSubField.defaultPrice,
-      fieldOpenTime: field.openedAt,
-      fieldCloseTime: field.closedAt,
-    })
+    await DayOfServiceService.generateOnCreate(
+      field._id,
+      newSubField._id as Types.ObjectId,
+      newSubField.defaultPrice,
+      field.openedAt,
+      field.closedAt,
+    )
 
     return newSubField
   } catch (error) {

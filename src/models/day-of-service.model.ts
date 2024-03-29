@@ -23,13 +23,17 @@ const TurnOfServiceSchema = new Schema<TurnOfServiceDocument>(
       type: Schema.Types.ObjectId,
       ref: 'Booking',
       default: null,
-      index: true,
     },
   },
   { _id: false }, // no auto generate Id
 )
 
 const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
+  expireAt: {
+    type: Date,
+    required: true,
+    index: { expireAfterSeconds: 0 },
+  },
   date: {
     type: Date,
     required: true,

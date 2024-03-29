@@ -17,7 +17,7 @@ export async function getById(req: IReq, res: IRes) {
 
   const found = await DayOfServiceService.getById(id)
 
-  if (!found) return res.status(HttpStatusCodes.NO_CONTENT).end()
+  if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
   return res.status(HttpStatusCodes.OK).json(found)
 }

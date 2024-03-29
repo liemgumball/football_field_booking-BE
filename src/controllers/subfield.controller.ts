@@ -48,7 +48,7 @@ export async function updateSubfield(req: IReq<Partial<TSubField>>, res: IRes) {
   const subfield = req.body
   const updated = await SubFieldService.update(id, subfield)
 
-  if (!updated) return res.status(HttpStatusCodes.CONFLICT).end()
+  if (!updated) return res.status(HttpStatusCodes.NOT_MODIFIED).end()
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
