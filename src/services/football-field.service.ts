@@ -18,6 +18,10 @@ export function getById(id: string) {
     .populate('location')
 }
 
+export function getBySubfieldId(subfieldId: string) {
+  return FootballFieldModel.findOne({ subfieldIds: subfieldId })
+}
+
 // [ ] should be transaction
 export async function create(data: TFootballField) {
   const { location, ...field } = data

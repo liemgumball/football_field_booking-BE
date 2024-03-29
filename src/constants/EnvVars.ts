@@ -43,6 +43,7 @@ export default {
     DayOfService: {
       rangeDays: Number(process.env.DAY_OF_SERVICE_RANGE) ?? 30,
       expireDays: Number(process.env.DAY_OF_SERVICE_EXPIRE) ?? 30,
+      generateSchedule: process.env.DAY_OF_SERVICE_AUTO_GENERATE_CRON ?? '',
     },
   },
 } as const

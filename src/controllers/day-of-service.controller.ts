@@ -26,8 +26,8 @@ export async function getById(req: IReq, res: IRes) {
  * Get by Field ID
  */
 export async function getByFieldId(req: IReq, res: IRes) {
-  const { fieldId } = req.params
-  const field = await FootballFieldService.getById(fieldId)
+  const { id } = req.params
+  const field = await FootballFieldService.getById(id)
 
   if (!field)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Field not found')

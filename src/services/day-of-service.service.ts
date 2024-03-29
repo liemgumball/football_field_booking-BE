@@ -9,7 +9,7 @@ import {
   TFootballField,
   TTurnOfService,
   TurnOfServiceStatus,
-} from '@src/types'
+} from '@src/types' // TODO
 
 // Utilities
 import {
@@ -22,25 +22,72 @@ import {
   getListTurnOfServices,
   updateTurnOfServices,
 } from '@src/util/turn-of-service'
-import { Types } from 'mongoose' // XXX too large import
+import { Types } from 'mongoose'
 
+// BUG Fix the response data. It's too large and included some unnecessary date
 export function getById(id: string) {
-  return DayOfServiceModel.findById(id)
+  return DayOfServiceModel.findById(id).select({
+    __v: 0,
+    expireAt: 0,
+    'turnOfServices.bookingId': 0,
+  })
 }
 
+// BUG Fix the response data. It's too large and included some unnecessary date
 export function getByFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
-    { fieldId: id, availability: true },
-    {},
+    {
+      fieldId: id,
+      availability: true,
+      'turnOfServices.status': { $eq: TurnOfServiceStatus.AVAILABLE },
+    },
+    { __v: 0, turnOfServices: 0 },
     { limit: 30 },
   )
 }
 
+// BUG Fix the response data. It's too large and included some unnecessary date
 export function getBySubFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
     { subfieldId: id, availability: true },
-    {},
+    { __v: 0, turnOfServices: 0 },
     { limit: 30 },
+  )
+}
+
+// BUG Fix the response data. It's too large and included some unnecessary date
+/**
+ * Query list of `day of service`
+ * @description by default will query from `current time` to `next week`
+ * @param from start of time range
+ * @param to end of time range
+ * @param fieldIds list of field to search from
+ * @returns list of `day of service`
+ */
+export function getMany(
+  from: Date = new Date(),
+  to: Date = getNextWeek(from),
+  fieldIds?: string[],
+) {
+  /**
+   * If fieldIds provided then query `$in` the fieldIds list
+   */
+  const query = fieldIds
+    ? {
+        fieldId: { $in: fieldIds },
+        date: { $gte: from, $lte: to },
+        availability: true,
+        'turnOfServices.status': { $eq: TurnOfServiceStatus.IN_PROGRESS },
+      }
+    : {
+        date: { $gte: from, $lte: to },
+        availability: true,
+        'turnOfServices.status': { $eq: TurnOfServiceStatus.IN_PROGRESS },
+      }
+  return DayOfServiceModel.find(
+    query,
+    { __v: 0, 'turnOfServices.bookingId': 0, expireAt: 0 },
+    { limit: 50 },
   )
 }
 
@@ -156,35 +203,6 @@ export async function updateOne(id: string, data: Partial<TDayOfService>) {
   }
 
   return DayOfServiceModel.findByIdAndUpdate(id, data)
-}
-
-/**
- * Query list of `day of service`
- * @description by default will query from `current time` to `next week`
- * @param from start of time range
- * @param to end of time range
- * @param fieldIds list of field to search from
- * @returns list of `day of service`
- */
-export function getMany(
-  from: Date = new Date(),
-  to: Date = getNextWeek(from),
-  fieldIds?: string[],
-) {
-  /**
-   * If fieldIds provided then query `$in` the fieldIds list
-   */
-  const query = fieldIds
-    ? {
-        fieldId: { $in: fieldIds },
-        date: { $gte: from, $lte: to },
-        availability: true,
-      }
-    : {
-        date: { $gte: from, $lte: to },
-        availability: true,
-      }
-  return DayOfServiceModel.find(query, {}, { limit: 50 })
 }
 
 export async function checkValidUpdate(
