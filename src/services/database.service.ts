@@ -11,10 +11,6 @@ export function ping() {
 }
 
 export default {
-  connect: () =>
-    connect(EnvVars.Database.uri, {
-      ...EnvVars.Database.options,
-      connectTimeoutMS: 60 * 1000,
-    }),
+  connect: () => connect(EnvVars.Database.uri, EnvVars.Database.options),
   ping,
 }

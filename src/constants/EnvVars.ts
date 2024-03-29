@@ -31,6 +31,7 @@ export default {
   Database: {
     uri: process.env.MONGODB_URI ?? '',
     options: {
+      connectTimeoutMS: 2 * 1000,
       dbName: process.env.MONGODB_BD_NAME ?? '',
     },
   },
