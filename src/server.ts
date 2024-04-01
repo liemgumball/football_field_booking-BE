@@ -46,8 +46,8 @@ if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
 // Create session data
 const MongoDBSession = connectMongoDBSession(session)
 const store = new MongoDBSession({
+  ...EnvVars.Database.options,
   uri: EnvVars.Database.uri,
-  databaseName: EnvVars.Database.options.dbName,
   collection: 'sessions',
 })
 
