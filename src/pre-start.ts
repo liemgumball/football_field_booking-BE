@@ -27,9 +27,9 @@ const args = parse<IArgs>({
 })
 
 // Set the env file
-const result2 = dotenv.config({
-  path: path.join(__dirname, `../env/${args.env}.env`),
-})
-if (result2.error) {
-  // result2.error
+// eslint-disable-next-line node/no-process-env
+if (!process.env.RENDER) {
+  dotenv.config({
+    path: path.join(__dirname, `../env/${args.env}.env`),
+  })
 }
