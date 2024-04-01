@@ -5,4 +5,6 @@ Dockerfile
 *.log
 dist
 spec
-env
+.git
+.cache
+*.md
