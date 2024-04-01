@@ -8,3 +8,4 @@ spec
 .git
 .cache
 *.md
+.vscode
