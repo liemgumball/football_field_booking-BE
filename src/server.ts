@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import path from 'path'
 import helmet from 'helmet'
+import cors from 'cors'
 import express, { Request, Response, NextFunction } from 'express'
 import logger from 'jet-logger'
 import session from 'express-session'
@@ -29,6 +30,12 @@ const app = express()
 // **** Setup **** //
 
 // Basic middleware
+app.use(
+  cors({
+    origin: EnvVars.AllowedOrigins,
+  }),
+)
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(EnvVars.CookieProps.Secret))
