@@ -1,10 +1,7 @@
 import { boolean, number, object, string } from 'zod'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
-import {
-  getDateFromTimeStep,
-  getIndexOfTimeStep,
-  getNextHour,
-} from '@src/util/timestep'
+import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
+import { getNextHour } from '@src/util/date'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 

@@ -1,6 +1,6 @@
 import { array, boolean, number, object, string } from 'zod'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
-import { getNextMonth, getTomorrow } from '@src/util/timestep'
+import { getNextMonth, getTomorrow } from '@src/util/date'
 
 const TurnOfServiceSchema = object({
   at: TimeStepSchema,
