@@ -4,7 +4,10 @@ import { TBooking, TurnOfServiceStatus } from '@src/types'
 import * as DayOfServiceService from './day-of-service.service'
 
 export function getDetailById(id: string) {
-  return BookingModel.findById(id).populate('user')
+  return BookingModel.findById(id)
+    .populate('user')
+    .populate('subfield')
+    .populate('field')
 }
 
 export function getById(id: string) {

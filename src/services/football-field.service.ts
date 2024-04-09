@@ -1,6 +1,7 @@
 import FootballFieldModel from '@src/models/football-field.model'
 import * as LocationService from '@src/services/location.service'
 import { TFootballField } from '@src/types'
+import { Types } from 'mongoose'
 
 export function getAll(options: { name?: string } = {}) {
   const { name } = options
@@ -18,7 +19,7 @@ export function getById(id: string) {
     .populate('location')
 }
 
-export function getBySubfieldId(subfieldId: string) {
+export function getBySubfieldId(subfieldId: Types.ObjectId) {
   return FootballFieldModel.findOne({ subfieldIds: subfieldId })
 }
 

@@ -1,6 +1,6 @@
 // Types
 import { IReq, IRes } from '@src/types/express/misc'
-import { TBooking } from '@src/types'
+import { TBooking, UserRole } from '@src/types'
 
 // Constants
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
@@ -22,17 +22,21 @@ export async function getById(req: IReq, res: IRes) {
   const found = await BookingService.getDetailById(id)
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
-  const field = await FootballFieldService.getBySubfieldId(
-    found.subfieldId.toString(),
-  )
-  if (!field) return res.status(HttpStatusCodes.EXPECTATION_FAILED).end()
-
-  // Check if correct user
-  if (
-    !checkExactUser(found.userId, req.user) &&
-    !checkAdmin(field?.adminId, req.user)
-  )
-    return res.status(HttpStatusCodes.FORBIDDEN).end()
+  // Correct User
+  if (req.user?.role === UserRole.CUSTOMER) {
+    if (!checkExactUser(found.userId, req.user))
+      return res.status(HttpStatusCodes.FORBIDDEN).end()
+  } else {
+    // Admin
+    const field = await FootballFieldService.getById(found.fieldId.toString())
+    if (!field)
+      return res
+        .status(HttpStatusCodes.EXPECTATION_FAILED)
+        .send('Invalid SubfieldId in Booking')
+    //
+    if (!checkAdmin(field.adminId, req.user))
+      return res.status(HttpStatusCodes.FORBIDDEN).end()
+  }
 
   return res.status(HttpStatusCodes.OK).json(found)
 }
@@ -53,7 +57,10 @@ export async function create(req: IReq<TBooking>, res: IRes) {
   if (!subfield)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
 
-  const created = await BookingService.create(booking)
+  const created = await BookingService.create({
+    ...booking,
+    fieldId: subfield.fieldId,
+  })
 
   if (!created)
     return res

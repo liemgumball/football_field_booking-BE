@@ -9,12 +9,12 @@ import { Types } from 'mongoose'
  * @param user User session
  */
 export function checkAdmin(fieldAdminId?: Types.ObjectId, user?: IUserSession) {
-  if (user?.role === UserRole.CUSTOMER) return false
+  if (user?.role === UserRole.SUPER_USER) return true
 
-  if (user?.role === UserRole.ADMIN && !fieldAdminId?.equals(user?._id))
-    return false
+  if (user?.role === UserRole.ADMIN && fieldAdminId?.equals(user?._id))
+    return true
 
-  return true
+  return false
 }
 
 /**
