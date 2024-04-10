@@ -1,5 +1,6 @@
 import { HH_MM_REGEX } from '@src/constants/Regex'
 import { TDayOfService, TTurnOfService, TurnOfServiceStatus } from '@src/types'
+import { getExpireDate } from '@src/util/date'
 import { Schema, model, Document } from 'mongoose'
 
 type DayOfServiceDocument = TDayOfService & Document
@@ -75,6 +76,12 @@ const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
       required: true,
     },
   ],
+})
+
+DayOfServiceSchema.pre('validate', function (next) {
+  const expireDate = getExpireDate(this.date)
+  this.expireAt = expireDate
+  return next()
 })
 
 // Define a virtual field to resolve the subfield from the FootballField model

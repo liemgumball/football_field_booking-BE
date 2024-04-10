@@ -1,5 +1,11 @@
 import EnvVars from '@src/constants/EnvVars'
 
+export function getToday() {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return today
+}
+
 export function getNextHour(from = new Date()) {
   const nextHour = new Date(from)
   nextHour.setHours(nextHour.getHours() + 1)
@@ -9,21 +15,21 @@ export function getNextHour(from = new Date()) {
 export function getTomorrow(from = new Date()) {
   const tomorrow = new Date(from)
   tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setUTCHours(23, 59, 59, 0)
+  tomorrow.setHours(23, 59, 59, 0)
   return tomorrow
 }
 
 export function getNextWeek(from = new Date()) {
   const nextWeek = new Date(from)
   nextWeek.setDate(nextWeek.getDate() + 7)
-  nextWeek.setUTCHours(23, 59, 59, 0)
+  nextWeek.setHours(23, 59, 59, 0)
   return nextWeek
 }
 
 export function getNextMonth(from = new Date()) {
   const nextMonth = new Date(from)
   nextMonth.setMonth(nextMonth.getMonth() + 1)
-  nextMonth.setUTCHours(23, 59, 59, 0)
+  nextMonth.setHours(23, 59, 59, 0)
   return nextMonth
 }
 
