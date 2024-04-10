@@ -96,19 +96,18 @@ export async function search(req: IReq, res: IRes) {
       typeof distance === 'string' ? +distance : undefined,
     )
   }
-
   if (typeof from === 'string' && typeof to === 'string') {
-    if (fieldIds) {
-      result = await DayOfServiceService.getMany(
-        new Date(from),
-        new Date(to),
-        fieldIds,
-      )
-    } else {
-      result = await DayOfServiceService.getMany(new Date(from), new Date(to))
-    }
+    result = await DayOfServiceService.getManyAvailable(
+      new Date(from),
+      new Date(to),
+      fieldIds,
+    )
   } else {
-    result = await DayOfServiceService.getMany(undefined, undefined, fieldIds)
+    result = await DayOfServiceService.getManyAvailable(
+      undefined,
+      undefined,
+      fieldIds,
+    )
   }
 
   return res

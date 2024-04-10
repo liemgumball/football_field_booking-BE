@@ -1,13 +1,11 @@
 import EnvVars from '@src/constants/EnvVars'
 
-// FIXME environment variables
 export function getNextHour(from = new Date()) {
   const nextHour = new Date(from)
   nextHour.setHours(nextHour.getHours() + 1)
   return nextHour
 }
 
-// Tomorrow // FIXME environment variables
 export function getTomorrow(from = new Date()) {
   const tomorrow = new Date(from)
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -15,7 +13,6 @@ export function getTomorrow(from = new Date()) {
   return tomorrow
 }
 
-// NextWeek // FIXME environment variables search range
 export function getNextWeek(from = new Date()) {
   const nextWeek = new Date(from)
   nextWeek.setDate(nextWeek.getDate() + 7)
@@ -23,7 +20,6 @@ export function getNextWeek(from = new Date()) {
   return nextWeek
 }
 
-// Next Month // FIXME environment variables
 export function getNextMonth(from = new Date()) {
   const nextMonth = new Date(from)
   nextMonth.setMonth(nextMonth.getMonth() + 1)

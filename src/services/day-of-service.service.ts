@@ -21,7 +21,7 @@ import {
 import { Types } from 'mongoose'
 import { getDateList } from '@src/util/date'
 
-// BUG Fix the response data. It's too large and included some unnecessary date
+// FIXME Fix the response data. It's too large and included some unnecessary date
 export function getById(id: string) {
   return DayOfServiceModel.findById(id).select({
     __v: 0,
@@ -30,7 +30,7 @@ export function getById(id: string) {
   })
 }
 
-// BUG Fix the response data. It's too large and included some unnecessary date
+// FIXME Fix the response data. It's too large and included some unnecessary date
 export function getByFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
     {
@@ -43,7 +43,7 @@ export function getByFieldId(id: Types.ObjectId) {
   )
 }
 
-// BUG Fix the response data. It's too large and included some unnecessary date
+// FIXME Fix the response data. It's too large and included some unnecessary date
 export function getBySubFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
     { subfieldId: id, availability: true },
@@ -52,7 +52,7 @@ export function getBySubFieldId(id: Types.ObjectId) {
   )
 }
 
-// BUG Fix the response data. It's too large and included some unnecessary date
+// FIXME Fix the response data. It's too large and included some unnecessary date
 /**
  * Query list of `day of service`
  * @description by default will query from `current time` to `next week`
@@ -61,7 +61,7 @@ export function getBySubFieldId(id: Types.ObjectId) {
  * @param fieldIds list of field to search from
  * @returns list of `day of service`
  */
-export function getMany(
+export function getManyAvailable(
   from: Date = new Date(),
   to: Date = getNextWeek(from),
   fieldIds?: string[],
@@ -74,18 +74,27 @@ export function getMany(
         fieldId: { $in: fieldIds },
         date: { $gte: from, $lte: to },
         availability: true,
-        'turnOfServices.status': { $eq: TurnOfServiceStatus.IN_PROGRESS },
+        'turnOfServices.status': { $eq: TurnOfServiceStatus.AVAILABLE },
       }
     : {
         date: { $gte: from, $lte: to },
         availability: true,
-        'turnOfServices.status': { $eq: TurnOfServiceStatus.IN_PROGRESS },
+        'turnOfServices.status': { $eq: TurnOfServiceStatus.AVAILABLE },
       }
   return DayOfServiceModel.find(
     query,
     { __v: 0, 'turnOfServices.bookingId': 0, expireAt: 0 },
     { limit: 50 },
   )
+    .populate('field', {
+      name: 1,
+      rating: 1,
+      images: 1,
+    })
+    .populate('subfield', {
+      name: 1,
+      size: 1,
+    })
 }
 
 export function generateOnCreate(

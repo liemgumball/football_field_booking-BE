@@ -60,7 +60,7 @@ const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
   },
   subfieldId: {
     type: Schema.Types.ObjectId,
-    ref: 'Subfield',
+    ref: 'SubField',
     required: true,
     immutable: true,
     index: true,
@@ -81,6 +81,13 @@ const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
 DayOfServiceSchema.virtual('subfield', {
   ref: 'SubField',
   localField: 'subfieldId',
+  foreignField: '_id',
+  justOne: true,
+})
+
+DayOfServiceSchema.virtual('field', {
+  ref: 'FootballField',
+  localField: 'fieldId',
   foreignField: '_id',
   justOne: true,
 })
