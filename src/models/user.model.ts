@@ -44,7 +44,6 @@ const UserSchema = new Schema<UserDocument>(
     phoneNumber: {
       type: String,
       required: true,
-      unique: true,
       validate: PHONE_NUMBER_REGEX,
       trim: true,
     },

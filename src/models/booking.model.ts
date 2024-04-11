@@ -20,6 +20,13 @@ const BookingSchema = new Schema<BookingDocument>(
       immutable: true,
       index: true,
     },
+    fieldId: {
+      type: Schema.Types.ObjectId,
+      ref: 'SubField',
+      required: true,
+      immutable: true,
+      index: true,
+    },
     subfieldId: {
       type: Schema.Types.ObjectId,
       ref: 'Subfield',
@@ -58,6 +65,25 @@ BookingSchema.virtual('user', {
   justOne: true,
   options: {
     projection: { password: 0, createdAt: 0, updatedAt: 0, role: 0, __v: 0 },
+  },
+})
+
+BookingSchema.virtual('subfield', {
+  ref: 'SubField',
+  localField: 'subfieldId',
+  foreignField: '_id',
+  justOne: true,
+  options: {
+    projection: { createdAt: 0, updatedAt: 0, __v: 0 },
+  },
+})
+BookingSchema.virtual('field', {
+  ref: 'FootballField',
+  localField: 'fieldId',
+  foreignField: '_id',
+  justOne: true,
+  options: {
+    projection: { createdAt: 0, updatedAt: 0, __v: 0 },
   },
 })
 

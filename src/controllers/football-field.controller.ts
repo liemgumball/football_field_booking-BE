@@ -5,7 +5,6 @@ import { TFootballField, TUser } from '@src/types'
 
 // Services
 import * as FootballFieldService from '@src/services/football-field.service'
-import * as UserService from '@src/services/user.service'
 import * as LocationService from '@src/services/location.service'
 
 export async function getAll(req: IReq, res: IRes) {
@@ -49,7 +48,7 @@ export async function getById(req: IReq, res: IRes) {
 }
 
 /**
- * Create new football field by super user // [ ] should be transaction
+ * Create new football field by super user
  */
 export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,
@@ -57,18 +56,7 @@ export async function create(
 ) {
   const { football_field, admin } = req.body
 
-  const newAdmin = await UserService.createAdminUser(admin)
-
-  if (!newAdmin)
-    return res
-      .status(HttpStatusCodes.EXPECTATION_FAILED)
-      .send('Failure creating Admin')
-
-  const created = await FootballFieldService.create({
-    ...football_field,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    adminId: newAdmin._id,
-  })
+  const created = await FootballFieldService.create(football_field, admin)
 
   if (!created)
     return res

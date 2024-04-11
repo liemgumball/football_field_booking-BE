@@ -1,21 +1,14 @@
-import { boolean, number, object, string } from 'zod'
-import { TimeStepSchema, ValidIdSchema } from './common.schema'
-import {
-  getDateFromTimeStep,
-  getIndexOfTimeStep,
-  getNextHour,
-} from '@src/util/timestep'
+import { boolean, number, object } from 'zod'
+import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
+import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
+import { getNextHour } from '@src/util/date'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
 const BookingSchema = object({
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
-  date: string()
-    .transform((val) => new Date(val))
-    .refine((val) => {
-      return val.getUTCHours() === 0 && val.getUTCMinutes() === 0
-    }, 'UTC Date must ends with T00:00:00.000Z'),
+  date: DateSchema,
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),

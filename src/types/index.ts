@@ -90,6 +90,7 @@ export type TDayOfService = {
 export type TBooking = {
   _id: mongooseTypes.ObjectId
   userId: mongooseTypes.ObjectId
+  fieldId: mongooseTypes.ObjectId
   subfieldId: mongooseTypes.ObjectId
   date: Date
   from: TimeStep

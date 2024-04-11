@@ -29,3 +29,13 @@ export const TimeStepSchema = string()
     },
     { message: 'HH must from 00 to 23 & MM must either 00 or 30' },
   )
+
+export const DateSchema = string()
+  .transform((val) => new Date(val))
+  .refine(
+    (val) =>
+      val.getHours() === 0 &&
+      val.getMinutes() === 0 &&
+      val.getMilliseconds() === 0,
+    'Date must ends with T17:00:00.000Z',
+  )

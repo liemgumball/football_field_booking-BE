@@ -4,7 +4,6 @@ import * as SubFieldService from '@src/services/subfield.service'
 import { TSubField } from '@src/types'
 import { IReq, IRes } from '@src/types/express/misc'
 
-// [ ] should be transaction
 export async function createSubField(req: IReq<TSubField>, res: IRes) {
   const { fieldId } = req.params
 
@@ -19,14 +18,6 @@ export async function createSubField(req: IReq<TSubField>, res: IRes) {
     ...subfield,
     fieldId: field._id,
   })
-
-  if (!newSubField)
-    return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end()
-  // Add subfield into field
-  else
-    await FootballFieldService.update(field._id.toString(), {
-      subfieldIds: [...field.subfieldIds, newSubField._id],
-    })
 
   return res.status(HttpStatusCodes.CREATED).json(newSubField)
 }

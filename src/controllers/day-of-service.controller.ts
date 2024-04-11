@@ -7,7 +7,7 @@ import { TDayOfService } from '@src/types'
 import * as DayOfServiceService from '@src/services/day-of-service.service'
 import * as FootballFieldService from '@src/services/football-field.service'
 import * as SubFieldService from '@src/services/subfield.service'
-import * as LocationService from '@src/services/location.service'
+import assert from 'assert'
 
 /**
  * Get by Id
@@ -86,30 +86,25 @@ export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
  * @returns Return list of day of services
  */
 export async function search(req: IReq, res: IRes) {
-  const { latitude, longitude, distance, from, to } = req.query
-  let fieldIds: string[] | undefined = undefined
-  let result: unknown[]
+  const { latitude, longitude, distance, from, to, date } = req.query
 
-  if (typeof latitude === 'string' && typeof longitude === 'string') {
-    fieldIds = await LocationService.getFieldIdNearFromLocation(
-      [+longitude, +latitude],
-      typeof distance === 'string' ? +distance : undefined,
-    )
-  }
+  if (!date || typeof date !== 'string')
+    return res.status(HttpStatusCodes.BAD_REQUEST).send('No date provided')
 
-  if (typeof from === 'string' && typeof to === 'string') {
-    if (fieldIds) {
-      result = await DayOfServiceService.getMany(
-        new Date(from),
-        new Date(to),
-        fieldIds,
-      )
-    } else {
-      result = await DayOfServiceService.getMany(new Date(from), new Date(to))
-    }
-  } else {
-    result = await DayOfServiceService.getMany(undefined, undefined, fieldIds)
-  }
+  assert(typeof latitude === 'string' || typeof latitude === 'undefined')
+  assert(typeof longitude === 'string' || typeof longitude === 'undefined')
+  assert(typeof distance === 'string' || typeof distance === 'undefined')
+  assert(typeof from === 'string' || typeof from === 'undefined')
+  assert(typeof to === 'string' || typeof to === 'undefined')
+
+  const result = await DayOfServiceService.getManyAvailable(
+    new Date(date),
+    latitude,
+    longitude,
+    distance ? +distance : undefined,
+    from,
+    to,
+  )
 
   return res
     .status(HttpStatusCodes.OK)
