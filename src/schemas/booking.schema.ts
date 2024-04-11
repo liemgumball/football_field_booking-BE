@@ -1,5 +1,5 @@
-import { boolean, number, object, string } from 'zod'
-import { TimeStepSchema, ValidIdSchema } from './common.schema'
+import { boolean, number, object } from 'zod'
+import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
 import { getNextHour } from '@src/util/date'
 
@@ -8,15 +8,7 @@ import { getNextHour } from '@src/util/date'
 const BookingSchema = object({
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
-  date: string()
-    .transform((val) => new Date(val))
-    .refine((val) => {
-      return (
-        val.getHours() === 0 &&
-        val.getMinutes() === 0 &&
-        val.getMilliseconds() === 0
-      )
-    }, 'Date must ends with T17:00:00.000Z'),
+  date: DateSchema,
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),
