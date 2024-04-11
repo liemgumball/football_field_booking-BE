@@ -25,5 +25,5 @@ DatabaseService.connect()
     server.listen(EnvVars.Port, () => logger.info(SERVER_START_MSG))
   })
   .catch((err) => {
-    logger.err('Error connecting to database: ' + err)
+    logger.err('Error from database: ' + err)
   })

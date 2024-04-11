@@ -11,8 +11,12 @@ const BookingSchema = object({
   date: string()
     .transform((val) => new Date(val))
     .refine((val) => {
-      return val.getUTCHours() === 0 && val.getUTCMinutes() === 0
-    }, 'UTC Date must ends with T00:00:00.000Z'),
+      return (
+        val.getHours() === 0 &&
+        val.getMinutes() === 0 &&
+        val.getMilliseconds() === 0
+      )
+    }, 'Date must ends with T17:00:00.000Z'),
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),

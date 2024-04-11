@@ -15,14 +15,14 @@ export function getNextHour(from = new Date()) {
 export function getTomorrow(from = new Date()) {
   const tomorrow = new Date(from)
   tomorrow.setDate(tomorrow.getDate() + 1)
-  tomorrow.setHours(23, 59, 59, 0)
+  tomorrow.setHours(0, 0, 0, 0)
   return tomorrow
 }
 
 export function getNextWeek(from = new Date()) {
   const nextWeek = new Date(from)
   nextWeek.setDate(nextWeek.getDate() + 7)
-  nextWeek.setHours(23, 59, 59, 0)
+  nextWeek.setHours(0, 0, 0, 0)
   return nextWeek
 }
 
