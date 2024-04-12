@@ -21,6 +21,7 @@ import {
 import { ClientSession, Types } from 'mongoose'
 import { getDateList } from '@src/util/date'
 import SubFieldModel from '@src/models/subfield.model'
+import { wait } from '@src/util/common'
 
 // FIXME Fix the response data. It's too large and included some unnecessary date
 export function getById(id: string) {
@@ -177,7 +178,9 @@ export async function autoGenerate() {
   if (!subfields) return
 
   try {
-    subfields.forEach(async (subfield) => {
+    subfields.forEach(async (subfield, index) => {
+      // wait to limit the volume access to database
+      await wait(index)
       // get latest data based on subfield
       const found = await DayOfServiceModel.findOne(
         {
