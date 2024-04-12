@@ -1,3 +1,6 @@
+import assert from 'assert'
+import { Types } from 'mongoose'
+
 // Types & Constants
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { IReq, IRes } from '@src/types/express/misc'
@@ -7,7 +10,6 @@ import { TDayOfService } from '@src/types'
 import * as DayOfServiceService from '@src/services/day-of-service.service'
 import * as FootballFieldService from '@src/services/football-field.service'
 import * as SubFieldService from '@src/services/subfield.service'
-import assert from 'assert'
 
 /**
  * Get by Id
@@ -50,8 +52,9 @@ export async function getBySubFieldId(req: IReq, res: IRes) {
   if (!subfield)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const found = await DayOfServiceService.getBySubFieldId(subfield._id)
+  const found = await DayOfServiceService.getBySubFieldId(
+    subfield._id as Types.ObjectId,
+  )
 
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 

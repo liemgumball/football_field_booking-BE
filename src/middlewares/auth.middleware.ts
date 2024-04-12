@@ -38,7 +38,9 @@ export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
   if (user?.role === UserRole.SUPER_USER) return next()
 
   if (user?._id !== id) {
-    return res.status(HttpStatusCodes.FORBIDDEN).send('Not authorized')
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Not allowed to access this user')
   }
 
   return next()

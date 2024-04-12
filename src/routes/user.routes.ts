@@ -23,7 +23,7 @@ import {
 
 const userRouter = Router()
 
-userRouter.get('', UserController.getAll)
+// userRouter.get('', UserController.getAll)
 
 // Authentication
 userRouter.use(deserializeUser)
