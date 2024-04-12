@@ -66,12 +66,15 @@ export async function change_password(
   const auth = await UserService.validateLogin(email, old_password)
 
   if (!auth) {
-    return res.status(HttpStatusCodes.UNAUTHORIZED).end()
+    return res.status(HttpStatusCodes.UNAUTHORIZED).send('Wrong old password')
   }
 
   const updated = await UserService.change_password(id, new_password)
 
-  if (!updated) return res.status(HttpStatusCodes.NOT_MODIFIED).end()
+  if (!updated)
+    return res
+      .status(HttpStatusCodes.NOT_MODIFIED)
+      .send('Failed to change password')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

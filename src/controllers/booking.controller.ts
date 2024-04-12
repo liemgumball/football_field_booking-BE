@@ -25,7 +25,9 @@ export async function getById(req: IReq, res: IRes) {
   // Correct User
   if (req.user?.role === UserRole.CUSTOMER) {
     if (!checkExactUser(found.userId, req.user))
-      return res.status(HttpStatusCodes.FORBIDDEN).end()
+      return res
+        .status(HttpStatusCodes.FORBIDDEN)
+        .send('Only correct users are allowed to access this')
   } else {
     // Admin
     const field = await FootballFieldService.getById(found.fieldId.toString())
@@ -35,7 +37,9 @@ export async function getById(req: IReq, res: IRes) {
         .send('Invalid SubfieldId in Booking')
     //
     if (!checkAdmin(field.adminId, req.user))
-      return res.status(HttpStatusCodes.FORBIDDEN).end()
+      return res
+        .status(HttpStatusCodes.FORBIDDEN)
+        .send('Only administrator is allowed')
   }
 
   return res.status(HttpStatusCodes.OK).json(found)
@@ -50,7 +54,9 @@ export async function create(req: IReq<TBooking>, res: IRes) {
 
   // only correct user can create booking with their UserId
   if (!checkExactUser(booking.userId, req.user))
-    return res.status(HttpStatusCodes.FORBIDDEN).end()
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Only correct user can create booking for user')
 
   const subfield = await SubFieldService.getById(booking.subfieldId.toString())
 
@@ -93,7 +99,9 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
     return res.status(HttpStatusCodes.NOT_FOUND).send('Booking not found')
 
   if (!checkExactUser(found.userId, req.user))
-    return res.status(HttpStatusCodes.FORBIDDEN).end()
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Only correct user is allowed')
 
   if (found.canceled)
     return res
@@ -103,7 +111,9 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   const updated = await BookingService.cancel(id, canceling)
 
   if (!updated)
-    return res.status(HttpStatusCodes.CONFLICT).send('Failed to cancel booking')
+    return res
+      .status(HttpStatusCodes.NOT_MODIFIED)
+      .send('Failed to cancel booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
@@ -133,7 +143,7 @@ export async function confirm(
 
   if (!updated)
     return res
-      .status(HttpStatusCodes.CONFLICT)
+      .status(HttpStatusCodes.NOT_MODIFIED)
       .send('Failed to confirm booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()

@@ -1,14 +1,17 @@
 import { boolean, number, object } from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
-import { getNextHour } from '@src/util/date'
+import { getNextHour, getToday } from '@src/util/date'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
 const BookingSchema = object({
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
-  date: DateSchema,
+  date: DateSchema.refine(
+    (val) => val > getToday(),
+    'Booking date must after ' + getToday().toISOString(),
+  ),
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),

@@ -14,13 +14,13 @@ export const UserSchema = object({
   }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
   name: string().optional(),
   avatar: string().url('Invalid url').optional(),
-}).strict()
+})
 
 /**
  * Schema for POST user requests
  */
 export const createUserSchema = object({
-  body: UserSchema,
+  body: UserSchema.strict(),
 })
 
 /**
@@ -30,7 +30,7 @@ export const updateUserSchema = object({
   params: object({
     id: ValidIdSchema,
   }),
-  body: UserSchema.partial(),
+  body: UserSchema.omit({ email: true, password: true }).partial(),
 })
 
 export const loginSchema = object({
@@ -48,13 +48,14 @@ export const loginSchema = object({
 export const changePasswordSchema = object({
   body: object({
     email: string().email(),
-    old_password: string({ required_error: 'OLD Password is required' }).min(
-      6,
-      'Password too short - should be 6 chars minimum',
-    ),
-    new_password: string({ required_error: 'NEW Password is required' }).min(
-      6,
-      'Password too short - should be 6 chars minimum',
-    ),
+    old_password: string().min(6, {
+      message: 'Password too short - should be 6 chars minimum',
+    }),
+    new_password: string().min(6, {
+      message: 'Password too short - should be 6 chars minimum',
+    }),
+  }).refine(({ old_password, new_password }) => old_password !== new_password, {
+    message: 'Old and new passwords must be different',
+    path: ['old_password', 'new_password'],
   }),
 })
