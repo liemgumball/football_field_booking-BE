@@ -75,7 +75,8 @@ export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
 
   const updated = await DayOfServiceService.updateOne(id, data)
 
-  if (!updated) return res.status(HttpStatusCodes.CONFLICT).end()
+  if (!updated)
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Failed to update')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
