@@ -104,20 +104,83 @@ export async function getManyAvailable(
         },
       }
 
-  return DayOfServiceModel.find(
-    query,
-    { __v: 0, 'turnOfServices.bookingId': 0, expireAt: 0 },
-    { limit: 50 },
-  )
-    .populate('field', {
-      name: 1,
-      rating: 1,
-      images: 1,
-    })
-    .populate('subfield', {
-      name: 1,
-      size: 1,
-    })
+  const pipeline = [
+    {
+      $match: query,
+    },
+    {
+      $limit: 60,
+    },
+    {
+      $addFields: {
+        matchedTurnOfServices: {
+          $filter: {
+            input: '$turnOfServices',
+            as: 'turnOfService',
+            cond: {
+              $and: [
+                { $gte: ['$$turnOfService.at', from] },
+                { $lt: ['$$turnOfService.at', to ? to : '24:00'] },
+                {
+                  $eq: [
+                    '$$turnOfService.status',
+                    TurnOfServiceStatus.AVAILABLE,
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'footballfields',
+        localField: 'fieldId',
+        foreignField: '_id',
+        as: 'field',
+      },
+    },
+    {
+      $lookup: {
+        from: 'subfields',
+        localField: 'subfieldId',
+        foreignField: '_id',
+
+        as: 'subfield',
+      },
+    },
+    {
+      $project: {
+        field: { $arrayElemAt: ['$field', 0] },
+        subfield: { $arrayElemAt: ['$subfield', 0] },
+        _id: 1,
+        date: 1,
+        turnOfServices: '$matchedTurnOfServices',
+      },
+    },
+    {
+      $project: {
+        field: {
+          subfieldIds: 0,
+          adminId: 0,
+          isActive: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+        },
+        subfield: {
+          fieldId: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          defaultPrice: 0,
+        },
+      },
+    },
+  ]
+
+  return DayOfServiceModel.aggregate(pipeline)
 }
 
 export function generateOnCreate(
