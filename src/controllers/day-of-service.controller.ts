@@ -110,7 +110,5 @@ export async function search(req: IReq, res: IRes) {
     to,
   )
 
-  return res
-    .status(HttpStatusCodes.OK)
-    .json({ count: result.length, data: result })
+  return res.status(HttpStatusCodes.OK).json(result)
 }
