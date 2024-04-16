@@ -1,4 +1,4 @@
-import { array, boolean, number, object, string } from 'zod'
+import { array, boolean, number, object, string, enum as enum_ } from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getNextMonth, getToday } from '@src/util/date'
 
@@ -60,5 +60,9 @@ export const searchDayOfServiceSchema = object({
     date: DateSchema,
     from: TimeStepSchema,
     to: TimeStepSchema.optional(),
+    size: enum_(['5', '6', '7', '11']).optional(),
+    cursor: string()
+      .transform((val) => parseInt(val))
+      .optional(),
   }).passthrough(),
 })

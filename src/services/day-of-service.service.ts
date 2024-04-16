@@ -18,7 +18,7 @@ import {
   getListTurnOfServices,
   updateTurnOfServices,
 } from '@src/util/turn-of-service'
-import { ClientSession, Types } from 'mongoose'
+import { ClientSession, PipelineStage, Types } from 'mongoose'
 import { getDateList } from '@src/util/date'
 import SubFieldModel from '@src/models/subfield.model'
 import { wait } from '@src/util/common'
@@ -54,21 +54,25 @@ export function getBySubFieldId(id: Types.ObjectId) {
   )
 }
 
-// FIXME Fix the response data. It's too large and included some unnecessary date
 /**
- * Query list of `day of service`
- * @description by default will query from `current time` to `next week`
- * @param from start of time range
- * @param to end of time range
- * @returns list of `day of service`
+ * Get list day of service and turn of services matched
+ * @param date
+ * @param from
+ * @param latitude
+ * @param longitude
+ * @param distance
+ * @param to
+ * @param size
  */
 export async function getManyAvailable(
   date: Date,
+  from: string,
   latitude?: string,
   longitude?: string,
   distance?: number,
-  from?: string,
   to?: string,
+  size?: string,
+  cursor?: number,
 ) {
   /**
    * If fieldIds provided then query `$in` the fieldIds list
@@ -81,35 +85,21 @@ export async function getManyAvailable(
       distance,
     )
 
-  const query = fieldIds
-    ? {
-        fieldId: { $in: fieldIds },
-        date: date,
-        availability: true,
-        turnOfServices: {
-          $elemMatch: {
-            at: { $gte: from, $lt: to ? to : '24:00' },
-            status: TurnOfServiceStatus.AVAILABLE,
-          },
-        },
-      }
-    : {
-        date: date,
-        availability: true,
-        turnOfServices: {
-          $elemMatch: {
-            at: { $gte: from, $lt: to ? to : '24:00' },
-            status: TurnOfServiceStatus.AVAILABLE,
-          },
-        },
-      }
+  const query = {
+    ...(fieldIds != null && { fieldId: { $in: fieldIds } }),
+    date: date,
+    availability: true,
+    turnOfServices: {
+      $elemMatch: {
+        at: { $gte: from, $lt: to ? to : '24:00' },
+        status: TurnOfServiceStatus.AVAILABLE,
+      },
+    },
+  }
 
   const pipeline = [
     {
       $match: query,
-    },
-    {
-      $limit: 60,
     },
     {
       $addFields: {
@@ -142,12 +132,34 @@ export async function getManyAvailable(
       },
     },
     {
-      $lookup: {
-        from: 'subfields',
-        localField: 'subfieldId',
-        foreignField: '_id',
-
-        as: 'subfield',
+      $lookup: size
+        ? {
+            from: 'subfields',
+            let: { subfieldId: '$subfieldId' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$_id', '$$subfieldId'] },
+                      { $eq: ['$size', +size] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'subfield',
+          }
+        : {
+            from: 'subfields',
+            localField: 'subfieldId',
+            foreignField: '_id',
+            as: 'subfield',
+          },
+    },
+    {
+      $match: {
+        subfield: { $ne: [] },
       },
     },
     {
@@ -178,7 +190,14 @@ export async function getManyAvailable(
         },
       },
     },
-  ]
+  ] as PipelineStage[]
+
+  if (cursor !== undefined) {
+    pipeline.push({ $skip: cursor * 12 })
+    pipeline.push({ $limit: 3 })
+  } else {
+    pipeline.push({ $limit: 60 })
+  }
 
   return DayOfServiceModel.aggregate(pipeline)
 }
