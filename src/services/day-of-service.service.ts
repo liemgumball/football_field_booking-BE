@@ -23,13 +23,124 @@ import { getDateList } from '@src/util/date'
 import SubFieldModel from '@src/models/subfield.model'
 import { wait } from '@src/util/common'
 
-// FIXME Fix the response data. It's too large and included some unnecessary date
-export function getById(id: string) {
-  return DayOfServiceModel.findById(id).select({
-    __v: 0,
-    expireAt: 0,
-    'turnOfServices.bookingId': 0,
-  })
+export function getById(id: string, from?: string, to?: string) {
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        _id: new Types.ObjectId(id),
+      },
+    },
+    {
+      $lookup: {
+        from: 'footballfields',
+        localField: 'fieldId',
+        foreignField: '_id',
+        as: 'field',
+      },
+    },
+    {
+      $lookup: {
+        from: 'subfields',
+        localField: 'subfieldId',
+        foreignField: '_id',
+        as: 'subfield',
+      },
+    },
+    {
+      $project: {
+        field: { $arrayElemAt: ['$field', 0] },
+        subfield: { $arrayElemAt: ['$subfield', 0] },
+      },
+    },
+    {
+      $lookup: {
+        from: 'locations',
+        localField: 'field._id',
+        foreignField: '_id',
+        as: 'field.location',
+      },
+    },
+    {
+      $project: {
+        subfield: 1,
+        date: 1,
+        field: {
+          name: 1,
+          openedAt: 1,
+          closedAt: 1,
+          rating: 1,
+          images: 1,
+          location: { $arrayElemAt: ['$field.location', 0] },
+        },
+      },
+    },
+    {
+      $unset: [
+        '__v',
+        'expireAt',
+        'turnOfServices.bookingId',
+        'fieldId',
+        'subfieldId',
+      ],
+    },
+    {
+      $project: {
+        field: {
+          'location.__v': 0,
+          'location._id': 0,
+        },
+        subfield: {
+          fieldId: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+          defaultPrice: 0,
+        },
+      },
+    },
+    { $limit: 1 },
+  ]
+
+  // Check if 'from' exists
+  if (from) {
+    pipeline.push(
+      {
+        $addFields: {
+          matchedTurnOfServices: {
+            $filter: {
+              input: '$turnOfServices',
+              as: 'turnOfService',
+              cond: {
+                $and: [
+                  { $gte: ['$$turnOfService.at', from] },
+                  { $lt: ['$$turnOfService.at', to ? to : '24:00'] },
+                  {
+                    $eq: [
+                      '$$turnOfService.status',
+                      TurnOfServiceStatus.AVAILABLE,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          field: 1,
+          subfield: 1,
+          date: 1,
+          turnOfServices: '$matchedTurnOfServices',
+        },
+      },
+    )
+  }
+
+  return DayOfServiceModel.aggregate(pipeline).then(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    (result) => result.at(0) || null,
+  )
 }
 
 // FIXME Fix the response data. It's too large and included some unnecessary date

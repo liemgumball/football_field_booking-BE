@@ -31,6 +31,16 @@ const DayOfServiceSchema = object({
     }),
 })
 
+export const getDayOfServiceSchema = object({
+  params: object({
+    id: ValidIdSchema,
+  }),
+  query: object({
+    from: TimeStepSchema.optional(),
+    to: TimeStepSchema.optional(),
+  }),
+})
+
 export const updateDayOfServiceSchema = object({
   params: object({
     fieldId: ValidIdSchema,

@@ -16,8 +16,12 @@ import * as SubFieldService from '@src/services/subfield.service'
  */
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
+  const { from, to } = req.query
 
-  const found = await DayOfServiceService.getById(id)
+  assert(typeof from === 'string' || typeof from === 'undefined')
+  assert(typeof to === 'string' || typeof to === 'undefined')
+
+  const found = await DayOfServiceService.getById(id, from, to)
 
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
