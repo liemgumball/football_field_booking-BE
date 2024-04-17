@@ -11,14 +11,17 @@ import { serialize } from '@src/middlewares/serializer.middleware'
 
 // Schemas
 import { withValidIdSchema } from '@src/schemas/common.schema'
-import { searchDayOfServiceSchema } from '@src/schemas/day-of-service.schema'
+import {
+  getDayOfServiceSchema,
+  searchDayOfServiceSchema,
+} from '@src/schemas/day-of-service.schema'
 
 const dayOfServiceRouter = Router()
 
 // get details
 dayOfServiceRouter.get(
   Paths.DAY_OF_SERVICE.DETAIL,
-  serialize(withValidIdSchema),
+  serialize(getDayOfServiceSchema),
   DayOfServiceController.getById,
 )
 

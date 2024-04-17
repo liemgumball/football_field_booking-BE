@@ -1,4 +1,4 @@
-import { boolean, number, object } from 'zod'
+import { boolean, number, object, string } from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
 import { getNextHour, getToday } from '@src/util/date'
@@ -15,6 +15,7 @@ const BookingSchema = object({
   from: TimeStepSchema,
   to: TimeStepSchema,
   price: number().int().min(0),
+  description: string().optional(),
 })
 
 export const createBookingSchema = object({

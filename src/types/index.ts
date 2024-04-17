@@ -99,4 +99,5 @@ export type TBooking = {
   confirmed: boolean
   canceled: boolean
   paid?: boolean
+  description?: string | null
 }
