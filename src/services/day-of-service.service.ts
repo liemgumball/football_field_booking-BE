@@ -49,6 +49,7 @@ export function getById(id: string, from?: string, to?: string) {
     {
       $project: {
         date: 1,
+        turnOfServices: 1,
         field: { $arrayElemAt: ['$field', 0] },
         subfield: { $arrayElemAt: ['$subfield', 0] },
       },
@@ -65,6 +66,7 @@ export function getById(id: string, from?: string, to?: string) {
       $project: {
         subfield: 1,
         date: 1,
+        turnOfServices: 1,
         field: {
           name: 1,
           openedAt: 1,
