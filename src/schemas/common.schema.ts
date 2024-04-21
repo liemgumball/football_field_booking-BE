@@ -34,8 +34,8 @@ export const DateSchema = string()
   .transform((val) => new Date(val))
   .refine(
     (val) =>
-      val.getHours() === 0 &&
-      val.getMinutes() === 0 &&
-      val.getMilliseconds() === 0,
-    'Date must ends with T17:00:00.000Z',
+      val.getUTCHours() === 0 &&
+      val.getUTCMinutes() === 0 &&
+      val.getUTCMilliseconds() === 0,
+    'Date must ends with T00:00:00.000Z',
   )
