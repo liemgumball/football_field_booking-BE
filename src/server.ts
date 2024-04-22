@@ -30,9 +30,25 @@ const app = express()
 // **** Setup **** //
 
 // Basic middleware
+// Define regular expressions to match the allowed origins
+const allowedOriginPatterns = [
+  /^https?:\/\/localhost(:\d+)?$/,
+  /^https?:\/\/[a-zA-Z0-9-]+\.vercel\.app$/,
+]
+
 app.use(
   cors({
-    origin: EnvVars.AllowedOrigins,
+    origin: (requestOrigin, callback) => {
+      // Check if the origin matches any of the allowed patterns
+      if (
+        !requestOrigin ||
+        allowedOriginPatterns.some((pattern) => pattern.test(requestOrigin))
+      ) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'), false)
+      }
+    },
     exposedHeaders: ['set-cookie', 'ajax_redirect'],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
