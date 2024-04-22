@@ -30,9 +30,23 @@ const app = express()
 // **** Setup **** //
 
 // Basic middleware
+
 app.use(
   cors({
-    origin: EnvVars.AllowedOrigins,
+    origin: (requestOrigin, callback) => {
+      // Check if the origin matches or valid with any of the allowed patterns
+      if (
+        !requestOrigin ||
+        EnvVars.AllowedOriginPatterns.some((pattern) =>
+          pattern.test(requestOrigin),
+        ) ||
+        EnvVars.AllowedOrigins.includes(requestOrigin)
+      ) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'), false)
+      }
+    },
     exposedHeaders: ['set-cookie', 'ajax_redirect'],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
