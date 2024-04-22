@@ -10,8 +10,9 @@ export default {
   NodeEnv: process.env.NODE_ENV ?? '',
   Port: process.env.PORT ?? 0,
   AllowedOrigins:
-    process.env.ALLOWED_ORIGINS?.split(',').map((origin) => origin) ??
-    undefined,
+    process.env.ALLOWED_ORIGINS && process.env.ALLOWED_ORIGINS !== '*'
+      ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin)
+      : undefined,
   CookieProps: {
     Key: 'FootBallField',
     Secret: process.env.COOKIE_SECRET ?? '',
