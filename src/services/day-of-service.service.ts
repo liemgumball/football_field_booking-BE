@@ -117,12 +117,6 @@ export function getById(id: string, from?: string, to?: string) {
                 $and: [
                   { $gte: ['$$turnOfService.at', from] },
                   { $lt: ['$$turnOfService.at', to ? to : '24:00'] },
-                  {
-                    $eq: [
-                      '$$turnOfService.status',
-                      TurnOfServiceStatus.AVAILABLE,
-                    ],
-                  },
                 ],
               },
             },
