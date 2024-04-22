@@ -9,7 +9,10 @@ import { ConnectOptions } from 'mongoose'
 export default {
   NodeEnv: process.env.NODE_ENV ?? '',
   Port: process.env.PORT ?? 0,
-  AllowedOrigins: '*',
+  AllowedOrigins:
+    process.env.ALLOWED_ORIGINS && process.env.ALLOWED_ORIGINS !== '*'
+      ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin)
+      : '*',
   CookieProps: {
     Key: 'FootBallField',
     Secret: process.env.COOKIE_SECRET ?? '',
@@ -21,7 +24,7 @@ export default {
       maxAge: Number(process.env.COOKIE_EXP ?? 24 * 60 * 60 * 1000),
       domain: process.env.COOKIE_DOMAIN ?? '',
       secure: process.env.SECURE_COOKIE === 'true',
-      sameSite: 'none',
+      sameSite: process.env.SECURE_COOKIE === 'true' ? 'none' : undefined,
     },
   },
   Jwt: {
