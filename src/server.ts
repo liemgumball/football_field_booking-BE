@@ -33,6 +33,8 @@ const app = express()
 app.use(
   cors({
     origin: EnvVars.AllowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   }),
 )
 
