@@ -33,6 +33,7 @@ const app = express()
 app.use(
   cors({
     origin: EnvVars.AllowedOrigins,
+    exposedHeaders: ['set-cookie', 'ajax_redirect'],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   }),
