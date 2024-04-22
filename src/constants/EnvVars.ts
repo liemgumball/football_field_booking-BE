@@ -9,10 +9,12 @@ import { ConnectOptions } from 'mongoose'
 export default {
   NodeEnv: process.env.NODE_ENV ?? '',
   Port: process.env.PORT ?? 0,
+  AllowedOriginPatterns:
+    process.env.ALLOWED_ORIGIN_PATTERNS?.split(',').map(
+      (pattern) => new RegExp(pattern),
+    ) ?? [],
   AllowedOrigins:
-    process.env.ALLOWED_ORIGINS && process.env.ALLOWED_ORIGINS !== '*'
-      ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin)
-      : '*',
+    process.env.ALLOWED_ORIGINS?.split(',').map((origin) => origin) ?? [],
   CookieProps: {
     Key: 'FootBallField',
     Secret: process.env.COOKIE_SECRET ?? '',
