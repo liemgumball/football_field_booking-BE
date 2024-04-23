@@ -21,6 +21,9 @@ bookingRouter.use(deserializeUser)
 // Get Booking details
 bookingRouter.get(Paths.BOOKING.DETAIL, BookingController.getById)
 
+// Get Booking by UserId
+bookingRouter.get('', BookingController.getBookings)
+
 // Create Booking
 bookingRouter.post('', serialize(createBookingSchema), BookingController.create)
 
