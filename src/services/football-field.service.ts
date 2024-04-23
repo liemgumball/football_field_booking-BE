@@ -24,6 +24,10 @@ export function getBySubfieldId(subfieldId: Types.ObjectId) {
   return FootballFieldModel.findOne({ subfieldIds: subfieldId })
 }
 
+export function getByAdminId(adminId: string) {
+  return FootballFieldModel.findOne({ adminId: adminId })
+}
+
 export async function create(
   data: Omit<TFootballField, 'adminId'>,
   admin: TUser,

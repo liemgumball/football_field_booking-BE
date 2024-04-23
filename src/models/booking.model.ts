@@ -4,6 +4,7 @@ import { TBooking } from '@src/types'
 
 // Constants
 import { HH_MM_REGEX } from '@src/constants/Regex'
+import LocationModel from './location.model'
 
 type BookingDocument = TBooking &
   Document & {
@@ -75,7 +76,7 @@ BookingSchema.virtual('subfield', {
   foreignField: '_id',
   justOne: true,
   options: {
-    projection: { createdAt: 0, updatedAt: 0, __v: 0 },
+    projection: { createdAt: 0, updatedAt: 0, __v: 0, fieldId: 0 },
   },
 })
 BookingSchema.virtual('field', {
@@ -84,7 +85,20 @@ BookingSchema.virtual('field', {
   foreignField: '_id',
   justOne: true,
   options: {
-    projection: { createdAt: 0, updatedAt: 0, __v: 0 },
+    projection: {
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+      adminId: 0,
+      subfieldIds: 0,
+    },
+    populate: {
+      path: 'location',
+      model: LocationModel,
+      localField: '_id',
+      foreignField: '_id',
+      select: '-_id -geo.type -__v',
+    },
   },
 })
 

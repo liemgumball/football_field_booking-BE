@@ -45,6 +45,39 @@ export async function getById(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(found)
 }
 
+export async function getBookings(req: IReq, res: IRes) {
+  const user = req.user
+
+  if (!user)
+    return res.status(HttpStatusCodes.FORBIDDEN).send('No user specified')
+
+  // Super user
+  if (user.role === UserRole.SUPER_USER) {
+    const bookings = await BookingService.getAll()
+
+    return res.status(HttpStatusCodes.OK).json(bookings)
+  }
+
+  // User
+  if (user.role === UserRole.CUSTOMER) {
+    const bookings = await BookingService.getByUserId(user._id)
+
+    return res.status(HttpStatusCodes.OK).json(bookings)
+  }
+
+  // Administrator
+  const field = await FootballFieldService.getByAdminId(user._id)
+
+  if (!field)
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .send('Field not found by admin id')
+
+  const bookings = await BookingService.getByFieldId(field.id as string)
+
+  return res.status(HttpStatusCodes.OK).json(bookings)
+}
+
 /**
  * Handle validation and create a new booking.
  * Also create a TimeOut to `cancel` the booking after `10` minutes `not being confirmed`.
