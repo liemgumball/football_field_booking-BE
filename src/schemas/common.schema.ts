@@ -1,12 +1,11 @@
 import { isValidObjectId } from 'mongoose'
 import { object, string } from 'zod'
 
-export const ValidIdSchema = string().refine(
-  (value) => isValidObjectId(value),
-  {
+export const ValidIdSchema = string()
+  .trim()
+  .refine((value) => isValidObjectId(value), {
     message: 'Invalid Id',
-  },
-)
+  })
 
 export const withValidIdSchema = object({
   params: object({
@@ -31,6 +30,7 @@ export const TimeStepSchema = string()
   )
 
 export const DateSchema = string()
+  .trim()
   .transform((val) => new Date(val))
   .refine(
     (val) =>

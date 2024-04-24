@@ -54,6 +54,7 @@ export const updateDayOfServiceSchema = object({
 export const searchDayOfServiceSchema = object({
   query: object({
     longitude: string()
+      .trim()
       .transform((val) => +val)
       .refine(
         (val) => val >= -180 && val <= 180,
@@ -61,6 +62,7 @@ export const searchDayOfServiceSchema = object({
       )
       .optional(),
     latitude: string()
+      .trim()
       .transform((val) => +val)
       .refine(
         (val) => val >= -90 && val <= 90,
@@ -72,6 +74,7 @@ export const searchDayOfServiceSchema = object({
     to: TimeStepSchema.optional(),
     size: enum_(['5', '6', '7', '11']).optional(),
     cursor: string()
+      .trim()
       .transform((val) => parseInt(val))
       .optional(),
   }).passthrough(),

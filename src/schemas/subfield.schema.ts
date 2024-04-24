@@ -2,7 +2,7 @@ import { boolean, number, object, string, enum as enum_ } from 'zod'
 import { ValidIdSchema } from './common.schema'
 
 const SubFieldSchema = object({
-  name: string(),
+  name: string().trim(),
   size: enum_(['5', '6', '7', '11']),
   availability: boolean().optional(),
   defaultPrice: number().int().min(0),

@@ -8,12 +8,16 @@ export const UserSchema = object({
   }).min(6, 'Password too short - should be 6 chars minimum'),
   email: string({
     required_error: 'Email is required',
-  }).email('Not a valid email'),
+  })
+    .trim()
+    .email('Not a valid email'),
   phoneNumber: string({
     required_error: 'Phone number is required',
-  }).regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
-  name: string().optional(),
-  avatar: string().url('Invalid url').optional(),
+  })
+    .trim()
+    .regex(PHONE_NUMBER_REGEX, 'Invalid phone number'),
+  name: string().trim().optional(),
+  avatar: string().trim().url('Invalid url').optional(),
 })
 
 /**
@@ -35,9 +39,9 @@ export const updateUserSchema = object({
 
 export const loginSchema = object({
   body: object({
-    email: string({ required_error: 'Email is required' }).email(
-      'Invalid email',
-    ),
+    email: string({ required_error: 'Email is required' })
+      .trim()
+      .email('Invalid email'),
     password: string({ required_error: 'Password is required' }).min(
       6,
       'Password too short - should be 6 chars minimum',
@@ -47,7 +51,7 @@ export const loginSchema = object({
 
 export const changePasswordSchema = object({
   body: object({
-    email: string().email(),
+    email: string().trim().email(),
     old_password: string().min(6, {
       message: 'Password too short - should be 6 chars minimum',
     }),

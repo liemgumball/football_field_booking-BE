@@ -10,6 +10,6 @@ export const PointSchema = object({
 })
 
 export const LocationSchema = object({
-  name: string(),
+  name: string().trim().min(10, 'Address too short'),
   geo: PointSchema,
 })

@@ -46,7 +46,7 @@ import { TimeStepSchema, ValidIdSchema } from './common.schema'
  *
  */
 const FootballFieldSchema = object({
-  name: string(),
+  name: string().trim().min(1),
   location: LocationSchema,
   openedAt: TimeStepSchema,
   closedAt: TimeStepSchema,
