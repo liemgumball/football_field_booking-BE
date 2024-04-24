@@ -10,8 +10,8 @@ const BookingSchema = object({
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(
-    (val) => val > getToday(),
-    'Booking date must after ' + getToday().toISOString(),
+    (val) => val >= getToday(),
+    'Booking date must as least from' + getToday().toLocaleDateString(),
   ),
   from: TimeStepSchema,
   to: TimeStepSchema,
@@ -22,10 +22,10 @@ const BookingSchema = object({
 export const createBookingSchema = object({
   body: BookingSchema.refine(
     ({ date, from }) => getDateFromTimeStep(date, from) >= getNextHour(),
-    'Booking must as least 1 hour from now',
+    'Booking must as least 1 hour from now.',
   ).refine(({ from, to }) => {
     return getIndexOfTimeStep(to) - getIndexOfTimeStep(from) >= 2 // check if `to - from` is at least 1 hour
-  }, 'Invalid booking time. Booking time must longs at least 1 hour'),
+  }, 'Booking time must longs at least 1 hour.'),
 })
 
 export const cancelBookingSchema = object({
