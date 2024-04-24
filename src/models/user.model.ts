@@ -40,7 +40,7 @@ const UserSchema = new Schema<UserDocument>(
       minlength: [6, 'Minimum password length is 6 characters'],
       trim: true,
     },
-    name: String,
+    name: { type: String, trim: true },
     phoneNumber: {
       type: String,
       required: true,

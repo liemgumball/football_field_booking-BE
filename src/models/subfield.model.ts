@@ -12,7 +12,7 @@ type SubFieldDocument = TSubField &
  */
 const SubFieldSchema = new Schema<SubFieldDocument>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
     fieldId: {
       type: Schema.Types.ObjectId,
       ref: 'FootballField',
