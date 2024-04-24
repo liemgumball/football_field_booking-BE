@@ -28,7 +28,7 @@ export const LocationSchema = new Schema<LocationDocument>({
     required: true,
     immutable: true,
   },
-  name: { type: String, required: true, index: 'text' },
+  name: { type: String, required: true, index: 'text', trim: true },
   geo: {
     type: PointSchema,
     required: true,
