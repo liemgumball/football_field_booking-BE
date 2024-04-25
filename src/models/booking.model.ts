@@ -102,6 +102,17 @@ BookingSchema.virtual('field', {
   },
 })
 
+// Define a virtual field named 'status' based on 'confirmed' and 'canceled' fields
+BookingSchema.virtual('status').get(function () {
+  if (this.confirmed) {
+    return 'confirmed'
+  } else if (this.canceled) {
+    return 'canceled'
+  } else {
+    return 'pending'
+  }
+})
+
 // Apply the virtual to the schema
 BookingSchema.set('toObject', { virtuals: true })
 BookingSchema.set('toJSON', { virtuals: true })
