@@ -8,6 +8,7 @@ export function getAll() {
     .populate('subfield')
     .populate('field')
     .select('-__v')
+    .sort('-createdAt')
 }
 
 export function getByUserId(id: string) {
@@ -15,10 +16,14 @@ export function getByUserId(id: string) {
     .populate('subfield')
     .populate('field')
     .select('-__v')
+    .sort('-createdAt')
 }
 
 export function getByFieldId(id: string) {
-  return BookingModel.find({ fieldId: id }).populate('subfield').select('-__v')
+  return BookingModel.find({ fieldId: id })
+    .populate('subfield')
+    .select('-__v')
+    .sort('-createdAt')
 }
 
 export function getDetailById(id: string) {
