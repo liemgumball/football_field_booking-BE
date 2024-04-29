@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { IReq, IRes } from '@src/types/express/misc'
 import { sortObject } from '@src/util/common'
 import querystring from 'qs'
@@ -6,6 +5,7 @@ import crypto from 'crypto'
 import EnvVars from '@src/constants/EnvVars'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import moment from 'moment'
+import { VNPayMsg } from '@src/constants/VNPayStatusMessage'
 
 type TReqBody = {
   amount: number
@@ -21,10 +21,10 @@ export function checkoutVNPay(req: IReq<TReqBody>, res: IRes) {
     req.connection.remoteAddress ||
     req.socket.remoteAddress
 
-  const tmnCode: string = EnvVars.VNPay.vnp_TmnCode
-  const secretKey: string = EnvVars.VNPay.vnp_HashSecret
-  let vnpUrl: string = EnvVars.VNPay.vnp_Url
-  const returnUrl: string = EnvVars.VNPay.vnp_ReturnUrl
+  const tmnCode = EnvVars.VNPay.vnp_TmnCode
+  const secretKey = EnvVars.VNPay.vnp_HashSecret
+  let vnpUrl = EnvVars.VNPay.vnp_Url
+  const returnUrl = EnvVars.VNPay.vnp_ReturnUrl
 
   const date: Date = new Date()
 
@@ -34,13 +34,13 @@ export function checkoutVNPay(req: IReq<TReqBody>, res: IRes) {
     'YYYYMMDDHHmmss',
   )
 
-  const amount: number = req.body.amount
-  const bankCode: string = req.body.bankCode
+  const amount = req.body.amount
+  const bankCode = req.body.bankCode
 
-  const orderInfo: string = req.body.orderDescription || ''
-  const orderType: string = req.body.orderType
-  const locale: string = req.body.language || 'vn'
-  const currCode: string = 'VND'
+  const orderInfo = req.body.orderDescription || ''
+  const orderType = req.body.orderType
+  const locale = req.body.language || 'vn'
+  const currCode = 'VND'
   const vnpParams: Record<string, unknown> = {}
 
   vnpParams['vnp_Version'] = '2.1.0'
@@ -76,4 +76,34 @@ export function checkoutVNPay(req: IReq<TReqBody>, res: IRes) {
   vnpUrl += '?' + querystring.stringify(sortedParams, { encode: false })
 
   return res.status(HttpStatusCodes.OK).json({ url: vnpUrl })
+}
+
+export function returnCheckout(req: IReq, res: IRes) {
+  let vnp_Params = req.query
+  const secureHash = vnp_Params['vnp_SecureHash']
+
+  delete vnp_Params['vnp_SecureHash']
+  delete vnp_Params['vnp_SecureHashType']
+
+  const secretKey = EnvVars.VNPay.vnp_HashSecret
+
+  vnp_Params = sortObject(vnp_Params)
+  const signData = querystring.stringify(vnp_Params, { encode: false })
+  const hmac = crypto.createHmac('sha512', secretKey)
+  const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex')
+
+  if (secureHash === signed) {
+    const orderId = vnp_Params['vnp_TxnRef']
+    const rspCode = vnp_Params['vnp_ResponseCode'] as keyof typeof VNPayMsg
+
+    // TODO Handle update to DB the result of payment
+
+    return res
+      .status(HttpStatusCodes.OK)
+      .json({ RspCode: rspCode, Message: VNPayMsg[rspCode] })
+  } else {
+    return res
+      .status(HttpStatusCodes.OK)
+      .json({ RspCode: '97', Message: 'Fail checksum' })
+  }
 }

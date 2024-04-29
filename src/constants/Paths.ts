@@ -49,6 +49,7 @@ export default {
   },
   CHECKOUT: {
     BASE: '/checkout',
+    RETURN: '/return',
   },
   PAYMENT: {
     BASE: '/payment',
