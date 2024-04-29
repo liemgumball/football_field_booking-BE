@@ -47,6 +47,12 @@ export default {
     BASE: '/bookings',
     DETAIL: '/:id',
   },
+  CHECKOUT: {
+    BASE: '/checkout',
+  },
+  PAYMENT: {
+    BASE: '/payment',
+  },
   Examples: {
     BASE: '/examples',
     GET: '/all',

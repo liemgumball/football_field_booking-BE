@@ -9,6 +9,7 @@ import authRouter from './auth.routes'
 import footballFieldRouter from './football-field.routes'
 import dayOfServiceRouter from './day-of-service.routes'
 import bookingRouter from './booking.routes'
+import checkoutRouter from './checkout.routes'
 
 // **** api **** //
 const apiRouter = Router()
@@ -31,6 +32,8 @@ apiRouter.use(Paths.DAY_OF_SERVICE.BASE, dayOfServiceRouter)
 // Use Booking Router
 apiRouter.use(Paths.BOOKING.BASE, bookingRouter)
 
-// **** Export default **** //
+// Use Checkout Router
+apiRouter.use(Paths.CHECKOUT.BASE, checkoutRouter)
 
+// **** Export default **** //
 export default apiRouter
