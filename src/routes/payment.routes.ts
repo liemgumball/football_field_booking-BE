@@ -7,8 +7,6 @@ const paymentRouter = Router()
 
 // Deserialization schema
 
-paymentRouter.post('', PaymentController.checkoutVNPay)
-
 paymentRouter.get(Paths.CHECKOUT.RETURN, PaymentController.returnCheckout)
 
 export default paymentRouter

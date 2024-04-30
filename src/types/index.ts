@@ -1,3 +1,4 @@
+import { VNPayMsg } from '@src/constants/VNPayStatusMessage'
 import { Types as mongooseTypes } from 'mongoose'
 
 /**
@@ -98,6 +99,17 @@ export type TBooking = {
   price: number
   confirmed: boolean
   canceled: boolean
-  paid?: boolean
   description?: string | null
+  paid?: boolean
+  payment?: TPayment
+}
+
+export type TPayment = {
+  amount: number
+  orderId: string
+  OrderBankCode: string
+  orderType: '160000' // order types specified by VNPay https://sandbox.vnpayment.vn/apis/docs/loai-hang-hoa/
+  orderInfo?: string
+  statusCode: keyof typeof VNPayMsg
+  payDate: Date
 }

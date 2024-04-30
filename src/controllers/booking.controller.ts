@@ -12,6 +12,7 @@ import * as FootballFieldService from '@src/services/football-field.service'
 
 // Utilities
 import { checkAdmin, checkExactUser } from '@src/util/authorize'
+import { getCheckoutUrl } from '@src/util/vnpay'
 
 /**
  * Get booking details
@@ -42,7 +43,11 @@ export async function getById(req: IReq, res: IRes) {
         .send('Only administrator is allowed')
   }
 
-  return res.status(HttpStatusCodes.OK).json(found)
+  const checkoutUrl = getCheckoutUrl(req, found.price, found.description)
+
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ ...found.toJSON(), checkoutUrl: checkoutUrl })
 }
 
 export async function getBookings(req: IReq, res: IRes) {
