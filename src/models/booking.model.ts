@@ -52,8 +52,9 @@ const BookingSchema = new Schema<BookingDocument>(
     price: { type: Number, required: true },
     confirmed: { type: Boolean, default: false },
     canceled: { type: Boolean, default: false },
-    paid: { type: Boolean },
     description: { type: String, default: null },
+    paid: Boolean,
+    payment: Object,
   },
   {
     timestamps: true,

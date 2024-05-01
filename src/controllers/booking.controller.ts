@@ -43,7 +43,12 @@ export async function getById(req: IReq, res: IRes) {
         .send('Only administrator is allowed')
   }
 
-  const checkoutUrl = getCheckoutUrl(req, found.price, found.description)
+  const checkoutUrl = getCheckoutUrl(
+    req,
+    found.id as string,
+    found.price,
+    found.description,
+  )
 
   return res
     .status(HttpStatusCodes.OK)

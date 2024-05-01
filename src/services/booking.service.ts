@@ -1,5 +1,5 @@
 import BookingModel from '@src/models/booking.model'
-import { TBooking, TurnOfServiceStatus } from '@src/types'
+import { TBooking, TPayment, TurnOfServiceStatus } from '@src/types'
 
 import * as DayOfServiceService from './day-of-service.service'
 
@@ -123,4 +123,18 @@ export async function confirm(
   if (!dayOfService.modifiedCount) return null
 
   return BookingModel.findByIdAndUpdate(id, confirmation)
+}
+
+export async function payBooking(id: string, payment: TPayment) {
+  const booking = await BookingModel.findById(id)
+
+  if (!booking) return null
+
+  if (booking.paid) return null
+
+  return BookingModel.findByIdAndUpdate(id, {
+    paid: true,
+    payment: payment,
+    confirmed: true,
+  })
 }

@@ -7,6 +7,7 @@ import crypto from 'crypto'
 
 export function getCheckoutUrl(
   req: IReq,
+  bookingId: string,
   amount: number,
   orderDescription?: string | null,
   bankCode?: string,
@@ -23,7 +24,10 @@ export function getCheckoutUrl(
   const createDate: string = moment(date).format('YYYYMMDDHHmmss')
   const orderId: string = moment(date).format('DDHHmmss')
 
-  const orderInfo = orderDescription || 'none'
+  // Send the bookingId as an info to update the booking data after checkout
+  const bookingInfo = `${bookingId},${orderDescription}`
+
+  const orderInfo = JSON.stringify(bookingInfo)
   const orderType = '160000'
   const locale = 'vn'
   const currCode = 'VND'
@@ -61,4 +65,12 @@ export function getCheckoutUrl(
   vnpUrl += '?' + QueryString.stringify(sortedParams, { encode: false })
 
   return vnpUrl
+}
+
+export function parseOrderInfo(orderInfo: string) {
+  const decoded = decodeURIComponent(orderInfo)
+
+  const info = decoded.substring(1, decoded.length - 1)
+
+  return info.split(',').map((i) => i)
 }
