@@ -5,8 +5,8 @@ import { getNextHour, getToday } from '@src/util/date'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
-const BookingSchema = z.z.object({
-  name: z.z.string().trim().optional(),
+const BookingSchema = z.object({
+  name: z.string().trim().optional(),
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(

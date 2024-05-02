@@ -109,7 +109,6 @@ export type TPayment = {
   orderId: string
   orderBankCode: string
   orderType: '160000' // order types specified by VNPay https://sandbox.vnpayment.vn/apis/docs/loai-hang-hoa/
-  orderInfo?: string
   statusCode: keyof typeof VNPayMsg
   payDate: Date
 }
