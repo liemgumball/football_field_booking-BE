@@ -9,8 +9,6 @@ import helmet from 'helmet'
 import cors from 'cors'
 import express, { Request, Response, NextFunction } from 'express'
 import logger from 'jet-logger'
-import session from 'express-session'
-import connectMongoDBSession from 'connect-mongodb-session'
 
 import 'express-async-errors'
 
@@ -66,23 +64,26 @@ if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
   app.use(helmet())
 }
 
+/**
+ * MongoDB session code
+ */
 // Create session data
-const MongoDBSession = connectMongoDBSession(session)
-const store = new MongoDBSession({
-  ...EnvVars.Database.options,
-  uri: EnvVars.Database.uri,
-  collection: 'sessions',
-})
+// const MongoDBSession = connectMongoDBSession(session)
+// const store = new MongoDBSession({
+//   ...EnvVars.Database.options,
+//   uri: EnvVars.Database.uri,
+//   collection: 'sessions',
+// })
 
-app.use(
-  session({
-    secret: EnvVars.Session.Secret,
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: EnvVars.CookieProps.Options,
-  }),
-)
+// app.use(
+//   session({
+//     secret: EnvVars.Session.Secret,
+//     resave: false,
+//     saveUninitialized: true,
+//     store: store,
+//     cookie: EnvVars.CookieProps.Options,
+//   }),
+// )
 
 // Add APIs, must be after middleware
 app.use('/api', BaseRouter)
@@ -112,10 +113,6 @@ app.use(
 // Set views directory (html)
 const viewsDir = path.join(__dirname, 'views')
 app.set('views', viewsDir)
-
-// Set static directory (js and css).
-const staticDir = path.join(__dirname, 'public')
-app.use(express.static(staticDir))
 
 // Nav to users pg by default
 app.get('/', (_: Request, res: Response) => {

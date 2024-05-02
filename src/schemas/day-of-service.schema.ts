@@ -1,23 +1,24 @@
-import { array, boolean, number, object, string, enum as enum_ } from 'zod'
+import z from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getNextMonth, getToday } from '@src/util/date'
 
-const TurnOfServiceSchema = object({
+const TurnOfServiceSchema = z.object({
   at: TimeStepSchema,
-  price: number().int().min(0).optional(),
-  availability: boolean().optional(),
+  price: z.number().int().min(0).optional(),
+  availability: z.boolean().optional(),
   user: ValidIdSchema.optional(),
 })
 
-const DayOfServiceSchema = object({
+const DayOfServiceSchema = z.object({
   fieldId: ValidIdSchema,
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(
     (val) => val >= getToday() && val <= getNextMonth(),
     'Date must be between today and next month',
   ),
-  availability: boolean().optional(),
-  turnOfServices: array(TurnOfServiceSchema)
+  availability: z.boolean().optional(),
+  turnOfServices: z
+    .array(TurnOfServiceSchema)
     .max(48)
     .refine((turnOfServices) => {
       // Check each turnOfService against TurnOfServiceSchema
@@ -31,18 +32,18 @@ const DayOfServiceSchema = object({
     }),
 })
 
-export const getDayOfServiceSchema = object({
-  params: object({
+export const getDayOfServiceSchema = z.object({
+  params: z.object({
     id: ValidIdSchema,
   }),
-  query: object({
+  query: z.object({
     from: TimeStepSchema.optional(),
     to: TimeStepSchema.optional(),
   }),
 })
 
-export const updateDayOfServiceSchema = object({
-  params: object({
+export const updateDayOfServiceSchema = z.object({
+  params: z.object({
     fieldId: ValidIdSchema,
     id: ValidIdSchema,
   }),
@@ -51,31 +52,36 @@ export const updateDayOfServiceSchema = object({
     .or(DayOfServiceSchema.omit({ turnOfServices: true }).partial().strict()),
 })
 
-export const searchDayOfServiceSchema = object({
-  query: object({
-    longitude: string()
-      .trim()
-      .transform((val) => +val)
-      .refine(
-        (val) => val >= -180 && val <= 180,
-        'Longitude must be between -180 and 180',
-      )
-      .optional(),
-    latitude: string()
-      .trim()
-      .transform((val) => +val)
-      .refine(
-        (val) => val >= -90 && val <= 90,
-        'Latitude must be between -90 and 90',
-      )
-      .optional(),
-    date: DateSchema,
-    from: TimeStepSchema,
-    to: TimeStepSchema.optional(),
-    size: enum_(['5', '6', '7', '11']).optional(),
-    cursor: string()
-      .trim()
-      .transform((val) => parseInt(val))
-      .optional(),
-  }).passthrough(),
+export const searchDayOfServiceSchema = z.object({
+  query: z
+    .object({
+      longitude: z
+        .string()
+        .trim()
+        .transform((val) => +val)
+        .refine(
+          (val) => val >= -180 && val <= 180,
+          'Longitude must be between -180 and 180',
+        )
+        .optional(),
+      latitude: z
+        .string()
+        .trim()
+        .transform((val) => +val)
+        .refine(
+          (val) => val >= -90 && val <= 90,
+          'Latitude must be between -90 and 90',
+        )
+        .optional(),
+      date: DateSchema,
+      from: TimeStepSchema,
+      to: TimeStepSchema.optional(),
+      size: z.enum(['5', '6', '7', '11']).optional(),
+      cursor: z
+        .string()
+        .trim()
+        .transform((val) => parseInt(val))
+        .optional(),
+    })
+    .passthrough(),
 })
