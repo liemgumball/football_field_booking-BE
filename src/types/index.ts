@@ -113,3 +113,11 @@ export type TPayment = {
   statusCode: keyof typeof VNPayMsg
   payDate: Date
 }
+
+export type TReview = {
+  _id: mongooseTypes.ObjectId
+  userId: mongooseTypes.ObjectId
+  fieldId: mongooseTypes.ObjectId
+  rating: number
+  description?: string
+}

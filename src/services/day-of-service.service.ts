@@ -140,7 +140,6 @@ export function getById(id: string, from?: string, to?: string) {
   )
 }
 
-// FIXME Fix the response data. It's too large and included some unnecessary date
 export function getByFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
     {
@@ -153,7 +152,6 @@ export function getByFieldId(id: Types.ObjectId) {
   )
 }
 
-// FIXME Fix the response data. It's too large and included some unnecessary date
 export function getBySubFieldId(id: Types.ObjectId) {
   return DayOfServiceModel.find(
     { subfieldId: id, availability: true },
