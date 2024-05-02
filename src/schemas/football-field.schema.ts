@@ -1,9 +1,9 @@
+import z from 'zod'
 import {
   LatitudeSchema,
   LocationSchema,
   LongitudeSchema,
 } from '@src/schemas/location.schema'
-import { object, string, number, array } from 'zod'
 import { UserSchema } from './user.schema'
 import { TimeStepSchema, ValidIdSchema } from './common.schema'
 
@@ -45,33 +45,35 @@ import { TimeStepSchema, ValidIdSchema } from './common.schema'
  * };
  *
  */
-const FootballFieldSchema = object({
-  name: string().trim().min(1),
+const FootballFieldSchema = z.object({
+  name: z.string().trim().min(1),
   location: LocationSchema,
   openedAt: TimeStepSchema,
   closedAt: TimeStepSchema,
-  rating: number().min(0).max(5).optional(),
-  images: array(string()).optional(),
+  rating: z.number().min(0).max(5).optional(),
+  images: z.array(z.string()).optional(),
 })
 
-export const createFootballFieldSchema = object({
-  body: object({
+export const createFootballFieldSchema = z.object({
+  body: z.object({
     football_field: FootballFieldSchema,
     admin: UserSchema,
   }),
 })
 
-export const updateFieldSchema = object({
-  params: object({
+export const updateFieldSchema = z.object({
+  params: z.object({
     id: ValidIdSchema,
   }),
   body: FootballFieldSchema.partial(),
 })
 
-export const getManyFieldsSchema = object({
-  query: object({
-    longitude: LongitudeSchema,
-    latitude: LatitudeSchema,
-    distance: number().optional(),
-  }).optional(),
+export const getManyFieldsSchema = z.object({
+  query: z
+    .object({
+      longitude: LongitudeSchema,
+      latitude: LatitudeSchema,
+      distance: z.number().optional(),
+    })
+    .optional(),
 })

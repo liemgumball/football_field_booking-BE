@@ -1,8 +1,5 @@
 import { Router } from 'express'
 
-// Constants
-import Paths from '@src/constants/Paths'
-
 // Controller
 import * as FootballFieldController from '@src/controllers/football-field.controller'
 import * as SubFieldController from '@src/controllers/subfield.controller'
@@ -36,14 +33,11 @@ const footballFieldRouter = Router()
 footballFieldRouter.get('', FootballFieldController.getAll)
 
 // Get by location
-footballFieldRouter.get(
-  Paths.FOOTBALL_FIELD.LOCATION,
-  FootballFieldController.getFromLocation,
-)
+footballFieldRouter.get('/locations', FootballFieldController.getFromLocation)
 
 // Get details
 footballFieldRouter.get(
-  Paths.FOOTBALL_FIELD.GET,
+  '/:id',
   serialize(withValidIdSchema),
   FootballFieldController.getById,
 )
@@ -55,7 +49,7 @@ footballFieldRouter.use(deserializeUser)
 
 // Update Field (not included SubFields)
 footballFieldRouter.patch(
-  Paths.FOOTBALL_FIELD.UPDATE,
+  '/:id',
   isAdmin,
   serialize(updateFieldSchema),
   FootballFieldController.update,
@@ -63,7 +57,7 @@ footballFieldRouter.patch(
 
 // Create SubField
 footballFieldRouter.post(
-  Paths.FOOTBALL_FIELD.SUBFIELD.ALL,
+  '/:fieldId/subfields',
   isAdmin,
   serialize(createSubFieldSchema),
   SubFieldController.createSubField,
@@ -71,7 +65,7 @@ footballFieldRouter.post(
 
 // Update SubField
 footballFieldRouter.patch(
-  Paths.FOOTBALL_FIELD.SUBFIELD.DETAIL,
+  '/:fieldId/subfields/:id',
   isAdmin,
   serialize(updateSubFieldSchema),
   SubFieldController.updateSubfield,
@@ -79,7 +73,7 @@ footballFieldRouter.patch(
 
 // Update day of services
 footballFieldRouter.patch(
-  Paths.FOOTBALL_FIELD.DAY_OF_SERVICE,
+  '/:fieldId/day-of-services/:id',
   isAdmin,
   serialize(updateDayOfServiceSchema),
   DayOfServiceController.updateOne,
@@ -87,7 +81,7 @@ footballFieldRouter.patch(
 
 // Confirm Booking
 footballFieldRouter.patch(
-  Paths.FOOTBALL_FIELD.BOOKING.DETAIL,
+  '/:fieldId/bookings/:id',
   isAdmin,
   serialize(confirmBookingSchema),
   BookingController.confirm,
@@ -97,7 +91,7 @@ footballFieldRouter.patch(
 
 // Create new Football field
 footballFieldRouter.post(
-  Paths.FOOTBALL_FIELD.CREATE,
+  '',
   isSuperUser,
   serialize(createFootballFieldSchema),
   FootballFieldController.create,
@@ -105,7 +99,7 @@ footballFieldRouter.post(
 
 // Delete Football field
 footballFieldRouter.delete(
-  Paths.FOOTBALL_FIELD.DELETE,
+  '/:id',
   isSuperUser,
   serialize(withValidIdSchema),
   FootballFieldController.delete_,

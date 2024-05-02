@@ -4,6 +4,11 @@ import * as SubFieldService from '@src/services/subfield.service'
 import { TSubField } from '@src/types'
 import { IReq, IRes } from '@src/types/express/misc'
 
+/**
+ * Create a subfield for a football field.
+ * @method POST
+ * @param req.params.fieldId - Football field ID.
+ */
 export async function createSubField(req: IReq<TSubField>, res: IRes) {
   const { fieldId } = req.params
 
@@ -23,10 +28,9 @@ export async function createSubField(req: IReq<TSubField>, res: IRes) {
 }
 
 /**
- * Update Subfield (not included Days of service)
- * @param req
- * @param res
- * @returns
+ * Update a subfield (excluding Days of service).
+ * @method PATCH
+ * @param req.params.id - Subfield ID.
  */
 export async function updateSubfield(req: IReq<Partial<TSubField>>, res: IRes) {
   const { id } = req.params

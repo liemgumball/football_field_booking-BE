@@ -23,7 +23,7 @@ import { getDateList } from '@src/util/date'
 import SubFieldModel from '@src/models/subfield.model'
 import { wait } from '@src/util/common'
 
-export function getById(id: string, from?: string, to?: string) {
+export async function getById(id: string, from?: string, to?: string) {
   const pipeline: PipelineStage[] = [
     {
       $match: {
@@ -134,10 +134,8 @@ export function getById(id: string, from?: string, to?: string) {
     )
   }
 
-  return DayOfServiceModel.aggregate(pipeline).then(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    (result) => result.at(0) || null,
-  )
+  const result: TDayOfService[] = await DayOfServiceModel.aggregate(pipeline)
+  return result.at(0) ? result.at(0) : undefined
 }
 
 export function getByFieldId(id: Types.ObjectId) {
@@ -300,7 +298,7 @@ export async function getManyAvailable(
 
   if (cursor !== undefined) {
     pipeline.push({ $skip: cursor * 12 })
-    pipeline.push({ $limit: 3 })
+    pipeline.push({ $limit: 6 })
   } else {
     pipeline.push({ $limit: 60 })
   }

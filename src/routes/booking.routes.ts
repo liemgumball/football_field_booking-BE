@@ -1,8 +1,5 @@
 import { Router } from 'express'
 
-// Constants
-import Paths from '@src/constants/Paths'
-
 // Controllers
 import * as BookingController from '@src/controllers/booking.controller'
 import { deserializeUser } from '@src/middlewares/auth.middleware'
@@ -19,7 +16,7 @@ bookingRouter.use(deserializeUser)
 
 // -------------------- Only exact User can access -----------------------------
 // Get Booking details
-bookingRouter.get(Paths.BOOKING.DETAIL, BookingController.getById)
+bookingRouter.get('/:id', BookingController.getById)
 
 // Get Booking by UserId
 bookingRouter.get('', BookingController.getBookings)
@@ -29,7 +26,7 @@ bookingRouter.post('', serialize(createBookingSchema), BookingController.create)
 
 // Cancel Booking
 bookingRouter.patch(
-  Paths.BOOKING.DETAIL,
+  '/:id',
   serialize(cancelBookingSchema),
   BookingController.cancel,
 )

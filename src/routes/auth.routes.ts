@@ -1,4 +1,3 @@
-import Paths from '@src/constants/Paths'
 import { Router } from 'express'
 
 // Controller
@@ -13,15 +12,11 @@ import * as Schema from '@src/schemas/user.schema'
 const authRouter = Router()
 
 authRouter.post(
-  Paths.AUTH.SIGNUP,
+  '/signup',
   serialize(Schema.createUserSchema),
   AuthController.signup,
 )
 
-authRouter.post(
-  Paths.AUTH.LOGIN,
-  serialize(Schema.loginSchema),
-  AuthController.login,
-)
+authRouter.post('/login', serialize(Schema.loginSchema), AuthController.login)
 
 export default authRouter

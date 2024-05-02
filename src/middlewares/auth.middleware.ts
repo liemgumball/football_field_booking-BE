@@ -7,7 +7,7 @@ import * as FootballFieldService from '@src/services/football-field.service'
 import { checkAdmin } from '@src/util/authorize'
 
 /**
- * Check and verify the JWT access token to `req.user`
+ * Check and verify the JWT access token in `req.user`
  */
 export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
   const token = req.signedCookies.access_token
@@ -29,7 +29,8 @@ export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
 }
 
 /**
- * Middleware to authenticate if the request `UserSession` is matched the `UserId` in request parameters `/:id`
+ * Middleware to authenticate if the request `UserSession` is matched the `UserId`.
+ * @param req.params.id User ID.
  */
 export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
   const { id } = req.params
@@ -46,6 +47,9 @@ export function canAccessUserDetails(req: IReq, res: IRes, next: NextFunction) {
   return next()
 }
 
+/**
+ * Check if the current user makes the request is authenticated Super User
+ */
 export function isSuperUser(req: IReq, res: IRes, next: NextFunction) {
   const user = req.user
   if (user?.role !== UserRole.SUPER_USER) {
@@ -57,6 +61,10 @@ export function isSuperUser(req: IReq, res: IRes, next: NextFunction) {
   next()
 }
 
+/**
+ * Check if the current user makes the request is authenticated Admin of Football field
+ * @param req.params.fieldId Required
+ */
 export async function isAdmin(req: IReq, res: IRes, next: NextFunction) {
   const { fieldId, id } = req.params
   let field = undefined

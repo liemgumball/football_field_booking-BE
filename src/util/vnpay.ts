@@ -5,13 +5,22 @@ import { sortObject } from './common'
 import QueryString from 'qs'
 import crypto from 'crypto'
 
+/**
+ * Generates the checkout URL for VNPay.
+ * @param {IReq} req - The request object.
+ * @param {string} bookingId - The booking ID.
+ * @param {number} amount - The amount to be paid.
+ * @param {string | null | undefined} orderDescription - The order description.
+ * @param {string | undefined} bankCode - The bank code.
+ * @returns {string} The checkout URL for VNPay.
+ */
 export function getCheckoutUrl(
   req: IReq,
   bookingId: string,
   amount: number,
   orderDescription?: string | null,
   bankCode?: string,
-) {
+): string {
   const ipAddr =
     req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
@@ -25,7 +34,7 @@ export function getCheckoutUrl(
   const orderId: string = moment(date).format('DDHHmmss')
 
   // Send the bookingId as an info to update the booking data after checkout
-  const bookingInfo = `${bookingId},${orderDescription}`
+  const bookingInfo = `${bookingId}`
 
   const orderInfo = JSON.stringify(bookingInfo)
   const orderType = '160000'
@@ -67,10 +76,15 @@ export function getCheckoutUrl(
   return vnpUrl
 }
 
-export function parseOrderInfo(orderInfo: string) {
+/**
+ * Parses the order info received from VNPay.
+ * @param {string} orderInfo - The order info received from VNPay.
+ * @returns {string[]} The parsed order info.
+ */
+export function parseOrderInfo(orderInfo: string): string {
   const decoded = decodeURIComponent(orderInfo)
 
   const info = decoded.substring(1, decoded.length - 1)
 
-  return info.split(',').map((i) => i)
+  return info
 }

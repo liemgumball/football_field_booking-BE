@@ -1,19 +1,21 @@
+import z from 'zod'
 import { isValidObjectId } from 'mongoose'
-import { object, string } from 'zod'
 
-export const ValidIdSchema = string()
+export const ValidIdSchema = z
+  .string()
   .trim()
   .refine((value) => isValidObjectId(value), {
     message: 'Invalid Id',
   })
 
-export const withValidIdSchema = object({
-  params: object({
+export const withValidIdSchema = z.object({
+  params: z.object({
     id: ValidIdSchema,
   }),
 })
 
-export const TimeStepSchema = string()
+export const TimeStepSchema = z
+  .string()
   .regex(/^\d{2}:\d{2}$/, 'Invalid time format, must be in HH:MM format')
   .min(5) // Ensure minimum length is 5 characters (HH:MM)
   .max(5) // Ensure maximum length is 5 characters (HH:MM)
@@ -29,7 +31,8 @@ export const TimeStepSchema = string()
     { message: 'HH must from 00 to 23 & MM must either 00 or 30' },
   )
 
-export const DateSchema = string()
+export const DateSchema = z
+  .string()
   .trim()
   .transform((val) => new Date(val))
   .refine(

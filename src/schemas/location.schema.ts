@@ -1,15 +1,15 @@
-import { literal, number, object, string, tuple } from 'zod'
+import z from 'zod'
 
-export const LongitudeSchema = number().min(-180).max(180)
+export const LongitudeSchema = z.number().min(-180).max(180)
 
-export const LatitudeSchema = number().min(-90).max(90)
+export const LatitudeSchema = z.number().min(-90).max(90)
 
-export const PointSchema = object({
-  type: literal('Point'),
-  coordinates: tuple([LongitudeSchema, LatitudeSchema]),
+export const PointSchema = z.object({
+  type: z.literal('Point'),
+  coordinates: z.tuple([LongitudeSchema, LatitudeSchema]),
 })
 
-export const LocationSchema = object({
-  name: string().trim().min(10, 'Address too short'),
+export const LocationSchema = z.object({
+  name: z.string().trim().min(10, 'Address too short'),
   geo: PointSchema,
 })

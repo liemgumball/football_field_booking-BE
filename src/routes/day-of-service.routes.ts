@@ -1,8 +1,5 @@
 import { Router } from 'express'
 
-// Constants & Types
-import Paths from '@src/constants/Paths'
-
 // Controllers
 import * as DayOfServiceController from '@src/controllers/day-of-service.controller'
 
@@ -20,7 +17,7 @@ const dayOfServiceRouter = Router()
 
 // get details
 dayOfServiceRouter.get(
-  Paths.DAY_OF_SERVICE.DETAIL,
+  '/:id',
   serialize(getDayOfServiceSchema),
   DayOfServiceController.getById,
 )
@@ -34,14 +31,14 @@ dayOfServiceRouter.get(
 
 // get by fieldId
 dayOfServiceRouter.get(
-  Paths.DAY_OF_SERVICE.BY_FIELD,
+  '/fields/:id',
   serialize(withValidIdSchema),
   DayOfServiceController.getByFieldId,
 )
 
 // get by subfieldId
 dayOfServiceRouter.get(
-  Paths.DAY_OF_SERVICE.BY_SUBFIELD,
+  '/subfields/:id',
   serialize(withValidIdSchema),
   DayOfServiceController.getBySubFieldId,
 )

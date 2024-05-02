@@ -16,6 +16,9 @@ import { VNPayMsg } from '@src/constants/VNPayStatusMessage'
 import { TPayment } from '@src/types'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
+/**
+ * Handles return response from VNPay
+ */
 export async function returnCheckout(req: IReq, res: IRes) {
   let vnp_Params = req.query as Record<string, string>
   const secureHash = vnp_Params['vnp_SecureHash']
@@ -31,9 +34,7 @@ export async function returnCheckout(req: IReq, res: IRes) {
   const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex')
 
   if (secureHash === signed) {
-    const [bookingId, orderDescription] = parseOrderInfo(
-      vnp_Params['vnp_OrderInfo'],
-    )
+    const bookingId = parseOrderInfo(vnp_Params['vnp_OrderInfo'])
 
     // Get booking Id from order info
 
@@ -42,7 +43,6 @@ export async function returnCheckout(req: IReq, res: IRes) {
       orderId: vnp_Params['vnp_TxnRef'],
       orderBankCode: vnp_Params['vnp_BankCode'],
       orderType: '160000',
-      orderInfo: orderDescription || undefined,
       statusCode: vnp_Params['vnp_ResponseCode'] as keyof typeof VNPayMsg,
       payDate: moment(vnp_Params['vnp_PayDate'], 'YYYYMMDDHHmmss').toDate(),
     }
@@ -55,10 +55,10 @@ export async function returnCheckout(req: IReq, res: IRes) {
         .send('Failed to update booking payment')
 
     // Redirect to the success page
-    return res.redirect('/api/pings') // [ ] should be redirect to FE page
+    return res.redirect('/api/pings') // [ ] should be redirect to FE page (use EnvVariables)
   } else {
     // Should never happened
-    // Redirect to the failure page
+    // [ ] Redirect to the failure page
     return res.redirect('/api/pings')
   }
 }

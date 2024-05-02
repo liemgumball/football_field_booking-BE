@@ -1,12 +1,12 @@
-import { boolean, number, object, string } from 'zod'
+import z from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
 import { getNextHour, getToday } from '@src/util/date'
 
 // Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
-const BookingSchema = object({
-  name: string().trim().optional(),
+const BookingSchema = z.object({
+  name: z.string().trim().optional(),
   userId: ValidIdSchema,
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(
@@ -15,11 +15,11 @@ const BookingSchema = object({
   ),
   from: TimeStepSchema,
   to: TimeStepSchema,
-  price: number().int().min(0),
-  description: string().optional(),
+  price: z.number().int().min(0),
+  description: z.string().optional(),
 })
 
-export const createBookingSchema = object({
+export const createBookingSchema = z.object({
   body: BookingSchema.refine(
     ({ date, from }) => getDateFromTimeStep(date, from) >= getNextHour(),
     'Booking must as least 1 hour from now.',
@@ -28,20 +28,20 @@ export const createBookingSchema = object({
   }, 'Booking time must longs at least 1 hour.'),
 })
 
-export const cancelBookingSchema = object({
-  params: object({
+export const cancelBookingSchema = z.object({
+  params: z.object({
     id: ValidIdSchema,
   }),
-  body: object({
-    canceled: boolean().refine((val) => val, 'Only accept true'),
+  body: z.object({
+    canceled: z.boolean().refine((val) => val, 'Only accept true'),
   }),
 })
 
-export const confirmBookingSchema = object({
-  params: object({
+export const confirmBookingSchema = z.object({
+  params: z.object({
     id: ValidIdSchema,
   }),
-  body: object({
-    confirmed: boolean().refine((val) => val, 'Only accept true'),
+  body: z.object({
+    confirmed: z.boolean().refine((val) => val, 'Only accept true'),
   }),
 })

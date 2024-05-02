@@ -7,12 +7,21 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { TReview } from '@src/types'
 import { IReq, IRes } from '@src/types/express/misc'
 
+/**
+ * Get some best reviews from customers.
+ * @method GET
+ */
 export async function getBests(_: IReq, res: IRes) {
   const reviews = await ReviewService.getBestReviews()
 
   return res.status(HttpStatusCodes.OK).json(reviews)
 }
 
+/**
+ * Get details of a review by its ID.
+ * @method GET
+ * @param req.params.id - The ID of the review.
+ */
 export async function getDetails(req: IReq, res: IRes) {
   const { id } = req.params
 
@@ -24,6 +33,11 @@ export async function getDetails(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(review)
 }
 
+/**
+ * Get all reviews of a user by their ID.
+ * @method GET
+ * @param req.params.userId - The ID of the user.
+ */
 export async function getByUserId(req: IReq, res: IRes) {
   const { userId } = req.params
 
@@ -32,6 +46,11 @@ export async function getByUserId(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(reviews)
 }
 
+/**
+ * Get all reviews of a football field by its ID.
+ * @method GET
+ * @param {string} req.params.fieldId - The ID of the football field.
+ */
 export async function getByFieldId(req: IReq, res: IRes) {
   const { fieldId } = req.params
 
@@ -41,8 +60,9 @@ export async function getByFieldId(req: IReq, res: IRes) {
 }
 
 /**
+ * Create a new review.
  * @method POST
- * @todo // TODO handle user only can create 1 review for 1 field
+ * @param req.body - The review object to create.
  */
 export async function create(req: IReq<TReview>, res: IRes) {
   const review = req.body
@@ -65,7 +85,10 @@ export async function create(req: IReq<TReview>, res: IRes) {
 }
 
 /**
+ * Update an existing review.
  * @method PATCH
+ * @param req.params.id - The ID of the review to update.
+ * @param req.body - The partial review object to update.
  */
 export async function update(req: IReq<Partial<TReview>>, res: IRes) {
   const { id } = req.params
@@ -89,7 +112,9 @@ export async function update(req: IReq<Partial<TReview>>, res: IRes) {
 }
 
 /**
+ * Delete a review by its ID.
  * @method DELETE
+ * @param req.params.id - The ID of the review to delete.
  */
 export async function delete_(req: IReq, res: IRes) {
   const { id } = req.params

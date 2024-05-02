@@ -1,13 +1,11 @@
 import { TimeStep } from '@src/types'
 
 /**
- * Get index time step in day
- * @example
- * const str = '01:30'
- * return 3
- * @param str formatted `HH:MM`
+ * Get the index of a time step in a day.
+ * @param {string} str - The time step formatted as `HH:MM`.
+ * @returns {number} The index of the time step in the day.
  */
-export function getIndexOfTimeStep(str: string) {
+export function getIndexOfTimeStep(str: string): number {
   const list = str.split(':')
   const hours = parseInt(list[0])
   const minutes = parseInt(list[1])
@@ -16,19 +14,14 @@ export function getIndexOfTimeStep(str: string) {
 }
 
 /**
- * Get the time step from its index in day
- * @example
- * const index = 3
- * return '01:30'
- * @param index of time step in day
- * @returns time step in day formatted `HH:MM`
+ * Get the time step from its index in a day.
+ * @param {number} index - The index of the time step in the day.
+ * @returns {string} The time step in the day formatted as `HH:MM`.
  */
 export function getTimeStepFromIndex(index: number): string {
-  // Calculate hours and minutes based on the index
   const hours = Math.floor(index / 2)
   const minutes = (index % 2) * 30
 
-  // Format hours and minutes as HH:MM
   const formattedHours = String(hours).padStart(2, '0')
   const formattedMinutes = String(minutes).padStart(2, '0')
 
@@ -36,13 +29,10 @@ export function getTimeStepFromIndex(index: number): string {
 }
 
 /**
- * Get length from 2 time step in day
- * @example
- * const start = '01:30'
- * const end = '20:30
- * return
- * @param start formatted `HH:MM`
- * @param end formatted `HH:MM`
+ * Get the length between two time steps in a day.
+ * @param {string} start - The starting time step formatted as `HH:MM`.
+ * @param {string} end - The ending time step formatted as `HH:MM`.
+ * @returns {number} The length between the two time steps.
  */
 export function getTimeStepLength(start: string, end: string): number {
   const startIndex = getIndexOfTimeStep(start)
@@ -53,14 +43,20 @@ export function getTimeStepLength(start: string, end: string): number {
   return endIndex - startIndex
 }
 
+/**
+ * Get the date from a given time step and date.
+ * @param {Date} date - The date to use as a base.
+ * @param {TimeStep} time - The time step to extract the time from.
+ * @returns {Date} A new date with the time set to the specified time step.
+ */
 export function getDateFromTimeStep(date: Date, time: TimeStep): Date {
   const list = time.split(':')
   const hour = parseInt(list[0])
   const minute = parseInt(list[1])
 
-  const now = new Date(date)
-  now.setUTCHours(hour)
-  now.setUTCMinutes(minute)
+  const newDate = new Date(date)
+  newDate.setUTCHours(hour)
+  newDate.setUTCMinutes(minute)
 
-  return now
+  return newDate
 }

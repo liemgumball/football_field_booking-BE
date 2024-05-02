@@ -4,6 +4,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 
 function ping(req: IReq, res: IRes) {
   const session = req.session
+
   return res
     .status(HttpStatusCodes.OK)
     .json({ ping: DatabaseService.ping(), session })
