@@ -15,7 +15,6 @@ import connectMongoDBSession from 'connect-mongodb-session'
 import 'express-async-errors'
 
 import BaseRouter from '@src/routes/api.routes'
-import Paths from '@src/constants/Paths'
 
 import EnvVars from '@src/constants/EnvVars'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
@@ -86,7 +85,7 @@ app.use(
 )
 
 // Add APIs, must be after middleware
-app.use(Paths.BASE, BaseRouter)
+app.use('/api', BaseRouter)
 
 // Add error handler
 app.use(

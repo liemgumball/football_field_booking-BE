@@ -1,7 +1,5 @@
 import { Router } from 'express'
 
-import Paths from '../constants/Paths'
-
 // Routers
 import pingRouter from './ping.routes'
 import userRouter from './user.routes'
@@ -16,25 +14,25 @@ import reviewRouter from './review.routes'
 const apiRouter = Router()
 
 // Use PingRouter
-apiRouter.use(Paths.PINGS.BASE, pingRouter)
+apiRouter.use('/pings', pingRouter)
 
 // Use PingRouter
-apiRouter.use(Paths.AUTH.BASE, authRouter)
+apiRouter.use('/auth', authRouter)
 
 // Use UserRouter
-apiRouter.use(Paths.USERS.BASE, userRouter)
+apiRouter.use('/users', userRouter)
 
 // Use FootballField Router
-apiRouter.use(Paths.FOOTBALL_FIELD.BASE, footballFieldRouter)
+apiRouter.use('/fields', footballFieldRouter)
 
 // Use Day Of Service Router
-apiRouter.use(Paths.DAY_OF_SERVICE.BASE, dayOfServiceRouter)
+apiRouter.use('/day-of-services', dayOfServiceRouter)
 
 // Use Booking Router
-apiRouter.use(Paths.BOOKING.BASE, bookingRouter)
+apiRouter.use('/bookings', bookingRouter)
 
 // Use Checkout Router
-apiRouter.use(Paths.CHECKOUT.BASE, paymentRouter)
+apiRouter.use('/checkout', paymentRouter)
 
 // Use Review Router
 apiRouter.use('/reviews', reviewRouter)

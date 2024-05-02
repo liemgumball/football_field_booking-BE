@@ -1,8 +1,5 @@
 import { Router } from 'express'
 
-// Constants
-import Paths from '@src/constants/Paths'
-
 // Schemas
 import {
   changePasswordSchema,
@@ -30,21 +27,21 @@ userRouter.use(deserializeUser)
 
 //------------------------- Only exact User can access -------------------------
 userRouter.get(
-  Paths.USERS.GET,
+  '/:id',
   canAccessUserDetails,
   serialize(withValidIdSchema),
   UserController.getById,
 )
 
 userRouter.patch(
-  Paths.USERS.UPDATE,
+  '/:id',
   canAccessUserDetails,
   serialize(updateUserSchema),
   UserController.update,
 )
 
 userRouter.patch(
-  Paths.USERS.CHANGE_PASSWORD,
+  '/change-password/:id',
   canAccessUserDetails,
   serialize(changePasswordSchema),
   UserController.change_password,
@@ -52,7 +49,7 @@ userRouter.patch(
 
 // ------------------------- Only Super User can access ------------------------
 userRouter.delete(
-  Paths.USERS.DELETE,
+  '/:id',
   isSuperUser,
   serialize(withValidIdSchema),
   UserController.delete_,
