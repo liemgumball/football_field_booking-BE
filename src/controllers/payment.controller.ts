@@ -7,14 +7,13 @@ import * as BookingService from '@src/services/booking.service'
 
 // Utils
 import { sortObject } from '@src/util/common'
-import { parseOrderInfo } from '@src/util/vnpay'
 
 // Constants & Types
 import { IReq, IRes } from '@src/types/express/misc'
 import EnvVars from '@src/constants/EnvVars'
 import { VNPayMsg } from '@src/constants/VNPayStatusMessage'
-import { TPayment } from '@src/types'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
+import { TCheckoutSession } from '@src/types'
 
 /**
  * Handles return response from VNPay
@@ -34,31 +33,51 @@ export async function returnCheckout(req: IReq, res: IRes) {
   const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex')
 
   if (secureHash === signed) {
-    const bookingId = parseOrderInfo(vnp_Params['vnp_OrderInfo'])
+    const bookingId = vnp_Params['vnp_OrderInfo']
 
     // Get booking Id from order info
-
-    const payment: TPayment = {
+    const checkoutSession: TCheckoutSession = {
       amount: Number(vnp_Params['vnp_Amount']),
       orderId: vnp_Params['vnp_TxnRef'],
       orderBankCode: vnp_Params['vnp_BankCode'],
       orderType: '160000',
+      currCode: vnp_Params['vnp_CurrCode'] as unknown as 'VND',
       statusCode: vnp_Params['vnp_ResponseCode'] as keyof typeof VNPayMsg,
       payDate: moment(vnp_Params['vnp_PayDate'], 'YYYYMMDDHHmmss').toDate(),
     }
 
-    const updated = await BookingService.payBooking(bookingId, payment)
+    // Checkout successfully
+    if (
+      checkoutSession.statusCode === '00' ||
+      checkoutSession.statusCode === '07'
+    ) {
+      const updated = await BookingService.payBooking(
+        bookingId,
+        checkoutSession,
+      )
 
-    if (!updated)
-      return res
-        .status(HttpStatusCodes.PRECONDITION_FAILED)
-        .send('Failed to update booking payment')
+      if (!updated)
+        return res
+          .status(HttpStatusCodes.PRECONDITION_FAILED)
+          .send('Failed to update booking payment')
+    } else {
+      // Checkout failed
+      const updated = await BookingService.update(bookingId, {
+        checkoutSession: null,
+      })
 
-    // Redirect to the success page
-    return res.redirect('/api/pings') // [ ] should be redirect to FE page (use EnvVariables)
+      if (!updated)
+        return res
+          .status(HttpStatusCodes.PRECONDITION_FAILED)
+          .send('Failed to update booking payment')
+    }
+
+    // Redirect user to payment page
+    return res.redirect(
+      `${EnvVars.VNPay.checkoutReturn_Url}/${bookingId}?statusCode=${checkoutSession.statusCode}`,
+    )
   } else {
-    // Should never happened
-    // [ ] Redirect to the failure page
-    return res.redirect('/api/pings')
+    // This should never happened
+    return res.redirect(`${EnvVars.VNPay.checkoutReturn_Url}?notSigned=true`)
   }
 }

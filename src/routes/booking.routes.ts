@@ -31,6 +31,12 @@ bookingRouter.patch(
   BookingController.cancel,
 )
 
+// Create checkout session
+bookingRouter.post(
+  '/:id/create-checkout',
+  BookingController.createCheckoutSession,
+)
+
 // ------------------------ Only Admin can access ------------------------------
 
 export default bookingRouter

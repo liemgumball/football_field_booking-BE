@@ -12,7 +12,7 @@ import * as FootballFieldService from '@src/services/football-field.service'
 
 // Utilities
 import { checkAdmin, checkExactUser } from '@src/util/authorize'
-import { getCheckoutUrl } from '@src/util/vnpay'
+import { getCheckoutUrl, createCheckoutSessionObject } from '@src/util/vnpay'
 
 /**
  * Get booking details.
@@ -46,14 +46,7 @@ export async function getById(req: IReq, res: IRes) {
         .send('Only administrator is allowed')
   }
 
-  const checkoutUrl = getCheckoutUrl(
-    req,
-    found.id as string,
-    found.price,
-    found.description,
-  )
-
-  return res.status(HttpStatusCodes.OK).json({ ...found.toJSON(), checkoutUrl })
+  return res.status(HttpStatusCodes.OK).json(found)
 }
 
 /**
@@ -203,4 +196,47 @@ export async function confirm(
       .send('Failed to confirm booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
+}
+
+/**
+ * Create checkout session if not already and return checkout url.
+ * @method POST
+ * @param req.params.id Booking ID.
+ */
+export async function createCheckoutSession(req: IReq, res: IRes) {
+  const { id } = req.params
+
+  const found = await BookingService.getById(id)
+
+  if (!found)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Booking not found')
+
+  if (!checkExactUser(found.userId, req.user))
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Only correct user is allowed')
+
+  if (found.checkoutSession) {
+    return res.status(HttpStatusCodes.CREATED).json({
+      checkoutUrl: getCheckoutUrl(
+        req,
+        found.id as string,
+        found.checkoutSession,
+      ),
+    })
+  }
+
+  const newCheckoutSession = createCheckoutSessionObject(found)
+  const updated = await BookingService.update(found.id as string, {
+    checkoutSession: newCheckoutSession,
+  })
+
+  if (!updated?.isModified)
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Fail to create checkout session')
+
+  return res.status(HttpStatusCodes.CREATED).json({
+    checkoutUrl: getCheckoutUrl(req, found.id as string, newCheckoutSession),
+  })
 }
