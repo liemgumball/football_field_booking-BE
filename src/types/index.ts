@@ -99,18 +99,20 @@ export type TBooking = {
   price: number
   confirmed: boolean
   canceled: boolean
-  description?: string | null
+  description: string | null
+  name: string | null
   paid?: boolean
-  payment?: TPayment
+  checkoutSession: TCheckoutSession | null
 }
 
-export type TPayment = {
+export type TCheckoutSession = {
   amount: number
   orderId: string
-  orderBankCode: string
   orderType: '160000' // order types specified by VNPay https://sandbox.vnpayment.vn/apis/docs/loai-hang-hoa/
-  statusCode: keyof typeof VNPayMsg
+  statusCode: keyof typeof VNPayMsg | null
   payDate: Date
+  currCode: 'VND'
+  orderBankCode?: string
 }
 
 export type TReview = {

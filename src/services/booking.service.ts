@@ -1,5 +1,5 @@
 import BookingModel from '@src/models/booking.model'
-import { TBooking, TPayment, TurnOfServiceStatus } from '@src/types'
+import { TBooking, TCheckoutSession, TurnOfServiceStatus } from '@src/types'
 
 import * as DayOfServiceService from './day-of-service.service'
 
@@ -31,7 +31,7 @@ export function getDetailById(id: string) {
     .populate('user')
     .populate('subfield')
     .populate('field')
-    .select('-__v')
+    .select('-__v -checkoutSession')
 }
 
 export function getById(id: string) {
@@ -125,7 +125,10 @@ export async function confirm(
   return BookingModel.findByIdAndUpdate(id, confirmation)
 }
 
-export async function payBooking(id: string, payment: TPayment) {
+export async function payBooking(
+  id: string,
+  checkoutSession: TCheckoutSession,
+) {
   const booking = await BookingModel.findById(id)
 
   if (!booking) return null
@@ -134,7 +137,11 @@ export async function payBooking(id: string, payment: TPayment) {
 
   return BookingModel.findByIdAndUpdate(id, {
     paid: true,
-    payment: payment,
+    checkoutSession: checkoutSession,
     confirmed: true,
   })
+}
+
+export function update(id: string, data: Partial<TBooking>) {
+  return BookingModel.findByIdAndUpdate(id, data)
 }

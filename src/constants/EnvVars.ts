@@ -1,10 +1,9 @@
 /**
  * Environments variables declared here.
  */
+/* eslint-disable node/no-process-env */
 
 import { ConnectOptions } from 'mongoose'
-
-/* eslint-disable node/no-process-env */
 
 export default {
   NodeEnv: process.env.NODE_ENV ?? '',
@@ -60,6 +59,7 @@ export default {
     vnp_TmnCode: process.env.vnp_TmnCode ?? '',
     vnp_HashSecret: process.env.vnp_HashSecret ?? '',
     vnp_Url: process.env.vnp_Url ?? '',
-    vnp_ReturnUrl: process.env.vnp_ReturnUrl ?? '/pings',
+    vnp_ReturnUrl: process.env.vnp_ReturnUrl ?? '',
+    checkoutReturn_Url: process.env.CHECKOUT_RETURN_URL ?? '',
   },
 } as const

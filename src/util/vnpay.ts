@@ -4,22 +4,34 @@ import moment from 'moment'
 import { sortObject } from './common'
 import QueryString from 'qs'
 import crypto from 'crypto'
+import { TBooking, TCheckoutSession } from '@src/types'
+
+export function createCheckoutSessionObject(
+  booking: TBooking,
+): TCheckoutSession {
+  const date = new Date()
+
+  return {
+    orderId: moment(date).format('DDHHmmss'),
+    amount: booking.price * 100 * 1000,
+    currCode: 'VND',
+    orderType: '160000',
+    payDate: date,
+    statusCode: null,
+  }
+}
 
 /**
  * Generates the checkout URL for VNPay.
- * @param {IReq} req - The request object.
- * @param {string} bookingId - The booking ID.
- * @param {number} amount - The amount to be paid.
- * @param {string | null | undefined} orderDescription - The order description.
- * @param {string | undefined} bankCode - The bank code.
- * @returns {string} The checkout URL for VNPay.
+ * @param req - The request object.
+ * @param bookingId - The booking ID.
+ * @param checkoutSession - The TCheckoutSession object
+ * @returns The checkout URL for VNPay.
  */
 export function getCheckoutUrl(
   req: IReq,
   bookingId: string,
-  amount: number,
-  orderDescription?: string | null,
-  bankCode?: string,
+  checkoutSession: TCheckoutSession,
 ): string {
   const ipAddr =
     req.headers['x-forwarded-for'] ||
@@ -28,18 +40,16 @@ export function getCheckoutUrl(
 
   let vnpUrl = EnvVars.VNPay.vnp_Url
 
-  const date: Date = new Date()
+  const { amount, currCode, orderId, orderType, payDate, orderBankCode } =
+    checkoutSession
 
-  const createDate: string = moment(date).format('YYYYMMDDHHmmss')
-  const orderId: string = moment(date).format('DDHHmmss')
+  const createDate = moment(payDate).format('YYYYMMDDHHmmss')
+  const expireDate = moment(
+    payDate.setMinutes(payDate.getMinutes() + 10),
+  ).format('YYYYMMDDHHmmss')
 
   // Send the bookingId as an info to update the booking data after checkout
-  const bookingInfo = `${bookingId}`
-
-  const orderInfo = JSON.stringify(bookingInfo)
-  const orderType = '160000'
   const locale = 'vn'
-  const currCode = 'VND'
   const vnpParams: Record<string, unknown> = {}
 
   vnpParams['vnp_Version'] = '2.1.0'
@@ -49,42 +59,28 @@ export function getCheckoutUrl(
   vnpParams['vnp_Locale'] = locale
   vnpParams['vnp_CurrCode'] = currCode
   vnpParams['vnp_TxnRef'] = orderId
-  vnpParams['vnp_OrderInfo'] = orderInfo
+  vnpParams['vnp_OrderInfo'] = bookingId
   vnpParams['vnp_OrderType'] = orderType
-  vnpParams['vnp_Amount'] = amount * 100 * 1000
+  vnpParams['vnp_Amount'] = amount
   vnpParams['vnp_ReturnUrl'] = EnvVars.VNPay.vnp_ReturnUrl
   vnpParams['vnp_IpAddr'] = ipAddr
   vnpParams['vnp_CreateDate'] = createDate
+  vnpParams['vnp_ExpireDate'] = expireDate
 
-  if (bankCode) {
-    vnpParams['vnp_BankCode'] = bankCode
+  if (orderBankCode) {
+    vnpParams['vnp_BankCode'] = orderBankCode
   }
 
   const sortedParams = sortObject(vnpParams)
 
-  const signData: string = QueryString.stringify(sortedParams, {
+  const signData = QueryString.stringify(sortedParams, {
     encode: false,
   })
 
   const hmac = crypto.createHmac('sha512', EnvVars.VNPay.vnp_HashSecret)
-  const signed: string = hmac
-    .update(Buffer.from(signData, 'utf-8'))
-    .digest('hex')
+  const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex')
   sortedParams.vnp_SecureHash = signed
   vnpUrl += '?' + QueryString.stringify(sortedParams, { encode: false })
 
   return vnpUrl
-}
-
-/**
- * Parses the order info received from VNPay.
- * @param {string} orderInfo - The order info received from VNPay.
- * @returns {string[]} The parsed order info.
- */
-export function parseOrderInfo(orderInfo: string): string {
-  const decoded = decodeURIComponent(orderInfo)
-
-  const info = decoded.substring(1, decoded.length - 1)
-
-  return info
 }

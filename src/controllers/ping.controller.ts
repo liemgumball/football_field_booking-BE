@@ -7,7 +7,7 @@ function ping(req: IReq, res: IRes) {
 
   return res
     .status(HttpStatusCodes.OK)
-    .json({ ping: DatabaseService.ping(), session })
+    .json({ ping: DatabaseService.ping(), session: session })
 }
 
 export default { ping } as const

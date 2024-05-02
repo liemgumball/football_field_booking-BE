@@ -11,7 +11,7 @@ const BookingSchema = z.object({
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(
     (val) => val >= getToday(),
-    'Booking date must as least from' + getToday().toLocaleDateString(),
+    'Booking date must as least from: ' + getToday().toLocaleDateString(),
   ),
   from: TimeStepSchema,
   to: TimeStepSchema,
