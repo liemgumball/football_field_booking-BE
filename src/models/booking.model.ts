@@ -55,6 +55,7 @@ const BookingSchema = new Schema<BookingDocument>(
     description: { type: String, default: null },
     paid: Boolean,
     payment: Object,
+    name: { type: String, default: null },
   },
   {
     timestamps: true,

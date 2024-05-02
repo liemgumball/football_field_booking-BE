@@ -99,9 +99,10 @@ export type TBooking = {
   price: number
   confirmed: boolean
   canceled: boolean
-  description?: string | null
+  description: string | null
   paid?: boolean
   payment?: TPayment
+  name: string | null
 }
 
 export type TPayment = {
