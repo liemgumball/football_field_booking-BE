@@ -15,7 +15,10 @@ import { checkAdmin, checkExactUser } from '@src/util/authorize'
 import { getCheckoutUrl } from '@src/util/vnpay'
 
 /**
- * Get booking details
+ * Get booking details.
+ * @method GET
+ * @param req.params.id Booking ID.
+ * @returns `Booking Details` and `Checkout URL`.
  */
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
@@ -50,11 +53,13 @@ export async function getById(req: IReq, res: IRes) {
     found.description,
   )
 
-  return res
-    .status(HttpStatusCodes.OK)
-    .json({ ...found.toJSON(), checkoutUrl: checkoutUrl })
+  return res.status(HttpStatusCodes.OK).json({ ...found.toJSON(), checkoutUrl })
 }
 
+/**
+ * Get many Bookings based `User Session`.
+ * @method GET
+ */
 export async function getBookings(req: IReq, res: IRes) {
   const user = req.user
 
@@ -90,7 +95,9 @@ export async function getBookings(req: IReq, res: IRes) {
 
 /**
  * Handle validation and create a new booking.
- * Also create a TimeOut to `cancel` the booking after `10` minutes `not being confirmed`.
+ * @method POST
+ * @param req.body Data to create a new booking.
+ * @description Also create a TimeOut to `cancel` the booking after `10` minutes `not being confirmed`.
  */
 export async function create(req: IReq<TBooking>, res: IRes) {
   const booking = req.body
@@ -123,7 +130,7 @@ export async function create(req: IReq<TBooking>, res: IRes) {
         canceled: true,
       })
     },
-    10 * 60 * 1000,
+    10 * 60 * 1000, // 10 minutes
   )
 
   return res.status(HttpStatusCodes.CREATED).json(created)
@@ -131,6 +138,9 @@ export async function create(req: IReq<TBooking>, res: IRes) {
 
 /**
  * Handle booking request by User
+ * @method PATCH
+ * @param req.params.id Booking ID.
+ * @param req.body Data to cancel booking.
  */
 export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
   const canceling = req.body
@@ -162,7 +172,10 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
 }
 
 /**
- * Handle confirm booking by Admin
+ * Handle confirm booking by Admin.
+ * @method PATCH
+ * @param req.params.id Booking ID.
+ * @param res.body Data to confirmed.
  */
 export async function confirm(
   req: IReq<Pick<TBooking, 'confirmed'>>,

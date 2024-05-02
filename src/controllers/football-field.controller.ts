@@ -7,6 +7,11 @@ import { TFootballField, TUser } from '@src/types'
 import * as FootballFieldService from '@src/services/football-field.service'
 import * as LocationService from '@src/services/location.service'
 
+/**
+ * Get all football field.
+ * @method GET
+ * @param req.query.name Name of field to search.
+ */
 export async function getAll(req: IReq, res: IRes) {
   const { name } = req.query
 
@@ -17,6 +22,13 @@ export async function getAll(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.OK).json(fields)
 }
 
+/**
+ * Get many football fields from a location and search radius.
+ * @method GET
+ * @param req.query.longitude
+ * @param req.query.latitude
+ * @param req.query.distance Search radius
+ */
 export async function getFromLocation(req: IReq, res: IRes) {
   const { longitude, latitude, distance } = req.query
 
@@ -34,7 +46,9 @@ export async function getFromLocation(req: IReq, res: IRes) {
 }
 
 /**
- * Get all football field details requests by admin role
+ * Get all football field details requests by admin role.
+ * @method GET
+ * @param req.params.id Football field ID.
  */
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
@@ -48,7 +62,10 @@ export async function getById(req: IReq, res: IRes) {
 }
 
 /**
- * Create new football field by super user
+ * Create new football field by super user.
+ * @method POST
+ * @param req.body.football_field Football data to create.
+ * @param req.body.admin Admin SingUp data to create.
  */
 export async function create(
   req: IReq<{ football_field: TFootballField; admin: TUser }>,
@@ -68,6 +85,9 @@ export async function create(
 
 /**
  * Update football field by admin
+ * @method PATCH
+ * @param req.params.id
+ * @param req.params.data
  */
 export async function update(req: IReq<TFootballField>, res: IRes) {
   const { id } = req.params
@@ -83,6 +103,8 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
 
 /**
  * Delete football field by super user
+ * @method DELETE
+ * @param req.params.id
  */
 export async function delete_(req: IReq, res: IRes) {
   const { id } = req.params

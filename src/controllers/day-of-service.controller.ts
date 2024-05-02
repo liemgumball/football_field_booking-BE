@@ -12,7 +12,11 @@ import * as FootballFieldService from '@src/services/football-field.service'
 import * as SubFieldService from '@src/services/subfield.service'
 
 /**
- * Get by Id
+ * Get `Day of service` details.
+ * @method GET
+ * @param req.params.id Day of service ID.
+ * @param req.query.from Time step `from` turn of service.
+ * @param req.query.to Time step `to` turn of service.
  */
 export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
@@ -29,7 +33,9 @@ export async function getById(req: IReq, res: IRes) {
 }
 
 /**
- * Get by Field ID
+ * Get many `Day of service` by Field ID.
+ * @method GET
+ * @param req.params.id Field ID.
  */
 export async function getByFieldId(req: IReq, res: IRes) {
   const { id } = req.params
@@ -46,7 +52,9 @@ export async function getByFieldId(req: IReq, res: IRes) {
 }
 
 /**
- * Get by sub field Id
+ * Get `Day of service` by subfield ID.
+ * @method GET
+ * @param req.params.id Subfield ID.
  */
 export async function getBySubFieldId(req: IReq, res: IRes) {
   const { id } = req.params
@@ -66,7 +74,9 @@ export async function getBySubFieldId(req: IReq, res: IRes) {
 }
 
 /**
- * Update a DayOfService
+ * Update a `Day of service`.
+ * @method PATCH
+ * @param req.params.id Day of service ID.
  */
 export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
   const { id } = req.params
@@ -89,9 +99,17 @@ export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
 }
 
 /**
- * Get day of services following `location` and `time range`.
- * If none provided, then search from `current time` to `next week`
- * @returns Return list of day of services
+ * Get many day of services following `location` and `time range`.
+ * @method GET
+ * @param req.query.latitude
+ * @param req.query.longitude
+ * @param req.query.distance
+ * @param req.query.from
+ * @param req.query.to
+ * @param req.query.date Date to search for
+ * @param req.query.size Size of subfield
+ * @param req.query.cursor Cursor for Pagination
+ * @returns Returns list of day of services.
  */
 export async function search(req: IReq, res: IRes) {
   const { latitude, longitude, distance, from, to, date, size, cursor } =

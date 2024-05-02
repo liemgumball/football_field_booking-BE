@@ -5,6 +5,12 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
 import { TUser } from '@src/types'
 
+/**
+ * Handle Login User.
+ * @method POST
+ * @param req.params.email
+ * @param req.params.password
+ */
 export async function login(req: IReq<TUser>, res: IRes) {
   const { email, password } = req.body
 
@@ -22,7 +28,9 @@ export async function login(req: IReq<TUser>, res: IRes) {
 }
 
 /**
- * Handle add user request
+ * Handle Sign up new user.
+ * @method POST
+ * @param req.body Signup data.
  */
 export async function signup(req: IReq<TUser>, res: IRes) {
   const user = req.body
