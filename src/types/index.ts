@@ -47,11 +47,11 @@ export type TUser = {
 export type TSubField = {
   _id: mongooseTypes.ObjectId
   fieldId: mongooseTypes.ObjectId
+  field?: TFootballField
   name: string
   size: number
   availability: boolean
   defaultPrice: number
-  field?: TFootballField
 }
 
 /**
@@ -68,7 +68,7 @@ export type TFootballField = {
   closedAt: TimeStep
   rating: number
   images: string[]
-  subfields: TSubField[]
+  subfields?: TSubField[]
 }
 
 export type TTurnOfService = {
@@ -81,7 +81,9 @@ export type TTurnOfService = {
 export type TDayOfService = {
   _id: mongooseTypes.ObjectId
   fieldId: mongooseTypes.ObjectId
+  field?: TFootballField
   subfieldId: mongooseTypes.ObjectId
+  subfield?: TSubField
   date: Date
   expireAt: Date
   availability: boolean
@@ -91,8 +93,11 @@ export type TDayOfService = {
 export type TBooking = {
   _id: mongooseTypes.ObjectId
   userId: mongooseTypes.ObjectId
+  user?: TUser
   fieldId: mongooseTypes.ObjectId
+  field?: TFootballField
   subfieldId: mongooseTypes.ObjectId
+  subfield?: TSubField
   date: Date
   from: TimeStep
   to: TimeStep
@@ -103,6 +108,7 @@ export type TBooking = {
   name: string | null
   paid?: boolean
   checkoutSession: TCheckoutSession | null
+  review: null | { rating: number; description?: string }
 }
 
 export type TCheckoutSession = {
@@ -113,12 +119,4 @@ export type TCheckoutSession = {
   payDate: Date
   currCode: 'VND'
   orderBankCode?: string
-}
-
-export type TReview = {
-  _id: mongooseTypes.ObjectId
-  userId: mongooseTypes.ObjectId
-  fieldId: mongooseTypes.ObjectId
-  rating: number
-  description?: string
 }

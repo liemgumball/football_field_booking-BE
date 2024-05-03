@@ -7,6 +7,7 @@ import { serialize } from '@src/middlewares/serializer.middleware'
 import {
   cancelBookingSchema,
   createBookingSchema,
+  reviewBookingSchema,
 } from '@src/schemas/booking.schema'
 
 const bookingRouter = Router()
@@ -35,6 +36,12 @@ bookingRouter.patch(
 bookingRouter.post(
   '/:id/create-checkout',
   BookingController.createCheckoutSession,
+)
+
+bookingRouter.patch(
+  '/:id/review',
+  serialize(reviewBookingSchema),
+  BookingController.review,
 )
 
 // ------------------------ Only Admin can access ------------------------------

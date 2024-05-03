@@ -45,3 +45,13 @@ export const confirmBookingSchema = z.object({
     confirmed: z.boolean().refine((val) => val, 'Only accept true'),
   }),
 })
+
+export const reviewBookingSchema = z.object({
+  params: z.object({
+    id: ValidIdSchema,
+  }),
+  body: z.object({
+    rating: z.number().int().min(1).max(5),
+    description: z.string().optional(),
+  }),
+})

@@ -8,7 +8,6 @@ import footballFieldRouter from './football-field.routes'
 import dayOfServiceRouter from './day-of-service.routes'
 import bookingRouter from './booking.routes'
 import paymentRouter from './payment.routes'
-import reviewRouter from './review.routes'
 
 // **** api **** //
 const apiRouter = Router()
@@ -33,9 +32,6 @@ apiRouter.use('/bookings', bookingRouter)
 
 // Use Checkout Router
 apiRouter.use('/checkout', paymentRouter)
-
-// Use Review Router
-apiRouter.use('/reviews', reviewRouter)
 
 // **** Export default **** //
 export default apiRouter
