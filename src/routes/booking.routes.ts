@@ -37,6 +37,8 @@ bookingRouter.post(
   BookingController.createCheckoutSession,
 )
 
+bookingRouter.post(':/id/review', BookingController.review)
+
 // ------------------------ Only Admin can access ------------------------------
 
 export default bookingRouter

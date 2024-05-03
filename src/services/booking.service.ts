@@ -1,4 +1,7 @@
+import { startSession } from 'mongoose'
+
 import BookingModel from '@src/models/booking.model'
+import FootballFieldModel from '@src/models/football-field.model'
 import { TBooking, TCheckoutSession, TurnOfServiceStatus } from '@src/types'
 
 import * as DayOfServiceService from './day-of-service.service'
@@ -142,6 +145,47 @@ export async function payBooking(
   })
 }
 
-export function update(id: string, data: Partial<TBooking>) {
-  return BookingModel.findByIdAndUpdate(id, data)
+export async function update(id: string, data: Partial<TBooking>) {
+  if (!data.review) return BookingModel.findByIdAndUpdate(id, data)
+
+  const session = await startSession()
+
+  try {
+    session.startTransaction()
+
+    const updated = await BookingModel.findByIdAndUpdate(id, data, { session })
+
+    if (updated?.isModified) {
+      const result = await BookingModel.aggregate([
+        { $match: { fieldId: id } },
+        {
+          $group: {
+            _id: '$fieldId',
+            averageRating: { $avg: '$rating' }, // Calculate average rating
+          },
+        },
+      ])
+
+      if (result.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const averageRating = result.at(0).averageRating as number
+
+        await FootballFieldModel.findByIdAndUpdate(
+          id,
+          { rating: averageRating },
+          { session },
+        )
+      }
+
+      await session.commitTransaction()
+      session.endSession()
+    } else {
+      throw updated
+    }
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+
+    throw error
+  }
 }

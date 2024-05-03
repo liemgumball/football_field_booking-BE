@@ -56,6 +56,9 @@ const BookingSchema = new Schema<BookingDocument>(
     paid: Boolean,
     checkoutSession: Object,
     name: String,
+    review: {
+      type: { rating: { type: Number, required: true }, description: String },
+    },
   },
   {
     timestamps: true,
@@ -81,6 +84,7 @@ BookingSchema.virtual('subfield', {
     projection: { createdAt: 0, updatedAt: 0, __v: 0, fieldId: 0 },
   },
 })
+
 BookingSchema.virtual('field', {
   ref: 'FootballField',
   localField: 'fieldId',

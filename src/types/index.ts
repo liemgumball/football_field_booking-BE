@@ -108,7 +108,7 @@ export type TBooking = {
   name: string | null
   paid?: boolean
   checkoutSession: TCheckoutSession | null
-  rating: number
+  review: null | { rating: number; description?: string }
 }
 
 export type TCheckoutSession = {

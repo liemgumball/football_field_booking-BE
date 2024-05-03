@@ -227,7 +227,7 @@ export async function createCheckoutSession(req: IReq, res: IRes) {
   }
 
   const newCheckoutSession = createCheckoutSessionObject(found)
-  const updated = await BookingService.update(found.id as string, {
+  const updated = await BookingService.update(id, {
     checkoutSession: newCheckoutSession,
   })
 
@@ -239,4 +239,38 @@ export async function createCheckoutSession(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.CREATED).json({
     checkoutUrl: getCheckoutUrl(req, found.id as string, newCheckoutSession),
   })
+}
+
+/**
+ * Add review for a Booking and update total review of Football Field.
+ * @param req.params.id Booking ID.
+ * @param req.params.body Data for review.
+ */
+export async function review(
+  req: IReq<{ rating: number; description?: string }>,
+  res: IRes,
+) {
+  const { id } = req.params
+
+  const found = await BookingService.getById(id)
+
+  if (!found)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Booking not found')
+
+  if (!checkExactUser(found.userId, req.user))
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Only correct user is allowed')
+
+  try {
+    await BookingService.update(id, {
+      review: req.body,
+    })
+  } catch (err) {
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Failed to add review')
+  }
+
+  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
