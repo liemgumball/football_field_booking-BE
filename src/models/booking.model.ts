@@ -57,6 +57,7 @@ const BookingSchema = new Schema<BookingDocument>(
     checkoutSession: Object,
     name: String,
     review: {
+      _id: false,
       type: { rating: { type: Number, required: true }, description: String },
     },
   },
