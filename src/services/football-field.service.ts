@@ -78,3 +78,15 @@ export function delete_(id: string) {
 export function update(id: string, data: Partial<TFootballField>) {
   return FootballFieldModel.findByIdAndUpdate(id, data)
 }
+
+export function addImage(id: string, imageUrls: string[]) {
+  return FootballFieldModel.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: {
+        images: { $each: [...imageUrls] },
+      },
+    },
+    { includeResultMetadata: true },
+  )
+}

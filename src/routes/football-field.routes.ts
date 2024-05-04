@@ -16,6 +16,7 @@ import {
 
 // Schemas
 import {
+  addImageSchema,
   createFootballFieldSchema,
   updateFieldSchema,
 } from '@src/schemas/football-field.schema'
@@ -85,6 +86,13 @@ footballFieldRouter.patch(
   isAdmin,
   serialize(confirmBookingSchema),
   BookingController.confirm,
+)
+
+// Add image
+footballFieldRouter.post(
+  '/:id/images',
+  serialize(addImageSchema),
+  FootballFieldController.addImage,
 )
 
 // ---------------- Only Super Users can access ------------------------- //

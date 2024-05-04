@@ -65,7 +65,7 @@ export const updateFieldSchema = z.object({
   params: z.object({
     id: ValidIdSchema,
   }),
-  body: FootballFieldSchema.partial(),
+  body: FootballFieldSchema.omit({ images: true }).partial(),
 })
 
 export const getManyFieldsSchema = z.object({
@@ -76,4 +76,9 @@ export const getManyFieldsSchema = z.object({
       distance: z.number().optional(),
     })
     .optional(),
+})
+
+export const addImageSchema = z.object({
+  params: z.object({ id: ValidIdSchema }),
+  body: z.object({ images: z.array(z.string().url()) }),
 })
