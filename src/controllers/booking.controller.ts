@@ -232,7 +232,7 @@ export async function createCheckoutSession(req: IReq, res: IRes) {
     checkoutSession: newCheckoutSession,
   })
 
-  if (!updated?.isModified)
+  if (!updated)
     return res
       .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
       .send('Fail to create checkout session')

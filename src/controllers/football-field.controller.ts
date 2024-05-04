@@ -96,9 +96,32 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
   const updated = await FootballFieldService.update(id, data)
 
   if (!updated)
-    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Update failed')
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Update failed')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
+}
+
+/**
+ * Add image to field
+ * @method POST
+ * @param req.params.id Field ID.
+ */
+export async function addImage(req: IReq<{ images: string[] }>, res: IRes) {
+  const { id } = req.params
+
+  const updated = await FootballFieldService.addImage(id, req.body.images)
+
+  if (!updated)
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Fail to add image')
+
+  if (updated.lastErrorObject?.updatedExisting)
+    return res.status(HttpStatusCodes.NOT_MODIFIED).send('Image already exists')
+
+  return res.status(HttpStatusCodes.CREATED).end()
 }
 
 /**
