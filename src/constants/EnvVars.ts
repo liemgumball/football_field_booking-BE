@@ -4,8 +4,10 @@
 /* eslint-disable node/no-process-env */
 
 import { ConnectOptions } from 'mongoose'
+import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 export default {
+  BaseUrl: 'http://localhost:3000',
   NodeEnv: process.env.NODE_ENV ?? '',
   Port: process.env.PORT ?? 0,
   AllowedOriginPatterns:
@@ -62,4 +64,14 @@ export default {
     vnp_ReturnUrl: process.env.vnp_ReturnUrl ?? '',
     checkoutReturn_Url: process.env.CHECKOUT_RETURN_URL ?? '',
   },
+  MailTransporter: {
+    host: process.env.MAIL_HOSTNAME ?? '',
+    service: process.env.MAIL_SERVICE ?? '',
+    port: Number(process.env.MAIL_PORT) ?? '',
+    secure: Boolean(process.env.MAIL_SECURE) || false,
+    auth: {
+      user: process.env.MAIL_USERNAME ?? '',
+      pass: process.env.MAIL_PASSWORD ?? '',
+    },
+  } as SMTPTransport.Options,
 } as const

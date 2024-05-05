@@ -54,6 +54,7 @@ const UserSchema = new Schema<UserDocument>(
       enum: UserRole,
       default: UserRole.CUSTOMER,
     },
+    verified: { type: Boolean, default: false },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields automatically

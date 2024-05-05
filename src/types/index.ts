@@ -42,6 +42,7 @@ export type TUser = {
   avatar: string
   google_access_token?: string
   role?: UserRole
+  verified?: boolean
 }
 
 export type TSubField = {

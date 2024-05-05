@@ -19,4 +19,6 @@ authRouter.post(
 
 authRouter.post('/login', serialize(Schema.loginSchema), AuthController.login)
 
+authRouter.patch('/:id/verify/:token', AuthController.verify)
+
 export default authRouter
