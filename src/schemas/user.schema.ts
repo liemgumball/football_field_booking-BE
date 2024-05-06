@@ -69,3 +69,7 @@ export const changePasswordSchema = z.object({
       path: ['old_password', 'new_password'],
     }),
 })
+
+export const resendEmailVerifySchema = z.object({
+  body: z.object({ email: z.string().email() }),
+})

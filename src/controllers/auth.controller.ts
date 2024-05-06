@@ -1,4 +1,4 @@
-import { IReq, IRes, IUserSession } from '@src/types/express/misc'
+import { IReq, IRes } from '@src/types/express/misc'
 
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
@@ -6,6 +6,7 @@ import EnvVars from '@src/constants/EnvVars'
 import { TUser } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
 import { sendEmail } from '@src/util/mailer'
+import { TokenExpiredError } from 'jsonwebtoken'
 
 /**
  * Handle Login User.
@@ -44,7 +45,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
 
-  const verifyUrl = `${EnvVars.ClientUrl}/account/${created._id}/verify/${token}`
+  const verifyUrl = `${EnvVars.ClientUrl}/account/verify/${token}`
 
   try {
     await sendEmail(created.email, 'Verify account email', verifyUrl)
@@ -60,26 +61,61 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 /**
  * Send email to verify account
  * @method GET
- * @param req.params.id User ID.
  * @param req.params.token Token to verify.
  */
 export async function verify(req: IReq, res: IRes) {
-  const { id, token } = req.params
+  const { token } = req.params
 
-  const decoded = verifyJWT(token) as IUserSession
+  try {
+    const decoded = verifyJWT(token) as { _id: string }
 
-  if (!decoded)
+    const id = decoded._id
+
+    const user = await UserService.getById(id)
+
+    if (!user)
+      return res.status(HttpStatusCodes.NOT_FOUND).send('User not found')
+
+    await UserService.verify(id)
+
+    return res.status(HttpStatusCodes.OK).end()
+  } catch (error) {
+    if (error instanceof TokenExpiredError)
+      return res.status(HttpStatusCodes.FORBIDDEN).send('Token expired')
+  }
+}
+
+/**
+ * Send new verify email
+ * @method POST
+ * @param req.body.email The email address
+ */
+export async function resendEmailVerify(
+  req: IReq<{ email: string }>,
+  res: IRes,
+) {
+  const { email } = req.body
+  const user = await UserService.getByEmail(email)
+
+  if (!user)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('User not found by email')
+
+  if (user.verified)
     return res
-      .status(HttpStatusCodes.BAD_REQUEST)
-      .send('Verify token has expired')
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send('Account already verified')
 
-  if (decoded._id !== id) return res.status(HttpStatusCodes.FORBIDDEN).end()
+  const token = signJWT({ _id: user._id as string }, 60 * 60)
 
-  const user = await UserService.getById(id)
+  const verifyUrl = `${EnvVars.ClientUrl}/account/verify/${token}`
 
-  if (!user) return res.status(HttpStatusCodes.NOT_FOUND).send('User not found')
+  try {
+    await sendEmail(user.email, 'Verify account email', verifyUrl)
+  } catch (error) {
+    return res
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send((error as Error).message)
+  }
 
-  await UserService.verify(id)
-
-  return res.status(HttpStatusCodes.OK).end()
+  return res.status(HttpStatusCodes.CREATED).end()
 }
