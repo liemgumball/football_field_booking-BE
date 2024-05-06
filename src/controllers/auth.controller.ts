@@ -1,4 +1,4 @@
-import { IReq, IRes } from '@src/types/express/misc'
+import { IReq, IRes, IUserSession } from '@src/types/express/misc'
 
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
@@ -66,12 +66,14 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 export async function verify(req: IReq, res: IRes) {
   const { id, token } = req.params
 
-  const isValid = verifyJWT(token)
+  const decoded = verifyJWT(token) as IUserSession
 
-  if (!isValid)
+  if (!decoded)
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .send('Verify token has expired')
+
+  if (decoded._id !== id) return res.status(HttpStatusCodes.FORBIDDEN).end()
 
   const user = await UserService.getById(id)
 
