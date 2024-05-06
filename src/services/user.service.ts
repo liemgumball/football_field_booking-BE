@@ -81,6 +81,8 @@ export async function validateLogin(email: string, _password: string) {
 
   if (!isValid) return false
 
+  if (!user.verified) return 'not_verified'
+
   const token = user.generateAuthToken()
 
   // Omitting the password field
@@ -88,4 +90,8 @@ export async function validateLogin(email: string, _password: string) {
   const { password, ...rest } = user.toObject()
 
   return { ...rest, token }
+}
+
+export function verify(id: string) {
+  return UserModel.findByIdAndUpdate(id, { verified: true })
 }

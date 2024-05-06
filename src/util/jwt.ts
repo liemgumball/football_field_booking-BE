@@ -6,8 +6,13 @@ import jwt from 'jsonwebtoken'
  * @param {object | string | Buffer} payload - The payload to be signed.
  * @returns {string} The signed JWT.
  */
-export function signJWT(payload: object | string | Buffer): string {
-  return jwt.sign(payload, EnvVars.Jwt.Secret, { expiresIn: EnvVars.Jwt.Exp })
+export function signJWT(
+  payload: object | string | Buffer,
+  expiresIn?: string | number,
+): string {
+  return jwt.sign(payload, EnvVars.Jwt.Secret, {
+    expiresIn: expiresIn || EnvVars.Jwt.Exp,
+  })
 }
 
 /**
