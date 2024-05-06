@@ -21,4 +21,10 @@ authRouter.post('/login', serialize(Schema.loginSchema), AuthController.login)
 
 authRouter.get('/:id/verify/:token', AuthController.verify)
 
+authRouter.post(
+  '/resend-verify',
+  serialize(Schema.resendEmailVerifySchema),
+  AuthController.resendEmailVerify,
+)
+
 export default authRouter

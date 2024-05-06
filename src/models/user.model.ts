@@ -94,6 +94,8 @@ UserSchema.methods.generateAuthToken = function (): string {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     { _id: this._id, role: this.role },
   )
+
+  // TODO generate refresh token
   return token
 }
 

@@ -19,6 +19,14 @@ export function getById(id: string) {
 }
 
 /**
+ * Get user by id
+ * @param email of the user
+ */
+export function getByEmail(email: string) {
+  return UserModel.findOne({ email }, { password: 0 })
+}
+
+/**
  * Create a new user in database
  * @param user data
  */
