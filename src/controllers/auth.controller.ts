@@ -1,4 +1,4 @@
-import { IReq, IRes } from '@src/types/express/misc'
+import { IReq, IRes, IUserSession } from '@src/types/express/misc'
 
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
@@ -44,7 +44,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
 
-  const verifyUrl = `${EnvVars.BaseUrl}/api/auth/${created._id}/verify/${token}`
+  const verifyUrl = `${EnvVars.ClientUrl}/account/${created._id}/verify/${token}`
 
   try {
     await sendEmail(created.email, 'Verify account email', verifyUrl)
@@ -59,19 +59,21 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
 /**
  * Send email to verify account
- * @method PATCH
+ * @method GET
  * @param req.params.id User ID.
  * @param req.params.token Token to verify.
  */
 export async function verify(req: IReq, res: IRes) {
   const { id, token } = req.params
 
-  const isValid = verifyJWT(token)
+  const decoded = verifyJWT(token) as IUserSession
 
-  if (!isValid)
+  if (!decoded)
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .send('Verify token has expired')
+
+  if (decoded._id !== id) return res.status(HttpStatusCodes.FORBIDDEN).end()
 
   const user = await UserService.getById(id)
 
@@ -79,5 +81,5 @@ export async function verify(req: IReq, res: IRes) {
 
   await UserService.verify(id)
 
-  return res.status(HttpStatusCodes.CREATED).end()
+  return res.status(HttpStatusCodes.OK).end()
 }
