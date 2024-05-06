@@ -7,7 +7,7 @@ import { ConnectOptions } from 'mongoose'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 export default {
-  BaseUrl: 'http://localhost:3000',
+  ClientUrl: process.env.CLIENT_URL ?? '',
   NodeEnv: process.env.NODE_ENV ?? '',
   Port: process.env.PORT ?? 0,
   AllowedOriginPatterns:

@@ -44,7 +44,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
 
-  const verifyUrl = `${EnvVars.BaseUrl}/api/auth/${created._id}/verify/${token}`
+  const verifyUrl = `${EnvVars.ClientUrl}/account/${created._id}/verify/${token}`
 
   try {
     await sendEmail(created.email, 'Verify account email', verifyUrl)
@@ -59,7 +59,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
 /**
  * Send email to verify account
- * @method PATCH
+ * @method GET
  * @param req.params.id User ID.
  * @param req.params.token Token to verify.
  */
@@ -79,5 +79,5 @@ export async function verify(req: IReq, res: IRes) {
 
   await UserService.verify(id)
 
-  return res.status(HttpStatusCodes.CREATED).end()
+  return res.status(HttpStatusCodes.OK).end()
 }
