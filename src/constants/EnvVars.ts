@@ -68,10 +68,13 @@ export default {
     host: process.env.MAIL_HOSTNAME ?? '',
     service: process.env.MAIL_SERVICE ?? '',
     port: Number(process.env.MAIL_PORT) ?? '',
-    secure: Boolean(process.env.MAIL_SECURE) || false,
+    secure: Boolean(process.env.MAIL_SECURE === 'true') || false,
     auth: {
       user: process.env.MAIL_USERNAME ?? '',
       pass: process.env.MAIL_PASSWORD ?? '',
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   } as SMTPTransport.Options,
 } as const

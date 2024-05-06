@@ -5,7 +5,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
 import { TUser } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
-import { sendEmail } from '@src/util/node-mailer'
+import { sendEmail } from '@src/util/mailer'
 
 /**
  * Handle Login User.
@@ -24,7 +24,7 @@ export async function login(req: IReq<TUser>, res: IRes) {
       .send('Wrong username or password')
 
   if (auth === 'not_verified')
-    return res.status(HttpStatusCodes.UNAUTHORIZED).send('Account not verified')
+    return res.status(HttpStatusCodes.FORBIDDEN).send('Account not verified')
 
   const { token, ...rest } = auth
 
@@ -44,7 +44,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
 
-  const verifyUrl = `${EnvVars.BaseUrl}/api/auth/${user._id as unknown as string}/verify/${token}`
+  const verifyUrl = `${EnvVars.BaseUrl}/api/auth/${created._id}/verify/${token}`
 
   try {
     await sendEmail(created.email, 'Verify account email', verifyUrl)
