@@ -45,7 +45,7 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
 
-  const verifyUrl = `${EnvVars.ClientUrl}/account/verify/${token}`
+  const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
 
   try {
     await sendEmail(created.email, 'Verify account email', verifyUrl)
@@ -74,14 +74,17 @@ export async function verify(req: IReq, res: IRes) {
     const user = await UserService.getById(id)
 
     if (!user)
-      return res.status(HttpStatusCodes.NOT_FOUND).send('User not found')
+      return res
+        .status(HttpStatusCodes.NOT_FOUND)
+        .send('User can not be found by token')
 
     await UserService.verify(id)
-
     return res.status(HttpStatusCodes.OK).end()
   } catch (error) {
     if (error instanceof TokenExpiredError)
       return res.status(HttpStatusCodes.FORBIDDEN).send('Token expired')
+
+    return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end()
   }
 }
 
@@ -107,7 +110,7 @@ export async function resendEmailVerify(
 
   const token = signJWT({ _id: user._id as string }, 60 * 60)
 
-  const verifyUrl = `${EnvVars.ClientUrl}/account/verify/${token}`
+  const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
 
   try {
     await sendEmail(user.email, 'Verify account email', verifyUrl)
