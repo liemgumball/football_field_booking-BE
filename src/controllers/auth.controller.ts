@@ -5,7 +5,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
 import { TUser } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
-import { sendEmail } from '@src/util/mailer'
+import { getMailContent, sendEmail } from '@src/util/mailer'
 import { TokenExpiredError } from 'jsonwebtoken'
 
 /**
@@ -47,8 +47,10 @@ export async function signup(req: IReq<TUser>, res: IRes) {
 
   const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
 
+  const mailContent = getMailContent(verifyUrl)
+
   try {
-    await sendEmail(created.email, 'Verify account email', verifyUrl)
+    await sendEmail(created.email, 'Verify account email', mailContent)
   } catch (error) {
     return res
       .status(HttpStatusCodes.EXPECTATION_FAILED)
@@ -111,9 +113,10 @@ export async function resendEmailVerify(
   const token = signJWT({ _id: user._id as string }, 60 * 60)
 
   const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
+  const mailContent = getMailContent(verifyUrl)
 
   try {
-    await sendEmail(user.email, 'Verify account email', verifyUrl)
+    await sendEmail(user.email, 'Verify account email', mailContent)
   } catch (error) {
     return res
       .status(HttpStatusCodes.EXPECTATION_FAILED)
