@@ -55,8 +55,8 @@ export function getDateFromTimeStep(date: Date, time: TimeStep): Date {
   const minute = parseInt(list[1])
 
   const newDate = new Date(date)
-  newDate.setUTCHours(hour)
-  newDate.setUTCMinutes(minute)
+  newDate.setHours(hour)
+  newDate.setMinutes(minute)
 
   return newDate
 }
