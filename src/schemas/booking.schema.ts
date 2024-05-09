@@ -1,9 +1,9 @@
 import z from 'zod'
 import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
-import { getNextHour, getToday } from '@src/util/date'
+import { getNext15Minutes, getToday } from '@src/util/date'
 
-// Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNextHour, getIndexOfTimeStep) are assumed to be defined elsewhere.
+// Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNext15Minutes, getIndexOfTimeStep) are assumed to be defined elsewhere.
 
 const BookingSchema = z.object({
   name: z.string().trim().optional(),
@@ -11,7 +11,7 @@ const BookingSchema = z.object({
   subfieldId: ValidIdSchema,
   date: DateSchema.refine(
     (val) => val >= getToday(),
-    'Booking date must as least from: ' + getToday().toLocaleDateString(),
+    'Booking date must as least from: ' + getToday().toISOString(),
   ),
   from: TimeStepSchema,
   to: TimeStepSchema,
@@ -20,10 +20,9 @@ const BookingSchema = z.object({
 })
 
 export const createBookingSchema = z.object({
-  body: BookingSchema.refine(
-    ({ date, from }) => getDateFromTimeStep(date, from) >= getNextHour(),
-    'Booking must as least 1 hour from now.',
-  ).refine(({ from, to }) => {
+  body: BookingSchema.refine(({ date, from }) => {
+    return getDateFromTimeStep(date, from) >= getNext15Minutes()
+  }, 'Booking must as least 15 minutes from now.').refine(({ from, to }) => {
     return getIndexOfTimeStep(to) - getIndexOfTimeStep(from) >= 2 // check if `to - from` is at least 1 hour
   }, 'Booking time must longs at least 1 hour.'),
 })

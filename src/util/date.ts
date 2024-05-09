@@ -6,10 +6,10 @@ export function getToday() {
   return today
 }
 
-export function getNextHour(from = new Date()) {
-  const nextHour = new Date(from)
-  nextHour.setUTCHours(nextHour.getUTCHours() + 1)
-  return nextHour
+export function getNext15Minutes(from = new Date()) {
+  const next = new Date(from)
+  next.setUTCMinutes(next.getUTCMinutes() + 15)
+  return next
 }
 
 export function getTomorrow(from = new Date()) {
