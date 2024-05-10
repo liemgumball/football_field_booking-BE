@@ -1,4 +1,4 @@
-export const PHONE_NUMBER_REGEX = /^\+(?:[0-9] ?){6,14}[0-9]$/
+export const PHONE_NUMBER_REGEX = /^(?:\+?84|0)(?:\d{9,10})$/
 
 /**
  * Validate format `HH:MM`.
