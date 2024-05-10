@@ -4,14 +4,19 @@ import UserModel from '@src/models/user.model'
 import { TFootballField, TUser } from '@src/types'
 import { Types, startSession } from 'mongoose'
 
-export function getAll(options: { name?: string } = {}) {
-  const { name } = options
+export function getAll(
+  options: { name?: string; rating?: number | null } = {},
+) {
+  const { name, rating } = options
 
-  const query = name ? { name: new RegExp(name, 'gi') } : {}
+  const query: Record<string, unknown> = {}
 
-  return FootballFieldModel.find(query).select(
-    '_id name is_active availability rating images opened_at closed_at',
-  )
+  if (name) query['name'] = name
+  if (rating) query['rating'] = { $gte: rating }
+
+  return FootballFieldModel.find(query)
+    .select('_id name is_active availability rating images opened_at closed_at')
+    .limit(30)
 }
 
 export function getById(id: string) {

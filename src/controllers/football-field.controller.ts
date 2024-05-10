@@ -13,9 +13,17 @@ import * as LocationService from '@src/services/location.service'
  * @param req.query.name Name of field to search.
  */
 export async function getAll(req: IReq, res: IRes) {
-  const { name } = req.query
+  const { name, rating } = req.query
 
-  const options = { name: typeof name === 'string' ? name : undefined }
+  const options = {
+    name: typeof name === 'string' ? name : undefined,
+    rating:
+      typeof rating === 'string'
+        ? rating === 'null'
+          ? null
+          : Number(rating)
+        : undefined,
+  }
 
   const fields = await FootballFieldService.getAll(options)
 
