@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose'
+import { Schema, model, Document, Model } from 'mongoose'
 import { compareHash, hashData } from '@src/util/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
@@ -13,6 +13,11 @@ type UserDocument = TUser &
     comparePassword: (password: string) => Promise<boolean>
     generateAuthToken: () => string
   }
+
+type TUserModel = Model<UserDocument> & {
+  isThisEmailInUse: (email: string) => Promise<boolean>
+  isThisPhoneInUse: (phoneNumber: string) => Promise<boolean>
+}
 
 // Define the Mongoose schema for the user document
 const UserSchema = new Schema<UserDocument>(
@@ -46,6 +51,7 @@ const UserSchema = new Schema<UserDocument>(
       required: true,
       validate: PHONE_NUMBER_REGEX,
       trim: true,
+      unique: true,
     },
     avatar: String,
     google_access_token: String,
@@ -99,6 +105,22 @@ UserSchema.methods.generateAuthToken = function (): string {
   return token
 }
 
+UserSchema.statics.isThisEmailInUse = async function (email: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const user = await this.findOne({ email: email })
+  if (user) return true
+
+  return false
+}
+
+UserSchema.statics.isThisPhoneInUse = async function (phoneNumber: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const user = await this.findOne({ phoneNumber: phoneNumber })
+  if (user) return true
+
+  return false
+}
+
 export async function createSuperUser() {
   const existingSuperUser = await UserModel.findOne({
     role: UserRole.SUPER_USER,
@@ -117,6 +139,6 @@ export async function createSuperUser() {
 }
 
 // Create the User model using the schema
-const UserModel = model<UserDocument>('User', UserSchema)
+const UserModel = model<UserDocument, TUserModel>('User', UserSchema)
 
 export default UserModel

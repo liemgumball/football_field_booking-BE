@@ -1,5 +1,6 @@
 import UserModel from '@src/models/user.model'
 import { TUser, UserRole } from '@src/types'
+import z from 'zod'
 
 export const USER_NOT_FOUND_ERR = 'User not found'
 
@@ -30,7 +31,30 @@ export function getByEmail(email: string) {
  * Create a new user in database
  * @param user data
  */
-export function create(user: TUser) {
+export async function create(user: TUser) {
+  const emailInUse = await UserModel.isThisEmailInUse(user.email)
+  const phoneInUse = await UserModel.isThisPhoneInUse(user.phoneNumber)
+
+  if (emailInUse || phoneInUse) {
+    const errors: z.ZodIssue[] = []
+
+    if (emailInUse)
+      errors.push({
+        code: 'custom',
+        message: 'This email already in use',
+        path: ['body', 'email'],
+      })
+
+    if (phoneInUse)
+      errors.push({
+        code: 'custom',
+        message: 'This phone number already in use',
+        path: ['body', 'phoneNumber'],
+      })
+
+    throw new z.ZodError(errors)
+  }
+
   return UserModel.create(user)
 }
 

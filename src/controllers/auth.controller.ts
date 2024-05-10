@@ -7,6 +7,7 @@ import { TUser } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
 import { getMailContent, sendEmail } from '@src/util/mailer'
 import { TokenExpiredError } from 'jsonwebtoken'
+import z from 'zod'
 
 /**
  * Handle Login User.
@@ -41,20 +42,21 @@ export async function login(req: IReq<TUser>, res: IRes) {
 export async function signup(req: IReq<TUser>, res: IRes) {
   const user = req.body
 
-  const created = await UserService.create(user)
-
-  const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
-
-  const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
-
-  const mailContent = getMailContent(verifyUrl)
-
   try {
+    const created = await UserService.create(user)
+    const token = signJWT({ _id: created._id as string }, 60 * 60) // 1 Hour
+
+    const verifyUrl = `${EnvVars.ClientUrl}/verify-account/${token}`
+
+    const mailContent = getMailContent(verifyUrl)
     await sendEmail(created.email, 'Verify account email', mailContent)
-  } catch (error) {
+  } catch (err) {
+    if (err instanceof z.ZodError)
+      return res.status(HttpStatusCodes.BAD_REQUEST).json(err.errors)
+
     return res
       .status(HttpStatusCodes.EXPECTATION_FAILED)
-      .send((error as Error).message)
+      .send((err as Error).message)
   }
 
   return res.status(HttpStatusCodes.CREATED).end()
