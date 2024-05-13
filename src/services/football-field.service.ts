@@ -12,7 +12,7 @@ export function getAll(
   const query: Record<string, unknown> = {}
 
   if (name) query['name'] = new RegExp(name, 'gi')
-  if (rating) query['rating'] = { $gte: rating }
+  if (rating) query['rating'] = { $gte: rating, $lt: rating + 1 }
 
   return FootballFieldModel.find(query)
     .select('_id name is_active availability rating images opened_at closed_at')
