@@ -1,6 +1,6 @@
 import { HH_MM_REGEX } from '@src/constants/Regex'
 import { TDayOfService, TTurnOfService, TurnOfServiceStatus } from '@src/types'
-import { getExpireDate, getTwoMonthsLater } from '@src/util/date'
+import { getExpireDate } from '@src/util/date'
 import { Schema, model, Document } from 'mongoose'
 
 type DayOfServiceDocument = TDayOfService & Document
@@ -39,17 +39,6 @@ const DayOfServiceSchema = new Schema<DayOfServiceDocument>({
     type: Date,
     required: true,
     immutable: true,
-    validate: {
-      validator: (date: Date) => {
-        const today = new Date()
-
-        const twoMonthsLater = getTwoMonthsLater()
-
-        // Validate if the date is at least today and at most two months later
-        return date >= today && date <= twoMonthsLater
-      },
-      message: 'Date must in range from today to maximum of two Months Later',
-    },
   },
   fieldId: {
     type: Schema.Types.ObjectId,

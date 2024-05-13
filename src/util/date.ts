@@ -8,7 +8,7 @@ export function getToday() {
 
 export function getNext15Minutes(from = new Date()) {
   const next = new Date(from)
-  next.setUTCMinutes(next.getUTCMinutes() + 15)
+  next.setTime(next.getTime() + 15 * 60 * 1000)
   return next
 }
 

@@ -45,7 +45,7 @@ export function getCheckoutUrl(
 
   const createDate = moment(payDate).format('YYYYMMDDHHmmss')
   const expireDate = moment(
-    payDate.setMinutes(payDate.getMinutes() + 10),
+    payDate.setTime(payDate.getTime() + 10 * 60 * 1000),
   ).format('YYYYMMDDHHmmss')
 
   // Send the bookingId as an info to update the booking data after checkout
