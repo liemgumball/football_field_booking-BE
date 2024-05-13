@@ -11,7 +11,7 @@ export function getAll(
 
   const query: Record<string, unknown> = {}
 
-  if (name) query['name'] = name
+  if (name) query['name'] = new RegExp(name, 'gi')
   if (rating) query['rating'] = { $gte: rating }
 
   return FootballFieldModel.find(query)
