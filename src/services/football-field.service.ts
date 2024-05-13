@@ -13,6 +13,7 @@ export function getAll(
 
   if (name) query['name'] = new RegExp(name, 'gi')
   if (rating) query['rating'] = { $gte: rating, $lt: rating + 1 }
+  if (rating === null) query['rating'] = null
 
   return FootballFieldModel.find(query)
     .select('_id name is_active availability rating images opened_at closed_at')
