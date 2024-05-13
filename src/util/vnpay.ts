@@ -44,9 +44,9 @@ export function getCheckoutUrl(
     checkoutSession
 
   const createDate = moment(payDate).format('YYYYMMDDHHmmss')
-  const expireDate = moment(
-    payDate.setTime(payDate.getTime() + 10 * 60 * 1000),
-  ).format('YYYYMMDDHHmmss')
+  // const expireDate = moment(
+  //   payDate.setTime(payDate.getTime() + 10 * 60 * 1000),
+  // ).format('YYYYMMDDHHmmss')
 
   // Send the bookingId as an info to update the booking data after checkout
   const locale = 'vn'
@@ -65,7 +65,7 @@ export function getCheckoutUrl(
   vnpParams['vnp_ReturnUrl'] = EnvVars.VNPay.vnp_ReturnUrl
   vnpParams['vnp_IpAddr'] = ipAddr
   vnpParams['vnp_CreateDate'] = createDate
-  vnpParams['vnp_ExpireDate'] = expireDate
+  // vnpParams['vnp_ExpireDate'] = expireDate
 
   if (orderBankCode) {
     vnpParams['vnp_BankCode'] = orderBankCode
