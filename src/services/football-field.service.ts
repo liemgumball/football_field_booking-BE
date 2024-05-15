@@ -20,6 +20,17 @@ export function getAll(
     .limit(30)
 }
 
+/**
+ * Get bests field based on rating
+ * @param limit of bests field
+ * @default limit 10 bests rating field
+ */
+export function getBests(limit?: number) {
+  return FootballFieldModel.find()
+    .sort('-rating -images')
+    .limit(limit || 10)
+}
+
 export function getById(id: string) {
   return FootballFieldModel.findById(id)
     .populate('subfields')
