@@ -33,6 +33,9 @@ const footballFieldRouter = Router()
 // Get many field
 footballFieldRouter.get('', FootballFieldController.getAll)
 
+// Get best fields
+footballFieldRouter.get('/bests', FootballFieldController.getBests)
+
 // Get by location
 footballFieldRouter.get('/locations', FootballFieldController.getFromLocation)
 

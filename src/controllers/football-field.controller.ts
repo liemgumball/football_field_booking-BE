@@ -31,6 +31,21 @@ export async function getAll(req: IReq, res: IRes) {
 }
 
 /**
+ * Get all football field.
+ * @method GET
+ * @param req.query.name Name of field to search.
+ */
+export async function getBests(req: IReq, res: IRes) {
+  const { limit } = req.query
+
+  const fields = await FootballFieldService.getBests(
+    typeof limit === 'string' ? Number(limit) : undefined,
+  )
+
+  return res.status(HttpStatusCodes.OK).json(fields)
+}
+
+/**
  * Get many football fields from a location and search radius.
  * @method GET
  * @param req.query.longitude
