@@ -28,10 +28,10 @@ export async function login(req: IReq<TUser>, res: IRes) {
   if (auth === 'not_verified')
     return res.status(HttpStatusCodes.FORBIDDEN).send('Account not verified')
 
-  const { token, ...rest } = auth
+  const { token } = auth
 
   res.cookie('access_token', token, EnvVars.CookieProps.Options)
-  return res.status(HttpStatusCodes.OK).json(rest)
+  return res.status(HttpStatusCodes.OK).json(auth)
 }
 
 /**
