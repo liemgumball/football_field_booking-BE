@@ -43,6 +43,8 @@ export function getBySubfieldId(subfieldId: Types.ObjectId) {
 
 export function getByAdminId(adminId: string) {
   return FootballFieldModel.findOne({ adminId: adminId })
+    .populate('subfields')
+    .populate('location')
 }
 
 export async function create(

@@ -51,6 +51,8 @@ footballFieldRouter.use(deserializeUser)
 
 // -------------------- Only Admin can access ------------------------------ //
 
+footballFieldRouter.get('/admin/:adminId', FootballFieldController.getByAdminId)
+
 // Update Field (not included SubFields)
 footballFieldRouter.patch(
   '/:id',

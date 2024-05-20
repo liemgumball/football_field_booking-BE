@@ -69,7 +69,7 @@ export async function getFromLocation(req: IReq, res: IRes) {
 }
 
 /**
- * Get all football field details requests by admin role.
+ * Get all football field details.
  * @method GET
  * @param req.params.id Football field ID.
  */
@@ -77,6 +77,22 @@ export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
 
   const field = await FootballFieldService.getById(id)
+
+  if (!field)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('Data not found')
+
+  return res.status(HttpStatusCodes.OK).json(field)
+}
+
+/**
+ * Get football field details by admin ID.
+ * @method GET
+ * @param req.params.adminId Football field ID.
+ */
+export async function getByAdminId(req: IReq, res: IRes) {
+  const { adminId } = req.params
+
+  const field = await FootballFieldService.getByAdminId(adminId)
 
   if (!field)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Data not found')
