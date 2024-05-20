@@ -17,7 +17,18 @@ authRouter.post(
   AuthController.signup,
 )
 
-authRouter.post('/login', serialize(Schema.loginSchema), AuthController.login)
+authRouter.post(
+  '/login',
+  serialize(Schema.loginSchema),
+  AuthController.clientLogin,
+)
+
+// Login endpoint for admin users
+authRouter.post(
+  '/login/admin',
+  serialize(Schema.loginSchema),
+  AuthController.adminLogin,
+)
 
 authRouter.get('/verify/:token', AuthController.verify)
 

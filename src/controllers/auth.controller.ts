@@ -3,19 +3,20 @@ import { IReq, IRes } from '@src/types/express/misc'
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
-import { TUser } from '@src/types'
+import { TUser, UserRole } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
 import { getMailContent, sendEmail } from '@src/util/mailer'
 import { TokenExpiredError } from 'jsonwebtoken'
 import z from 'zod'
+import assert from 'assert'
 
 /**
- * Handle Login User.
+ * Handle Login for Client User.
  * @method POST
  * @param req.params.email
  * @param req.params.password
  */
-export async function login(req: IReq<TUser>, res: IRes) {
+export async function clientLogin(req: IReq<TUser>, res: IRes) {
   const { email, password } = req.body
 
   const auth = await UserService.validateLogin(email, password)
@@ -26,7 +27,44 @@ export async function login(req: IReq<TUser>, res: IRes) {
       .send('Wrong username or password')
 
   if (auth === 'not_verified')
-    return res.status(HttpStatusCodes.FORBIDDEN).send('Account not verified')
+    return res.status(HttpStatusCodes.FORBIDDEN).send('Account not verified.')
+
+  // admin account can not login from this endpoint
+  if (auth.role === UserRole.ADMIN)
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Admin account not allowed.')
+
+  const { token } = auth
+
+  res.cookie('access_token', token, EnvVars.CookieProps.Options)
+  return res.status(HttpStatusCodes.OK).json(auth)
+}
+
+/**
+ * Handle Login User.
+ * @method POST
+ * @param req.params.email
+ * @param req.params.password
+ */
+export async function adminLogin(req: IReq<TUser>, res: IRes) {
+  const { email, password } = req.body
+
+  const auth = await UserService.validateLogin(email, password)
+
+  if (!auth)
+    return res
+      .status(HttpStatusCodes.UNAUTHORIZED)
+      .send('Wrong username or password')
+
+  // no need to verify admin email for now
+  assert(auth !== 'not_verified')
+
+  // client users can not login from this endpoint
+  if (auth.role === UserRole.CUSTOMER)
+    return res
+      .status(HttpStatusCodes.FORBIDDEN)
+      .send('Client user is not allowed.')
 
   const { token } = auth
 
