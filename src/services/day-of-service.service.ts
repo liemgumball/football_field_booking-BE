@@ -138,13 +138,28 @@ export async function getById(id: string, from?: string, to?: string) {
   return result.at(0) ? result.at(0) : undefined
 }
 
-export function getByFieldId(id: Types.ObjectId) {
+export function getByFieldId(id: Types.ObjectId, from?: string, to?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
+  const query: Record<string, unknown> = {
+    fieldId: id,
+    availability: true,
+    // 'turnOfServices.status': { $eq: TurnOfServiceStatus.AVAILABLE },
+  }
+
+  if (from || to) {
+    const date: Record<string, unknown> = {}
+    if (from) {
+      date['$gte'] = new Date(from)
+    }
+    if (to) {
+      date['$lte'] = new Date(to)
+    }
+
+    query['date'] = date
+  }
+
   return DayOfServiceModel.find(
-    {
-      fieldId: id,
-      availability: true,
-      'turnOfServices.status': { $eq: TurnOfServiceStatus.AVAILABLE },
-    },
+    query,
     { __v: 0, turnOfServices: 0 },
     { limit: 30 },
   )

@@ -44,7 +44,16 @@ export async function getByFieldId(req: IReq, res: IRes) {
   if (!field)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Field not found')
 
-  const found = await DayOfServiceService.getByFieldId(field._id)
+  const { from, to } = req.query
+
+  const fromQuery = typeof from === 'string' ? from : undefined
+  const toQuery = typeof to === 'string' ? to : undefined
+
+  const found = await DayOfServiceService.getByFieldId(
+    field._id,
+    fromQuery,
+    toQuery,
+  )
 
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
 
