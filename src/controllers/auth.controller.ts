@@ -8,7 +8,6 @@ import { signJWT, verifyJWT } from '@src/util/jwt'
 import { getMailContent, sendEmail } from '@src/util/mailer'
 import { TokenExpiredError } from 'jsonwebtoken'
 import z from 'zod'
-import assert from 'assert'
 
 /**
  * Handle Login for Client User.
@@ -57,11 +56,8 @@ export async function adminLogin(req: IReq<TUser>, res: IRes) {
       .status(HttpStatusCodes.UNAUTHORIZED)
       .send('Wrong username or password')
 
-  // no need to verify admin email for now
-  assert(auth !== 'not_verified')
-
   // client users can not login from this endpoint
-  if (auth.role === UserRole.CUSTOMER)
+  if (auth === 'not_verified')
     return res
       .status(HttpStatusCodes.FORBIDDEN)
       .send('Client user is not allowed.')
