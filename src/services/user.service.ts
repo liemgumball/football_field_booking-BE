@@ -113,7 +113,7 @@ export async function validateLogin(email: string, _password: string) {
 
   if (!isValid) return false
 
-  if (!user.verified) return 'not_verified'
+  if (user.role === UserRole.CUSTOMER && !user.verified) return 'not_verified'
 
   const token = user.generateAuthToken()
 

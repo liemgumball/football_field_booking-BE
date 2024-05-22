@@ -1,7 +1,7 @@
 import FootballFieldModel from '@src/models/football-field.model'
 import LocationModel from '@src/models/location.model'
 import UserModel from '@src/models/user.model'
-import { TFootballField, TUser } from '@src/types'
+import { TFootballField, TUser, UserRole } from '@src/types'
 import { Types, startSession } from 'mongoose'
 
 export function getAll(
@@ -43,6 +43,8 @@ export function getBySubfieldId(subfieldId: Types.ObjectId) {
 
 export function getByAdminId(adminId: string) {
   return FootballFieldModel.findOne({ adminId: adminId })
+    .populate('subfields')
+    .populate('location')
 }
 
 export async function create(
@@ -54,7 +56,7 @@ export async function create(
   try {
     session.startTransaction()
 
-    const newAdmin = new UserModel(admin)
+    const newAdmin = new UserModel({ ...admin, role: UserRole.ADMIN })
     await newAdmin.save({ session })
 
     const { location, ...field } = data
