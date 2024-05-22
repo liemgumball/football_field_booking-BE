@@ -12,6 +12,7 @@ type BookingDocument = TBooking &
     updatedAt: Date
   }
 
+// [ ] data `status` structure not good
 const BookingSchema = new Schema<BookingDocument>(
   {
     userId: {

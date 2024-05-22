@@ -85,6 +85,12 @@ footballFieldRouter.patch(
   DayOfServiceController.updateOne,
 )
 
+footballFieldRouter.get(
+  '/:fieldId/bookings',
+  isAdmin,
+  BookingController.getBookingsByFieldId,
+)
+
 // Confirm Booking
 footballFieldRouter.patch(
   '/:fieldId/bookings/:id',
