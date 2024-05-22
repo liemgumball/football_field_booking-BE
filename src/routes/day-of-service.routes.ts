@@ -7,7 +7,6 @@ import * as DayOfServiceController from '@src/controllers/day-of-service.control
 import { serialize } from '@src/middlewares/serializer.middleware'
 
 // Schemas
-import { withValidIdSchema } from '@src/schemas/common.schema'
 import {
   getDayOfServiceSchema,
   searchDayOfServiceSchema,
@@ -30,16 +29,11 @@ dayOfServiceRouter.get(
 )
 
 // get by fieldId
-dayOfServiceRouter.get(
-  '/fields/:id',
-  serialize(withValidIdSchema),
-  DayOfServiceController.getByFieldId,
-)
+dayOfServiceRouter.get('/fields/:fieldId', DayOfServiceController.getByFieldId)
 
 // get by subfieldId
 dayOfServiceRouter.get(
-  '/subfields/:id',
-  serialize(withValidIdSchema),
+  '/subfields/:subfieldId',
   DayOfServiceController.getBySubFieldId,
 )
 

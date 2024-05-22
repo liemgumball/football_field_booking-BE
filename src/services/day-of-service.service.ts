@@ -138,7 +138,7 @@ export async function getById(id: string, from?: string, to?: string) {
   return result.at(0) ? result.at(0) : undefined
 }
 
-export function getByFieldId(id: Types.ObjectId, from?: string, to?: string) {
+export function getByFieldId(id: Types.ObjectId, from?: Date, to?: Date) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   const query: Record<string, unknown> = {
     fieldId: id,
@@ -149,10 +149,10 @@ export function getByFieldId(id: Types.ObjectId, from?: string, to?: string) {
   if (from || to) {
     const date: Record<string, unknown> = {}
     if (from) {
-      date['$gte'] = new Date(from)
+      date['$gte'] = from
     }
     if (to) {
-      date['$lte'] = new Date(to)
+      date['$lte'] = to
     }
 
     query['date'] = date
@@ -165,9 +165,21 @@ export function getByFieldId(id: Types.ObjectId, from?: string, to?: string) {
   )
 }
 
-export function getBySubFieldId(id: Types.ObjectId) {
+export function getBySubFieldId(id: Types.ObjectId, date?: Date) {
+  const query: Record<string, unknown> = {
+    subfieldId: id,
+  }
+
+  if (date) query['date'] = date
+
+  return DayOfServiceModel.find(query, { __v: 0 }, { limit: 30 }).populate(
+    'subfield',
+  )
+}
+
+export function getByDate(date: Date) {
   return DayOfServiceModel.find(
-    { subfieldId: id, availability: true },
+    { date },
     { __v: 0, turnOfServices: 0 },
     { limit: 30 },
   )

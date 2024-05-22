@@ -35,19 +35,19 @@ export async function getById(req: IReq, res: IRes) {
 /**
  * Get many `Day of service` by Field ID.
  * @method GET
- * @param req.params.id Field ID.
+ * @param req.params.fieldId Field ID.
  */
 export async function getByFieldId(req: IReq, res: IRes) {
-  const { id } = req.params
-  const field = await FootballFieldService.getById(id)
+  const { fieldId } = req.params
+  const field = await FootballFieldService.getById(fieldId)
 
   if (!field)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Field not found')
 
   const { from, to } = req.query
 
-  const fromQuery = typeof from === 'string' ? from : undefined
-  const toQuery = typeof to === 'string' ? to : undefined
+  const fromQuery = typeof from === 'string' ? new Date(from) : undefined
+  const toQuery = typeof to === 'string' ? new Date(to) : undefined
 
   const found = await DayOfServiceService.getByFieldId(
     field._id,
@@ -63,18 +63,21 @@ export async function getByFieldId(req: IReq, res: IRes) {
 /**
  * Get `Day of service` by subfield ID.
  * @method GET
- * @param req.params.id Subfield ID.
+ * @param req.params.subfieldId Subfield ID.
  */
 export async function getBySubFieldId(req: IReq, res: IRes) {
-  const { id } = req.params
+  const { subfieldId } = req.params
 
-  const subfield = await SubFieldService.getById(id)
+  const subfield = await SubFieldService.getById(subfieldId)
 
   if (!subfield)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Subfield not found')
 
+  const { date } = req.query
+
   const found = await DayOfServiceService.getBySubFieldId(
     subfield._id as Types.ObjectId,
+    typeof date === 'string' ? new Date(date) : undefined,
   )
 
   if (!found) return res.status(HttpStatusCodes.NOT_FOUND).end()
