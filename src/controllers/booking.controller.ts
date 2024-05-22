@@ -286,3 +286,18 @@ export async function review(
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
+
+/**
+ * Get bookings by fieldId.
+ * @method GET
+ * @param req.params.fieldId Field ID.
+ */
+export async function getBookingsByFieldId(req: IReq, res: IRes) {
+  const { fieldId } = req.params
+
+  const { cursor, status } = req.query
+
+  const bookings = await BookingService.getAll({ fieldId, status, cursor })
+
+  return res.status(HttpStatusCodes.OK).json(bookings)
+}

@@ -6,8 +6,33 @@ import { TBooking, TCheckoutSession, TurnOfServiceStatus } from '@src/types'
 
 import * as DayOfServiceService from './day-of-service.service'
 
-export function getAll() {
-  return BookingModel.find()
+export function getAll(options: Record<string, unknown> = {}) {
+  const query: Record<string, unknown> = {}
+
+  if (options.fieldId) query.fieldId = options.fieldId
+
+  // [ ] data status structure not good
+  // Handle 'status' option
+  if (options.status) {
+    if (options.status === 'confirmed') query.confirmed = true
+    if (options.status === 'canceled') query.canceled = true
+    if (options.status === 'pending') {
+      query.confirmed = false
+      query.canceled = false
+    }
+  }
+  // Handle 'cursor' and 'limit' options
+  let cursor: number | undefined = undefined
+  if (options.cursor) {
+    const temp = Number(options.cursor)
+    if (!isNaN(temp)) {
+      cursor = temp
+    }
+  }
+
+  return BookingModel.find(query)
+    .skip(cursor ? cursor * 10 : 0)
+    .limit(cursor ? 10 : Infinity)
     .populate('subfield')
     .populate('field')
     .select('-__v')
@@ -114,6 +139,7 @@ export async function confirm(
 
   if (!check) return null
 
+  // update day-of-service status
   const dayOfService = await DayOfServiceService.addBookingId(
     id,
     booking.subfieldId as unknown as string,
@@ -137,6 +163,18 @@ export async function payBooking(
   if (!booking) return null
 
   if (booking.paid) return null
+
+  // update day-of-service status
+  const dayOfService = await DayOfServiceService.addBookingId(
+    id,
+    booking.subfieldId as unknown as string,
+    booking.date,
+    booking?.from,
+    booking.to,
+    TurnOfServiceStatus.BEING_USED,
+  )
+
+  if (!dayOfService.modifiedCount) return null
 
   return BookingModel.findByIdAndUpdate(id, {
     paid: true,

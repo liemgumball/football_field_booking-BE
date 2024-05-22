@@ -10,7 +10,8 @@ import { checkAdmin } from '@src/util/authorize'
  * Check and verify the JWT access token in `req.user`
  */
 export function deserializeUser(req: IReq, res: IRes, next: NextFunction) {
-  const token = req.headers.authorization?.split(' ')[1]
+  const token =
+    req.headers.authorization?.split(' ')[1] || req.signedCookies.access_token
 
   if (!token && !token?.length) {
     return res
