@@ -166,16 +166,16 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
 }
 
 /**
- * Handle confirm booking by Admin.
+ * Handle update booking by Admin.
  * @method PATCH
  * @param req.params.id Booking ID.
- * @param res.body Data to confirmed.
+ * @param res.body Data to confirmed or refuse.
  */
-export async function confirm(
-  req: IReq<Pick<TBooking, 'confirmed'>>,
+export async function update(
+  req: IReq<Pick<TBooking, 'confirmed' | 'canceled'>>,
   res: IRes,
 ) {
-  const confirming = req.body
+  const body = req.body
   const { id } = req.params
 
   const found = await BookingService.getById(id)
@@ -188,13 +188,18 @@ export async function confirm(
       .status(HttpStatusCodes.METHOD_NOT_ALLOWED)
       .send('Booking has been canceled')
 
-  // Admin confirm booking
-  const updated = await BookingService.confirm(id, confirming)
+  let updated: TBooking | null = null
+  // Admin confirm or refuse booking
+  if (body.confirmed === true) {
+    updated = await BookingService.confirm(id, body)
+  } else if (body.canceled === true) {
+    updated = await BookingService.cancel(id, body)
+  }
 
   if (!updated)
     return res
       .status(HttpStatusCodes.NOT_MODIFIED)
-      .send('Failed to confirm booking')
+      .send('Failed to update booking')
 
   return res.status(HttpStatusCodes.NO_CONTENT).end()
 }

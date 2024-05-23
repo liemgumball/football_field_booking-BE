@@ -5,7 +5,7 @@ import * as BookingController from '@src/controllers/booking.controller'
 import { deserializeUser } from '@src/middlewares/auth.middleware'
 import { serialize } from '@src/middlewares/serializer.middleware'
 import {
-  cancelBookingSchema,
+  updateBookingSchema,
   createBookingSchema,
   reviewBookingSchema,
 } from '@src/schemas/booking.schema'
@@ -28,7 +28,7 @@ bookingRouter.post('', serialize(createBookingSchema), BookingController.create)
 // Cancel Booking
 bookingRouter.patch(
   '/:id',
-  serialize(cancelBookingSchema),
+  serialize(updateBookingSchema),
   BookingController.cancel,
 )
 
