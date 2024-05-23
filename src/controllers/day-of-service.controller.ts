@@ -124,8 +124,17 @@ export async function updateOne(req: IReq<Partial<TDayOfService>>, res: IRes) {
  * @returns Returns list of day of services.
  */
 export async function search(req: IReq, res: IRes) {
-  const { latitude, longitude, distance, from, to, date, size, cursor } =
-    req.query
+  const {
+    latitude,
+    longitude,
+    distance,
+    from,
+    to,
+    date,
+    size,
+    cursor,
+    fieldId,
+  } = req.query
 
   if (!date || typeof date !== 'string')
     return res.status(HttpStatusCodes.BAD_REQUEST).send('No date provided')
@@ -137,6 +146,7 @@ export async function search(req: IReq, res: IRes) {
   assert(typeof to === 'string' || typeof to === 'undefined')
   assert(typeof size === 'string' || typeof size === 'undefined')
   assert(typeof cursor === 'string' || typeof cursor === 'undefined')
+  assert(typeof fieldId === 'string' || typeof fieldId === 'undefined')
 
   const result = await DayOfServiceService.getManyAvailable(
     new Date(date),
@@ -147,6 +157,7 @@ export async function search(req: IReq, res: IRes) {
     to,
     size,
     cursor ? +cursor : undefined,
+    fieldId,
   )
 
   return res.status(HttpStatusCodes.OK).json(result)
