@@ -27,22 +27,18 @@ export const createBookingSchema = z.object({
   }, 'Booking time must longs at least 1 hour.'),
 })
 
-export const cancelBookingSchema = z.object({
+export const updateBookingSchema = z.object({
   params: z.object({
     id: ValidIdSchema,
   }),
-  body: z.object({
-    canceled: z.boolean().refine((val) => val, 'Only accept true'),
-  }),
-})
-
-export const confirmBookingSchema = z.object({
-  params: z.object({
-    id: ValidIdSchema,
-  }),
-  body: z.object({
-    confirmed: z.boolean().refine((val) => val, 'Only accept true'),
-  }),
+  body: z.union([
+    z.object({
+      canceled: z.boolean().refine((val) => val, 'Only accept true'),
+    }),
+    z.object({
+      confirmed: z.boolean().refine((val) => val, 'Only accept true'),
+    }),
+  ]),
 })
 
 export const reviewBookingSchema = z.object({

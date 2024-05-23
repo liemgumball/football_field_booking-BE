@@ -26,7 +26,7 @@ import {
   updateSubFieldSchema,
 } from '@src/schemas/subfield.schema'
 import { updateDayOfServiceSchema } from '@src/schemas/day-of-service.schema'
-import { confirmBookingSchema } from '@src/schemas/booking.schema'
+import { updateBookingSchema } from '@src/schemas/booking.schema'
 
 const footballFieldRouter = Router()
 
@@ -91,12 +91,12 @@ footballFieldRouter.get(
   BookingController.getBookingsByFieldId,
 )
 
-// Confirm Booking
+// Update Booking
 footballFieldRouter.patch(
   '/:fieldId/bookings/:id',
   isAdmin,
-  serialize(confirmBookingSchema),
-  BookingController.confirm,
+  serialize(updateBookingSchema),
+  BookingController.update,
 )
 
 // Add image
