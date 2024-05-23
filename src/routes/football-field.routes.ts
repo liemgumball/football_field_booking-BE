@@ -27,6 +27,7 @@ import {
 } from '@src/schemas/subfield.schema'
 import { updateDayOfServiceSchema } from '@src/schemas/day-of-service.schema'
 import { updateBookingSchema } from '@src/schemas/booking.schema'
+import { AnyZodObject } from 'zod'
 
 const footballFieldRouter = Router()
 
@@ -95,7 +96,7 @@ footballFieldRouter.get(
 footballFieldRouter.patch(
   '/:fieldId/bookings/:id',
   isAdmin,
-  serialize(updateBookingSchema),
+  serialize(updateBookingSchema satisfies AnyZodObject),
   BookingController.update,
 )
 
