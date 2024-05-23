@@ -31,14 +31,15 @@ export const updateBookingSchema = z.object({
   params: z.object({
     id: ValidIdSchema,
   }),
-  body: z.union([
-    z.object({
+  body: z
+    .object({
       canceled: z.boolean().refine((val) => val, 'Only accept true'),
-    }),
-    z.object({
-      confirmed: z.boolean().refine((val) => val, 'Only accept true'),
-    }),
-  ]),
+    })
+    .or(
+      z.object({
+        confirmed: z.boolean().refine((val) => val, 'Only accept true'),
+      }),
+    ),
 })
 
 export const reviewBookingSchema = z.object({

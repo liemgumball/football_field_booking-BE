@@ -15,6 +15,7 @@ export enum UserRole {
 
 export enum TurnOfServiceStatus {
   AVAILABLE = 'available',
+  UNAVAILABLE = 'unavailable',
   IN_PROGRESS = 'progressing',
   BEING_USED = 'used',
 }

@@ -5,8 +5,8 @@ import { getNextMonth, getToday } from '@src/util/date'
 const TurnOfServiceSchema = z.object({
   at: TimeStepSchema,
   price: z.number().int().min(0).optional(),
-  availability: z.boolean().optional(),
-  user: ValidIdSchema.optional(),
+  status: z.enum(['available', 'unavailable', 'processing', 'used']),
+  bookingId: ValidIdSchema.optional(),
 })
 
 const DayOfServiceSchema = z.object({
