@@ -3,10 +3,10 @@ import { IReq, IRes } from '@src/types/express/misc'
 import * as UserService from '@src/services/user.service'
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
-import { TUser, UserRole } from '@src/types'
+import { TGoogleOAuthCredential, TUser, UserRole } from '@src/types'
 import { signJWT, verifyJWT } from '@src/util/jwt'
 import { getMailContent, sendEmail } from '@src/util/mailer'
-import { TokenExpiredError } from 'jsonwebtoken'
+import { TokenExpiredError, decode } from 'jsonwebtoken'
 import z from 'zod'
 
 /**
@@ -160,4 +160,33 @@ export async function resendEmailVerify(
   }
 
   return res.status(HttpStatusCodes.CREATED).end()
+}
+
+export async function googleLogin(
+  req: IReq<{ credential: string }>,
+  res: IRes,
+) {
+  const googleCredential = decode(req.body.credential) as TGoogleOAuthCredential
+
+  if (!googleCredential.email_verified)
+    return res.status(HttpStatusCodes.UNAUTHORIZED).send('Email not verified')
+
+  const found = await UserService.loginByGoogleId(googleCredential.sub)
+
+  if (found) return res.status(HttpStatusCodes.OK).json(found)
+
+  // create a new google account
+  const user = await UserService.create({
+    name: googleCredential.name,
+    email: googleCredential.email,
+    googleId: googleCredential.sub,
+    phoneNumber: null,
+    role: UserRole.CUSTOMER,
+    avatar: googleCredential.picture,
+    verified: true,
+  })
+
+  if (!user) return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end()
+
+  return res.status(HttpStatusCodes.CREATED).json(user)
 }

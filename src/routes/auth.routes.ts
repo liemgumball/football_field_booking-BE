@@ -38,4 +38,11 @@ authRouter.post(
   AuthController.resendEmailVerify,
 )
 
+// GOOGLE AUTHENTICATION
+authRouter.post(
+  '/google/login',
+  serialize(Schema.googleLoginSchema),
+  AuthController.googleLogin,
+)
+
 export default authRouter

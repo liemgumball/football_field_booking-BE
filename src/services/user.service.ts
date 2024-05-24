@@ -31,9 +31,11 @@ export function getByEmail(email: string) {
  * Create a new user in database
  * @param user data
  */
-export async function create(user: TUser) {
+export async function create(user: Omit<TUser, '_id'>) {
   const emailInUse = await UserModel.isThisEmailInUse(user.email)
-  const phoneInUse = await UserModel.isThisPhoneInUse(user.phoneNumber)
+  const phoneInUse = user.phoneNumber
+    ? await UserModel.isThisPhoneInUse(user.phoneNumber)
+    : false
 
   if (emailInUse || phoneInUse) {
     const errors: z.ZodIssue[] = []
@@ -104,20 +106,20 @@ export async function change_password(id: string, new_password: string) {
  * @param _password to validate the user
  * @returns user's data if valid
  */
-export async function validateLogin(email: string, _password: string) {
+export async function validateLogin(email: string, _password?: string) {
   const user = await UserModel.findOne({ email }).exec()
 
-  if (!user) return false
+  if (!user || !_password) return null
 
   const isValid = user.comparePassword(_password)
 
-  if (!isValid) return false
+  if (!isValid) return null
 
   if (user.role === UserRole.CUSTOMER && !user.verified) return 'not_verified'
 
   const token = user.generateAuthToken()
 
-  // Omitting the password field
+  // Omit password
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...rest } = user.toObject()
 
@@ -126,4 +128,18 @@ export async function validateLogin(email: string, _password: string) {
 
 export function verify(id: string) {
   return UserModel.findByIdAndUpdate(id, { verified: true })
+}
+
+/**
+ * Get user by googleId
+ * @param id googleId
+ */
+export async function loginByGoogleId(id: string) {
+  const user = await UserModel.findOne({ googleId: id }, { password: 0 }).exec()
+
+  if (!user) return false
+
+  const token = user.generateAuthToken()
+
+  return { ...user.toObject(), token }
 }

@@ -37,13 +37,13 @@ export type TLocation = {
 export type TUser = {
   _id: mongooseTypes.ObjectId
   email: string
-  password: string
+  password?: string
   name: string
-  phoneNumber: string
-  avatar: string
-  google_access_token?: string
-  role?: UserRole
+  phoneNumber: string | null
+  avatar?: string
+  googleId?: string
   verified?: boolean
+  role: UserRole
 }
 
 export type TSubField = {
@@ -121,4 +121,21 @@ export type TCheckoutSession = {
   payDate: Date
   currCode: 'VND'
   orderBankCode?: string
+}
+
+export type TGoogleOAuthCredential = {
+  iss: string
+  azp: string
+  aud: string
+  sub: string
+  email: string
+  email_verified: boolean
+  nbf: number
+  name: string
+  picture: string
+  given_name: string
+  family_name: string
+  iat: number
+  exp: number
+  jti: string
 }
