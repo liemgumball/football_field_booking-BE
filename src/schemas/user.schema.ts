@@ -73,3 +73,9 @@ export const changePasswordSchema = z.object({
 export const resendEmailVerifySchema = z.object({
   body: z.object({ email: z.string().email() }),
 })
+
+export const googleLoginSchema = z.object({
+  body: z.object({
+    credential: z.string(),
+  }),
+})

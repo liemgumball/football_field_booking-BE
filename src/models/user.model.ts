@@ -41,20 +41,20 @@ const UserSchema = new Schema<UserDocument>(
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
       minlength: [6, 'Minimum password length is 6 characters'],
       trim: true,
     },
     name: { type: String, trim: true },
     phoneNumber: {
       type: String,
-      required: true,
-      validate: PHONE_NUMBER_REGEX,
+      validate: (value: string) =>
+        value ? PHONE_NUMBER_REGEX.test(value) : true,
       trim: true,
-      unique: true,
+      default: null,
     },
     avatar: String,
-    google_access_token: String,
+    googleId: String,
     role: {
       type: String,
       enum: UserRole,
@@ -67,6 +67,11 @@ const UserSchema = new Schema<UserDocument>(
   },
 )
 
+UserSchema.index(
+  { phoneNumber: 1 },
+  { unique: true, partialFilterExpression: { phoneNumber: { $ne: null } } },
+)
+
 /**
  * Hash the password for the user document
  */
@@ -74,9 +79,10 @@ UserSchema.pre('save', function (next) {
   if (!this.isModified('password')) {
     return next()
   }
-
-  const hash = hashData(this.password)
-  this.password = hash
+  if (this.password) {
+    const hash = hashData(this.password)
+    this.password = hash
+  }
 
   return next()
 })
