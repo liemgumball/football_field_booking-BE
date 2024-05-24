@@ -175,21 +175,30 @@ export async function googleLogin(
 
   if (found) return res.status(HttpStatusCodes.OK).json(found)
 
-  // create a new google account
-  const user = await UserService.create({
-    name: googleCredential.name,
-    email: googleCredential.email,
-    googleId: googleCredential.sub,
-    phoneNumber: null,
-    role: UserRole.CUSTOMER,
-    avatar: googleCredential.picture,
-    verified: true,
-  })
+  try {
+    // create a new google account
+    const user = await UserService.create({
+      name: googleCredential.name,
+      email: googleCredential.email,
+      googleId: googleCredential.sub,
+      phoneNumber: null,
+      role: UserRole.CUSTOMER,
+      avatar: googleCredential.picture,
+      verified: true,
+    })
 
-  if (!user)
+    if (!user)
+      return res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .send('Fail to login by Google Account')
+
+    return res.status(HttpStatusCodes.CREATED).json(user)
+  } catch (err) {
+    if (err instanceof z.ZodError)
+      return res.status(HttpStatusCodes.BAD_REQUEST).json(err.errors)
+
     return res
-      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-      .send('Fail to login by Google Account')
-
-  return res.status(HttpStatusCodes.CREATED).json(user)
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send((err as Error).message)
+  }
 }
