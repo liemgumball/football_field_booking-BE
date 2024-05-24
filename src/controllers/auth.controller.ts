@@ -186,7 +186,10 @@ export async function googleLogin(
     verified: true,
   })
 
-  if (!user) return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).end()
+  if (!user)
+    return res
+      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Fail to login by Google Account')
 
   return res.status(HttpStatusCodes.CREATED).json(user)
 }
