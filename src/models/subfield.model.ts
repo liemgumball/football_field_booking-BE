@@ -35,6 +35,7 @@ const SubFieldSchema = new Schema<SubFieldDocument>(
       type: Number,
       required: true,
     },
+    image: String,
   },
   {
     timestamps: true,
