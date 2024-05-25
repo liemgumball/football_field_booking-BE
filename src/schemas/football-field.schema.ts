@@ -79,6 +79,6 @@ export const getManyFieldsSchema = z.object({
 })
 
 export const addImageSchema = z.object({
-  params: z.object({ id: ValidIdSchema }),
+  params: z.object({ fieldId: ValidIdSchema }),
   body: z.object({ images: z.array(z.string().url()) }),
 })
