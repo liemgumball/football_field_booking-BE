@@ -6,6 +6,7 @@ const SubFieldSchema = z.object({
   size: z.enum(['5', '6', '7', '11']),
   availability: z.boolean().optional(),
   defaultPrice: z.number().int().min(0),
+  image: z.string().trim().optional(),
 })
 
 export const createSubFieldSchema = z.object({

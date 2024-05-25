@@ -145,12 +145,12 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
 /**
  * Add image to field
  * @method POST
- * @param req.params.id Field ID.
+ * @param req.params.fieldId Field ID.
  */
 export async function addImage(req: IReq<{ images: string[] }>, res: IRes) {
-  const { id } = req.params
+  const { fieldId } = req.params
 
-  const updated = await FootballFieldService.addImage(id, req.body.images)
+  const updated = await FootballFieldService.addImage(fieldId, req.body.images)
 
   if (!updated)
     return res

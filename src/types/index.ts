@@ -54,6 +54,7 @@ export type TSubField = {
   size: number
   availability: boolean
   defaultPrice: number
+  image?: string
 }
 
 /**

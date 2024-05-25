@@ -102,7 +102,8 @@ footballFieldRouter.patch(
 
 // Add image
 footballFieldRouter.post(
-  '/:id/images',
+  '/:fieldId/images',
+  isAdmin,
   serialize(addImageSchema),
   FootballFieldController.addImage,
 )
