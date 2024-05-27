@@ -13,7 +13,6 @@ import * as FootballFieldService from '@src/services/football-field.service'
 // Utilities
 import { checkAdmin, checkExactUser } from '@src/util/authorize'
 import { getCheckoutUrl, createCheckoutSessionObject } from '@src/util/vnpay'
-import { getDateFromTimeStep } from '@src/util/timestep'
 
 /**
  * Get booking details.
@@ -269,15 +268,16 @@ export async function review(
       .status(HttpStatusCodes.FORBIDDEN)
       .send('Only correct user is allowed')
 
+  // TODO disable this for demo purposes
   // This mean the reservation have not finished yet or not confirmed
-  if (
-    getDateFromTimeStep(found.date, found.to).getTime() >
-      new Date().getTime() ||
-    !found.confirmed
-  )
-    return res
-      .status(HttpStatusCodes.PRECONDITION_FAILED)
-      .send('Can not review before using')
+  // if (
+  //   getDateFromTimeStep(found.date, found.to).getTime() >
+  //     new Date().getTime() ||
+  //   !found.confirmed
+  // )
+  //   return res
+  //     .status(HttpStatusCodes.PRECONDITION_FAILED)
+  //     .send('Can not review before using')
 
   try {
     await BookingService.update(id, {
