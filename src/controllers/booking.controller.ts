@@ -170,10 +170,7 @@ export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
  * @param req.params.id Booking ID.
  * @param res.body Data to confirmed or refuse.
  */
-export async function update(
-  req: IReq<Pick<TBooking, 'confirmed' | 'canceled'>>,
-  res: IRes,
-) {
+export async function update(req: IReq<Partial<TBooking>>, res: IRes) {
   const body = req.body
   const { id } = req.params
 
@@ -190,9 +187,14 @@ export async function update(
   let updated: TBooking | null = null
   // Admin confirm or refuse booking
   if (body.confirmed === true) {
-    updated = await BookingService.confirm(id, body)
+    // confirm booking
+    updated = await BookingService.confirm(id, { confirmed: true })
   } else if (body.canceled === true) {
-    updated = await BookingService.cancel(id, body)
+    // cancel booking
+    updated = await BookingService.cancel(id, { canceled: true })
+  } else if (body.review) {
+    // review booking
+    updated = await BookingService.update(id, { review: body.review })
   }
 
   if (!updated)
@@ -244,52 +246,6 @@ export async function createCheckoutSession(req: IReq, res: IRes) {
   return res.status(HttpStatusCodes.CREATED).json({
     checkoutUrl: getCheckoutUrl(req, found.id as string, newCheckoutSession),
   })
-}
-
-/**
- * Add review for a Booking and update total review of Football Field.
- * @method PATCH
- * @param req.params.id Booking ID.
- * @param req.params.body Data for review.
- */
-export async function review(
-  req: IReq<{ rating: number; description?: string }>,
-  res: IRes,
-) {
-  const { id } = req.params
-
-  const found = await BookingService.getById(id)
-
-  if (!found)
-    return res.status(HttpStatusCodes.NOT_FOUND).send('Booking not found')
-
-  if (!checkExactUser(found.userId, req.user))
-    return res
-      .status(HttpStatusCodes.FORBIDDEN)
-      .send('Only correct user is allowed')
-
-  // TODO disable this for demo purposes
-  // This mean the reservation have not finished yet or not confirmed
-  // if (
-  //   getDateFromTimeStep(found.date, found.to).getTime() >
-  //     new Date().getTime() ||
-  //   !found.confirmed
-  // )
-  //   return res
-  //     .status(HttpStatusCodes.PRECONDITION_FAILED)
-  //     .send('Can not review before using')
-
-  try {
-    await BookingService.update(id, {
-      review: req.body,
-    })
-  } catch (err) {
-    return res
-      .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-      .send('Failed to add review')
-  }
-
-  return res.status(HttpStatusCodes.NO_CONTENT).end()
 }
 
 /**

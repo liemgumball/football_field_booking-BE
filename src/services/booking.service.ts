@@ -189,7 +189,10 @@ export async function payBooking(
  * @param id Booking Id
  * @param data to update
  */
-export async function update(id: string, data: Partial<TBooking>) {
+export async function update(
+  id: string,
+  data: Partial<TBooking>,
+): Promise<TBooking | null> {
   // update without review
   if (!data.review) return BookingModel.findByIdAndUpdate(id, data)
 
@@ -234,15 +237,14 @@ export async function update(id: string, data: Partial<TBooking>) {
 
       await session.commitTransaction()
       session.endSession()
-    } else {
-      throw updated
+
+      return updated
     }
   } catch (error) {
     await session.abortTransaction()
     session.endSession()
-
-    throw error
   }
+  return null
 }
 
 export function getReviewsByFieldId(fieldId: string) {
