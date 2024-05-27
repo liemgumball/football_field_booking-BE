@@ -75,7 +75,6 @@ export async function create(data: TBooking) {
     data.to,
     TurnOfServiceStatus.AVAILABLE,
   )
-
   if (!check) return null
 
   const booking = await BookingModel.create(data)
@@ -105,7 +104,6 @@ export async function cancel(id: string, data: Pick<TBooking, 'canceled'>) {
     booking.to,
     TurnOfServiceStatus.IN_PROGRESS,
   )
-
   if (!check) return null
 
   const dayOfService = await DayOfServiceService.addBookingId(
@@ -149,6 +147,7 @@ export async function confirm(
     TurnOfServiceStatus.BEING_USED,
   )
 
+  // if nothing is updated
   if (!dayOfService.modifiedCount) return null
 
   return BookingModel.findByIdAndUpdate(id, confirmation)
@@ -160,8 +159,10 @@ export async function payBooking(
 ) {
   const booking = await BookingModel.findById(id)
 
+  // if booking not found
   if (!booking) return null
 
+  // if already paid
   if (booking.paid) return null
 
   // update day-of-service status
@@ -242,4 +243,13 @@ export async function update(id: string, data: Partial<TBooking>) {
 
     throw error
   }
+}
+
+export function getReviewsByFieldId(fieldId: string) {
+  return BookingModel.find({
+    fieldId: fieldId,
+    review: {
+      $ne: null,
+    },
+  }).select('review')
 }

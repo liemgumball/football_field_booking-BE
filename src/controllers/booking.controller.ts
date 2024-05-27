@@ -306,3 +306,11 @@ export async function getBookingsByFieldId(req: IReq, res: IRes) {
 
   return res.status(HttpStatusCodes.OK).json(bookings)
 }
+
+export async function getReviewsByField(req: IReq, res: IRes) {
+  const { fieldId } = req.params
+
+  const reviews = await BookingService.getReviewsByFieldId(fieldId)
+
+  return res.status(HttpStatusCodes.OK).json(reviews)
+}

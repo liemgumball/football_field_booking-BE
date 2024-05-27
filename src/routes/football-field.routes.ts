@@ -108,6 +108,13 @@ footballFieldRouter.post(
   FootballFieldController.addImage,
 )
 
+// Get reviews
+footballFieldRouter.get(
+  '/:fieldId/reviews',
+  isAdmin,
+  BookingController.getReviewsByField,
+)
+
 // ---------------- Only Super Users can access ------------------------- //
 
 // Create new Football field
