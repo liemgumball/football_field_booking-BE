@@ -3,8 +3,6 @@ import { DateSchema, TimeStepSchema, ValidIdSchema } from './common.schema'
 import { getDateFromTimeStep, getIndexOfTimeStep } from '@src/util/timestep'
 import { getNext15Minutes, getToday } from '@src/util/date'
 
-// Your other schemas and functions (ValidIdSchema, TimeStepSchema, getNext15Minutes, getIndexOfTimeStep) are assumed to be defined elsewhere.
-
 const BookingSchema = z.object({
   name: z.string().trim().optional(),
   userId: ValidIdSchema,
