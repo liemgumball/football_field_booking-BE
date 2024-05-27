@@ -75,7 +75,6 @@ export async function create(data: TBooking) {
     data.to,
     TurnOfServiceStatus.AVAILABLE,
   )
-
   if (!check) return null
 
   const booking = await BookingModel.create(data)
@@ -105,7 +104,6 @@ export async function cancel(id: string, data: Pick<TBooking, 'canceled'>) {
     booking.to,
     TurnOfServiceStatus.IN_PROGRESS,
   )
-
   if (!check) return null
 
   const dayOfService = await DayOfServiceService.addBookingId(
@@ -149,6 +147,7 @@ export async function confirm(
     TurnOfServiceStatus.BEING_USED,
   )
 
+  // if nothing is updated
   if (!dayOfService.modifiedCount) return null
 
   return BookingModel.findByIdAndUpdate(id, confirmation)
@@ -160,8 +159,10 @@ export async function payBooking(
 ) {
   const booking = await BookingModel.findById(id)
 
+  // if booking not found
   if (!booking) return null
 
+  // if already paid
   if (booking.paid) return null
 
   // update day-of-service status
@@ -183,33 +184,49 @@ export async function payBooking(
   })
 }
 
+/**
+ *
+ * @param id Booking Id
+ * @param data to update
+ */
 export async function update(id: string, data: Partial<TBooking>) {
+  // update without review
   if (!data.review) return BookingModel.findByIdAndUpdate(id, data)
 
+  // with review
+  // [ ] better to refactor the with the review model
   const session = await startSession()
-
   try {
     session.startTransaction()
 
-    const updated = await BookingModel.findByIdAndUpdate(id, data, { session })
+    const updated = await BookingModel.findByIdAndUpdate(id, data, {
+      new: true,
+      session,
+    })
 
-    if (updated?.isModified) {
+    if (updated) {
       const result = await BookingModel.aggregate([
-        { $match: { fieldId: id } },
+        { $match: { fieldId: updated.fieldId } },
+        {
+          $project: {
+            fieldId: 1,
+            rating: '$review.rating', // Convert null ratings to 0
+          },
+        },
         {
           $group: {
             _id: '$fieldId',
             averageRating: { $avg: '$rating' }, // Calculate average rating
           },
         },
-      ])
+      ]).session(session)
 
       if (result.length > 0) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const averageRating = result.at(0).averageRating as number
 
         await FootballFieldModel.findByIdAndUpdate(
-          id,
+          updated.fieldId,
           { rating: averageRating },
           { session },
         )
@@ -226,4 +243,13 @@ export async function update(id: string, data: Partial<TBooking>) {
 
     throw error
   }
+}
+
+export function getReviewsByFieldId(fieldId: string) {
+  return BookingModel.find({
+    fieldId: fieldId,
+    review: {
+      $ne: null,
+    },
+  }).select('review')
 }
