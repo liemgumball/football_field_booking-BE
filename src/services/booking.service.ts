@@ -251,5 +251,7 @@ export function getReviewsByFieldId(fieldId: string) {
     review: {
       $ne: null,
     },
-  }).select('review')
+  })
+    .select('review userId')
+    .populate('user')
 }
