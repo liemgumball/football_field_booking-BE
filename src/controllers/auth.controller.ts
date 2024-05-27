@@ -162,6 +162,10 @@ export async function resendEmailVerify(
   return res.status(HttpStatusCodes.CREATED).end()
 }
 
+/**
+ * Login user by google account or create new account and login if new user
+ * @param req.body.credential Google Credential
+ */
 export async function googleLogin(
   req: IReq<{ credential: string }>,
   res: IRes,

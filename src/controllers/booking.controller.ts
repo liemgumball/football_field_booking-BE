@@ -116,6 +116,7 @@ export async function create(req: IReq<TBooking>, res: IRes) {
       .status(HttpStatusCodes.PRECONDITION_FAILED)
       .send('Can not create booking')
 
+  // [ ] Consider using Cron job instead
   // Cancel after creating 10 minutes not being Confirmed
   setTimeout(
     () => {
@@ -130,42 +131,7 @@ export async function create(req: IReq<TBooking>, res: IRes) {
 }
 
 /**
- * Handle booking request by User
- * @method PATCH
- * @param req.params.id Booking ID.
- * @param req.body Data to cancel booking.
- */
-export async function cancel(req: IReq<Pick<TBooking, 'canceled'>>, res: IRes) {
-  const canceling = req.body
-  const { id } = req.params
-
-  const found = await BookingService.getById(id)
-
-  if (!found)
-    return res.status(HttpStatusCodes.NOT_FOUND).send('Booking not found')
-
-  if (!checkExactUser(found.userId, req.user))
-    return res
-      .status(HttpStatusCodes.FORBIDDEN)
-      .send('Only correct user is allowed')
-
-  if (found.canceled)
-    return res
-      .status(HttpStatusCodes.METHOD_NOT_ALLOWED)
-      .send('Already canceled')
-
-  const updated = await BookingService.cancel(id, canceling)
-
-  if (!updated)
-    return res
-      .status(HttpStatusCodes.NOT_MODIFIED)
-      .send('Failed to cancel booking')
-
-  return res.status(HttpStatusCodes.NO_CONTENT).end()
-}
-
-/**
- * Handle update booking by Admin.
+ * Handle update Booking.
  * @method PATCH
  * @param req.params.id Booking ID.
  * @param res.body Data to confirmed or refuse.
@@ -206,7 +172,7 @@ export async function update(req: IReq<Partial<TBooking>>, res: IRes) {
 }
 
 /**
- * Create checkout session if not already and return checkout url.
+ * Create checkout session if not already has and return checkout url.
  * @method POST
  * @param req.params.id Booking ID.
  */

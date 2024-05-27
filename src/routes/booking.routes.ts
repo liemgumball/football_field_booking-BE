@@ -24,7 +24,7 @@ bookingRouter.get('', BookingController.getBookings)
 // Create Booking
 bookingRouter.post('', serialize(createBookingSchema), BookingController.create)
 
-// Cancel Booking
+// Update Booking
 bookingRouter.patch(
   '/:id',
   serialize(updateBookingSchema),

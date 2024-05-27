@@ -6,7 +6,14 @@ import EnvVars from '@src/constants/EnvVars'
  * @returns connection status
  */
 export function ping() {
-  const connectionStatus = ['disconnected', 'connected', 'connecting']
+  const connectionStatus = [
+    'disconnected',
+    'connected',
+    'connecting',
+    'disconnecting',
+    'uninitialized',
+  ]
+
   return connectionStatus[connection.readyState]
 }
 

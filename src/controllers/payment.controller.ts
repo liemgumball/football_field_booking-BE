@@ -16,7 +16,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { TCheckoutSession } from '@src/types'
 
 /**
- * Handles return response from VNPay
+ * Handles return response from `VNPay`
  */
 export async function returnCheckout(req: IReq, res: IRes) {
   let vnp_Params = req.query as Record<string, string>

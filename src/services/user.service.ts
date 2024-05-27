@@ -82,7 +82,7 @@ export function delete_(id: string) {
  * @param id of user
  * @param user new data
  */
-export function update(id: string, user: TUser) {
+export function update(id: string, user: Partial<TUser>) {
   return UserModel.findByIdAndUpdate(id, user, {
     projection: { password: 0 },
   })

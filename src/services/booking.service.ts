@@ -6,6 +6,10 @@ import { TBooking, TCheckoutSession, TurnOfServiceStatus } from '@src/types'
 
 import * as DayOfServiceService from './day-of-service.service'
 
+/**
+ * Get bookings based on cursor with step 10
+ * @param options {status, cursor}
+ */
 export function getAll(options: Record<string, unknown> = {}) {
   const query: Record<string, unknown> = {}
 
@@ -153,6 +157,11 @@ export async function confirm(
   return BookingModel.findByIdAndUpdate(id, confirmation)
 }
 
+/**
+ * Update `checkoutSession` and `paid` in Booking Model
+ * @param id
+ * @param checkoutSession the checkout session based on VNPay
+ */
 export async function payBooking(
   id: string,
   checkoutSession: TCheckoutSession,
@@ -184,11 +193,6 @@ export async function payBooking(
   })
 }
 
-/**
- *
- * @param id Booking Id
- * @param data to update
- */
 export async function update(
   id: string,
   data: Partial<TBooking>,
@@ -196,7 +200,7 @@ export async function update(
   // update without review
   if (!data.review) return BookingModel.findByIdAndUpdate(id, data)
 
-  // with review
+  // With review (needs handling update FootballField's `rating`)
   // [ ] better to refactor the with the review model
   const session = await startSession()
   try {

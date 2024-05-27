@@ -13,8 +13,9 @@ export async function getAll(_: IReq, res: IRes) {
 
 /**
  * Handle get user by user's Id requests
+ * @param req.params.id User Id
  */
-export async function getById(req: IReq<TUser>, res: IRes) {
+export async function getById(req: IReq, res: IRes) {
   const { id } = req.params
 
   const user = await UserService.getById(id)
@@ -25,8 +26,9 @@ export async function getById(req: IReq<TUser>, res: IRes) {
 
 /**
  * Handle delete user request
+ * @param req.params.id User Id
  */
-export async function delete_(req: IReq<TUser>, res: IRes) {
+export async function delete_(req: IReq, res: IRes) {
   const { id } = req.params
 
   const deleted = await UserService.delete_(id)
@@ -38,8 +40,10 @@ export async function delete_(req: IReq<TUser>, res: IRes) {
 
 /**
  * Handle update user request
+ * @param req.params.id User Id
+ * @param req.body User data to update
  */
-export async function update(req: IReq<TUser>, res: IRes) {
+export async function update(req: IReq<Partial<TUser>>, res: IRes) {
   const { id } = req.params
   const user = req.body
 
@@ -54,6 +58,9 @@ export async function update(req: IReq<TUser>, res: IRes) {
 
 /**
  * Handle add user request for change password
+ * @param req.body.email
+ * @param req.body.old_password
+ * @param req.body.new_password
  */
 export async function change_password(
   req: IReq<{ email: string; old_password: string; new_password: string }>,
