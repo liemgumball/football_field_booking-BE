@@ -11,8 +11,8 @@ import * as SubFieldService from '@src/services/subfield.service'
 import * as FootballFieldService from '@src/services/football-field.service'
 
 // Utilities
-import { checkAdmin, checkExactUser } from '@src/util/authorize'
-import { getCheckoutUrl, createCheckoutSessionObject } from '@src/util/vnpay'
+import { checkAdmin, checkExactUser } from '@src/utils/authorize'
+import { getCheckoutUrl, createCheckoutSessionObject } from '@src/utils/vnpay'
 
 /**
  * Get booking details.

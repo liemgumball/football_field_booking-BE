@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import * as BookingService from '@src/services/booking.service'
 
 // Utils
-import { sortObject } from '@src/util/common'
+import { sortObject } from '@src/utils/common'
 
 // Constants & Types
 import { IReq, IRes } from '@src/types/express/misc'

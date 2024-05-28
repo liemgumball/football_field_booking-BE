@@ -1,6 +1,6 @@
 import { HH_MM_REGEX } from '@src/constants/Regex'
 import { TDayOfService, TTurnOfService, TurnOfServiceStatus } from '@src/types'
-import { getExpireDate } from '@src/util/date'
+import { getExpireDate } from '@src/utils/date'
 import { Schema, model, Document } from 'mongoose'
 
 type DayOfServiceDocument = TDayOfService & Document

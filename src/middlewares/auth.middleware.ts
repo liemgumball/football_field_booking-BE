@@ -1,10 +1,10 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { UserRole } from '@src/types'
 import { IReq, IRes, IUserSession } from '@src/types/express/misc'
-import { verifyJWT } from '@src/util/jwt'
+import { verifyJWT } from '@src/utils/jwt'
 import { NextFunction } from 'express'
 import * as FootballFieldService from '@src/services/football-field.service'
-import { checkAdmin } from '@src/util/authorize'
+import { checkAdmin } from '@src/utils/authorize'
 
 /**
  * Check and verify the JWT access token in `req.user`

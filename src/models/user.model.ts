@@ -1,9 +1,9 @@
 import { Schema, model, Document, Model } from 'mongoose'
-import { compareHash, hashData } from '@src/util/hash'
+import { compareHash, hashData } from '@src/utils/hash'
 import { PHONE_NUMBER_REGEX } from '@src/constants/Regex'
 import { string } from 'zod'
 import { TUser, UserRole } from '@src/types'
-import { signJWT } from '@src/util/jwt'
+import { signJWT } from '@src/utils/jwt'
 import EnvVars from '@src/constants/EnvVars'
 
 type UserDocument = TUser &
