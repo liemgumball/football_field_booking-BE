@@ -229,18 +229,21 @@ export async function getManyAvailable(
   /**
    * If fieldIds provided then query `$in` the fieldIds list
    */
-  let fieldIds: unknown[] = []
-  if (fieldId) fieldIds.push(new Types.ObjectId(fieldId))
+  let fieldIds: unknown[] | null = null
+  if (fieldId) {
+    fieldIds = []
+    fieldIds.push(new Types.ObjectId(fieldId))
+  }
 
   // If no fieldId provided and coordinates provided then
-  if (!fieldIds.length && longitude && latitude)
+  if (!fieldId && longitude && latitude)
     fieldIds = await LocationService.getFieldIdNearFromLocation(
       [+longitude, +latitude],
       distance,
     )
 
   const query = {
-    fieldId: { $in: fieldIds },
+    ...(fieldIds != null && { fieldId: { $in: fieldIds } }),
     date: date,
     availability: true,
     turnOfServices: {
