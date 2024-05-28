@@ -240,7 +240,7 @@ export async function getManyAvailable(
     )
 
   const query = {
-    ...(fieldIds.length && { fieldId: { $in: fieldIds } }),
+    fieldId: { $in: fieldIds },
     date: date,
     availability: true,
     turnOfServices: {
