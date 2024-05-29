@@ -23,8 +23,9 @@
 ## Team size
 
 - Dev: Liem Nguyen
-- Dev: Le Hoang
-- Develop Environment
+
+## Develop Environment
+
 - Visual Studio Code
 - GitHub
 
