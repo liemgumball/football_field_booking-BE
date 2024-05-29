@@ -13,7 +13,7 @@
 
 ## Deployment
 
-- [DN Football](https://football-field-booking-be.onrender.com/)
+- [DN Football](https://football-field-booking-be.onrender.com/api/pings)
 
 ## Information
 
