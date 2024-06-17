@@ -223,6 +223,7 @@ export async function getManyAvailable(
   distance?: number,
   to?: string,
   size?: string,
+  searchString?: string,
   cursor?: number,
   fieldId?: string,
 ) {
@@ -236,7 +237,7 @@ export async function getManyAvailable(
   }
 
   // If no fieldId provided and coordinates provided then
-  if (!fieldId && longitude && latitude)
+  else if (longitude && latitude)
     fieldIds = await LocationService.getFieldIdNearFromLocation(
       [+longitude, +latitude],
       distance,
@@ -347,6 +348,36 @@ export async function getManyAvailable(
         },
       },
     },
+    ...(searchString
+      ? [
+          {
+            $lookup: {
+              from: 'locations',
+              localField: 'field._id',
+              foreignField: '_id',
+              as: 'location',
+            },
+          },
+          {
+            $project: {
+              location: { $arrayElemAt: ['$location', 0] },
+              _id: 1,
+              date: 1,
+              field: 1,
+              subfield: 1,
+              turnOfServices: 1,
+            },
+          },
+          {
+            $match: {
+              $or: [
+                { 'field.name': new RegExp(searchString, 'gi') },
+                { 'location.name': new RegExp(searchString, 'gi') },
+              ],
+            },
+          },
+        ]
+      : []),
   ] as PipelineStage[]
 
   if (cursor !== undefined) {

@@ -133,6 +133,7 @@ export async function search(req: IReq, res: IRes) {
     date,
     size,
     cursor,
+    search,
     fieldId,
   } = req.query
 
@@ -146,6 +147,7 @@ export async function search(req: IReq, res: IRes) {
   assert(typeof to === 'string' || typeof to === 'undefined')
   assert(typeof size === 'string' || typeof size === 'undefined')
   assert(typeof cursor === 'string' || typeof cursor === 'undefined')
+  assert(typeof search === 'string' || typeof search === 'undefined')
   assert(typeof fieldId === 'string' || typeof fieldId === 'undefined')
 
   const result = await DayOfServiceService.getManyAvailable(
@@ -156,6 +158,7 @@ export async function search(req: IReq, res: IRes) {
     distance ? +distance : undefined,
     to,
     size,
+    search,
     cursor ? +cursor : undefined,
     fieldId,
   )

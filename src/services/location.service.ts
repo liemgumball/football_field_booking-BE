@@ -31,6 +31,7 @@ export async function getFieldIdNearFromLocation(
       _id: 1,
     },
   ).lean()
+
   return val.map((item) => item._id as string)
 }
 
