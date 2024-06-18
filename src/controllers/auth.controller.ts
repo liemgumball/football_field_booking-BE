@@ -5,9 +5,14 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import EnvVars from '@src/constants/EnvVars'
 import { TGoogleOAuthCredential, TUser, UserRole } from '@src/types'
 import { signJWT, verifyJWT } from '@src/utils/jwt'
-import { getMailContent, sendEmail } from '@src/utils/mailer'
+import {
+  getMailContent,
+  getNewPasswordMailContent,
+  sendEmail,
+} from '@src/utils/mailer'
 import { TokenExpiredError, decode } from 'jsonwebtoken'
 import z from 'zod'
+import { generateRandomPassword } from '@src/utils/common'
 
 /**
  * Handle Login for Client User.
@@ -160,6 +165,52 @@ export async function resendEmailVerify(
   }
 
   return res.status(HttpStatusCodes.CREATED).end()
+}
+
+export async function resetPassword(req: IReq<{ email: string }>, res: IRes) {
+  const { email } = req.body
+  const user = await UserService.getByEmail(email)
+
+  if (!user)
+    return res.status(HttpStatusCodes.NOT_FOUND).send('User not found by email')
+
+  const newPassword = generateRandomPassword(8)
+
+  try {
+    await UserService.change_password(user._id as string, newPassword)
+
+    const mailContent = getNewPasswordMailContent(newPassword)
+
+    await sendEmail(user.email, 'Verify account email', mailContent)
+  } catch (error) {
+    return res
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send((error as Error).message)
+  }
+
+  return res.status(HttpStatusCodes.OK).end()
+}
+
+export async function changePassword(
+  req: IReq<{ email: string; oldPassword: string; newPassword: string }>,
+  res: IRes,
+) {
+  const { email, oldPassword, newPassword } = req.body
+
+  const auth = await UserService.validateLogin(email, oldPassword)
+
+  if (!auth || auth === 'not_verified')
+    return res.status(HttpStatusCodes.UNAUTHORIZED).send('Wrong old password')
+
+  try {
+    await UserService.change_password(auth._id as string, newPassword)
+  } catch (error) {
+    return res
+      .status(HttpStatusCodes.EXPECTATION_FAILED)
+      .send((error as Error).message)
+  }
+
+  return res.status(HttpStatusCodes.OK).end()
 }
 
 /**

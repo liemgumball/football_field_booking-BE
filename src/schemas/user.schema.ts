@@ -57,14 +57,14 @@ export const changePasswordSchema = z.object({
   body: z
     .object({
       email: z.string().trim().email(),
-      old_password: z.string().min(6, {
+      oldPassword: z.string().min(6, {
         message: 'Password too short - should be 6 chars minimum',
       }),
-      new_password: z.string().min(6, {
+      newPassword: z.string().min(6, {
         message: 'Password too short - should be 6 chars minimum',
       }),
     })
-    .refine(({ old_password, new_password }) => old_password !== new_password, {
+    .refine(({ oldPassword, newPassword }) => oldPassword !== newPassword, {
       message: 'Old and new passwords must be different',
       path: ['old_password', 'new_password'],
     }),

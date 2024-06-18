@@ -38,6 +38,18 @@ authRouter.post(
   AuthController.resendEmailVerify,
 )
 
+authRouter.post(
+  '/reset-password',
+  serialize(Schema.resendEmailVerifySchema),
+  AuthController.resetPassword,
+)
+
+authRouter.post(
+  '/change-password',
+  serialize(Schema.changePasswordSchema),
+  AuthController.changePassword,
+)
+
 // GOOGLE AUTHENTICATION
 authRouter.post(
   '/google/login',
