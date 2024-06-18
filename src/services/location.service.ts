@@ -5,6 +5,10 @@ export function create(data: TLocation) {
   return LocationModel.create(data)
 }
 
+export function update(id: string, data: Omit<TLocation, '_id'>) {
+  return LocationModel.findByIdAndUpdate(id, data)
+}
+
 /**
  * Search 2dSphere field from a location
  * @param point `[longitude, latitude]` as `[number, number]` coordinates

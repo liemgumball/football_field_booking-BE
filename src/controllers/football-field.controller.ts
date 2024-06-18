@@ -134,6 +134,8 @@ export async function update(req: IReq<TFootballField>, res: IRes) {
 
   const updated = await FootballFieldService.update(id, data)
 
+  if (data.location) await LocationService.update(id, data.location)
+
   if (!updated)
     return res
       .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
