@@ -5,15 +5,22 @@ import { TFootballField, TUser, UserRole } from '@src/types'
 import { Types, startSession } from 'mongoose'
 
 export function getAll(
-  options: { name?: string; rating?: number | null } = {},
+  options: { name?: string; rating?: number | null; withAdmin?: boolean } = {},
 ) {
-  const { name, rating } = options
+  const { name, rating, withAdmin } = options
 
   const query: Record<string, unknown> = {}
 
   if (name) query['name'] = new RegExp(name, 'gi')
   if (rating) query['rating'] = { $gte: rating, $lt: rating + 1 }
   if (rating === null) query['rating'] = null
+
+  if (withAdmin)
+    return FootballFieldModel.find(query)
+      .select(
+        '_id name is_active availability rating images opened_at closed_at adminId',
+      )
+      .populate('admin')
 
   return FootballFieldModel.find(query)
     .select('_id name is_active availability rating images opened_at closed_at')
@@ -108,4 +115,8 @@ export function addImage(id: string, imageUrls: string[]) {
     },
     { includeResultMetadata: true },
   )
+}
+
+export function getAllId() {
+  return FootballFieldModel.find().select('id')
 }

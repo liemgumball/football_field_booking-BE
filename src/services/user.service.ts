@@ -1,3 +1,4 @@
+import FootballFieldModel from '@src/models/football-field.model'
 import UserModel from '@src/models/user.model'
 import { TUser, UserRole } from '@src/types'
 import z from 'zod'
@@ -123,7 +124,17 @@ export async function validateLogin(email: string, _password?: string) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...rest } = user.toObject()
 
-  return { ...rest, token }
+  if (user.role === UserRole.ADMIN) {
+    const field = await FootballFieldModel.findOne({
+      adminId: user.id as string,
+    }).exec()
+
+    if (!field) return { ...rest, token }
+
+    return { ...rest, token, fieldId: field.id as string }
+  } else {
+    return { ...rest, token }
+  }
 }
 
 export function verify(id: string) {

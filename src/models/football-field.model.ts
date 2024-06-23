@@ -63,6 +63,16 @@ FootballFieldSchema.virtual('location', {
   justOne: true,
 })
 
+FootballFieldSchema.virtual('admin', {
+  ref: 'User',
+  localField: 'adminId',
+  foreignField: '_id',
+  justOne: true,
+  options: {
+    projection: 'email name avatar phoneNumber',
+  },
+})
+
 // Apply the virtual to the schema
 FootballFieldSchema.set('toObject', { virtuals: true })
 FootballFieldSchema.set('toJSON', { virtuals: true })

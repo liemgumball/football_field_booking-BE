@@ -1,7 +1,7 @@
 // Constants & Types
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { IReq, IRes } from '@src/types/express/misc'
-import { TFootballField, TUser } from '@src/types'
+import { TFootballField, TUser, UserRole } from '@src/types'
 
 // Services
 import * as FootballFieldService from '@src/services/football-field.service'
@@ -13,7 +13,7 @@ import * as LocationService from '@src/services/location.service'
  * @param req.query.name Name of field to search.
  */
 export async function getAll(req: IReq, res: IRes) {
-  const { name, rating } = req.query
+  const { name, rating, admin } = req.query
 
   const options = {
     name: typeof name === 'string' ? name : undefined,
@@ -23,6 +23,7 @@ export async function getAll(req: IReq, res: IRes) {
           ? null
           : Number(rating)
         : undefined,
+    withAdmin: admin === 'true' ? true : undefined,
   }
 
   const fields = await FootballFieldService.getAll(options)
@@ -92,12 +93,23 @@ export async function getById(req: IReq, res: IRes) {
 export async function getByAdminId(req: IReq, res: IRes) {
   const { adminId } = req.params
 
+  if (req.user?.role === UserRole.SUPER_USER) {
+    const fieldIds = await FootballFieldService.getAllId()
+
+    if (!fieldIds.length)
+      return res.status(HttpStatusCodes.NOT_FOUND).send('Data not found')
+
+    const field = await FootballFieldService.getById(fieldIds[0].id as string)
+
+    return res.status(HttpStatusCodes.OK).json({ fieldIds, field })
+  }
+
   const field = await FootballFieldService.getByAdminId(adminId)
 
   if (!field)
     return res.status(HttpStatusCodes.NOT_FOUND).send('Data not found')
 
-  return res.status(HttpStatusCodes.OK).json(field)
+  return res.status(HttpStatusCodes.OK).json({ field })
 }
 
 /**
