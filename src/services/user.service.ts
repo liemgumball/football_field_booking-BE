@@ -8,7 +8,19 @@ export const USER_NOT_FOUND_ERR = 'User not found'
 /**
  * Get all users
  */
-export function getAll() {
+export function getAll(options?: { customer?: boolean; admin?: boolean }) {
+  if (options?.customer)
+    return UserModel.find(
+      { role: UserRole.CUSTOMER },
+      { name: 1, email: 1, role: 1 },
+    )
+
+  if (options?.admin)
+    return UserModel.find(
+      { role: UserRole.ADMIN },
+      { name: 1, email: 1, role: 1 },
+    )
+
   return UserModel.find({}, { name: 1, email: 1, role: 1 })
 }
 

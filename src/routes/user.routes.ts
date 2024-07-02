@@ -20,8 +20,6 @@ import {
 
 const userRouter = Router()
 
-// userRouter.get('', UserController.getAll)
-
 // Authentication
 userRouter.use(deserializeUser)
 
@@ -48,6 +46,9 @@ userRouter.patch(
 )
 
 // ------------------------- Only Super User can access ------------------------
+
+userRouter.get('/', isSuperUser, UserController.getAll)
+
 userRouter.delete(
   '/:id',
   isSuperUser,

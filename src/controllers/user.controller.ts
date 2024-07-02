@@ -6,8 +6,14 @@ import { TUser } from '@src/types'
 /**
  * Handle get all users requests
  */
-export async function getAll(_: IReq, res: IRes) {
-  const users = await UserService.getAll()
+export async function getAll(req: IReq, res: IRes) {
+  const options = {
+    customer: req.query.customer === 'true' ? true : undefined,
+    admin: req.query.admin === 'true' ? true : undefined,
+  }
+
+  const users = await UserService.getAll(options)
+
   return res.status(HttpStatusCodes.OK).json(users)
 }
 
