@@ -140,3 +140,10 @@ export type TGoogleOAuthCredential = {
   exp: number
   jti: string
 }
+
+export type TMessage = {
+  _id: mongooseTypes.ObjectId
+  senderId: mongooseTypes.ObjectId
+  receiverId: mongooseTypes.ObjectId
+  message: string
+}
